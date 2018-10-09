@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_drawer_my_page"
+            android:icon="@drawable/ic_my_page"
+            android:title="@string/drawer_my_pate"/>
+
+        <item
+            android:id="@+id/menu_drawer_notes"
+            android:icon="@drawable/ic_note"
+            android:title="@string/drawer_notes"/>
+
+        <item
+            android:id="@+id/menu_drawer_shop"
+            android:icon="@drawable/ic_shop"
+            android:title="@string/drawer_shop"/>
+
+        <item
+            android:id="@+id/menu_drawer_setting"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/drawer_setting"/>
+    </group>
+</menu>

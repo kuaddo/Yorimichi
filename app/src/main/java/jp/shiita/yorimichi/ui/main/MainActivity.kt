@@ -4,18 +4,24 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.ActMainBinding
+import jp.shiita.yorimichi.ui.mypage.MyPageFragment
 import jp.shiita.yorimichi.ui.searchresult.SearchResultFragment
 import jp.shiita.yorimichi.util.addFragment
 import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
 
+
 class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var mainFragment: MainFragment
     @Inject lateinit var searchResultFragment: SearchResultFragment
+    @Inject lateinit var myPageFragment: MyPageFragment
+
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java) }
     private val binding: ActMainBinding
@@ -24,6 +30,7 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
+        setupDrawer()
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
@@ -32,7 +39,27 @@ class MainActivity : DaggerAppCompatActivity() {
         }
     }
 
+    fun showDrawer() = binding.drawerLayout.openDrawer(GravityCompat.START)
+
+    fun lockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+    fun unlockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+
     fun showResultFragment() {
         supportFragmentManager.replaceFragment(R.id.container, searchResultFragment)
+    }
+
+    private fun setupDrawer() {
+        binding.navView.setNavigationItemSelectedListener { item ->
+            lockDrawer()
+            when (item.itemId) {
+                R.id.menu_drawer_my_page -> supportFragmentManager.replaceFragment(R.id.container, myPageFragment)
+                R.id.menu_drawer_notes -> {}
+                R.id.menu_drawer_shop -> {}
+                R.id.menu_drawer_setting -> {}
+            }
+            binding.drawerLayout.closeDrawers()
+            true
+        }
     }
 }

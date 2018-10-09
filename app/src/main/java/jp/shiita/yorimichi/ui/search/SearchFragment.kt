@@ -35,7 +35,7 @@ class SearchFragment @Inject constructor() : DaggerFragment() {
 
     private fun observe() {
         viewModel.searchEvent.observe(this) { _ ->
-            (activity as MainActivity).showResultFragment()
+            (activity as? MainActivity)?.showResultFragment()
         }
     }
 

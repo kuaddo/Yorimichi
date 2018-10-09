@@ -7,8 +7,9 @@ import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
+import android.support.v7.app.ActionBar
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
@@ -25,14 +26,20 @@ class MainFragment @Inject constructor() : DaggerFragment() {
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java) }
     private lateinit var binding: FragMainBinding
+    private var currentPosition = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_main, container, false)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        (activity as? MainActivity)?.run {
+            supportActionBar?.let { setupMapActionBar(it) }
+            unlockDrawer()
+        }
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
@@ -44,15 +51,19 @@ class MainFragment @Inject constructor() : DaggerFragment() {
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
                 override fun onPageSelected(position: Int) {
-                    val actionBar = (activity as AppCompatActivity).supportActionBar ?: return
+                    currentPosition = position
                     when (position) {
                         MAP_FRAGMENT -> {
-                            actionBar.setDisplayHomeAsUpEnabled(false)
-                            actionBar.setTitle(R.string.app_name)
+                            (activity as? MainActivity)?.run {
+                                supportActionBar?.let { setupMapActionBar(it) }
+                                unlockDrawer()
+                            }
                         }
                         SEARCH_FRAGMENT -> {
-                            actionBar.setDisplayHomeAsUpEnabled(false)
-                            actionBar.setTitle(R.string.title_search)
+                            (activity as? MainActivity)?.run {
+                                supportActionBar?.let { setupSearchActionBar(it) }
+                                lockDrawer()
+                            }
                         }
                     }
                 }
@@ -75,6 +86,29 @@ class MainFragment @Inject constructor() : DaggerFragment() {
     override fun onDestroyView() {
         binding.viewPager.clearOnPageChangeListeners()
         super.onDestroyView()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                if (currentPosition == MAP_FRAGMENT) {
+                    (activity as? MainActivity)?.showDrawer()
+                }
+            }
+            else -> return false
+        }
+        return true
+    }
+
+    private fun setupMapActionBar(actionBar: ActionBar) {
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu)
+        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar.setTitle(R.string.app_name)
+    }
+
+    private fun setupSearchActionBar(actionBar: ActionBar) {
+        actionBar.setDisplayHomeAsUpEnabled(false)
+        actionBar.setTitle(R.string.title_search)
     }
 
     private class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
