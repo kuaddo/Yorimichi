@@ -10,7 +10,10 @@ import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.ActMainBinding
 import jp.shiita.yorimichi.ui.mypage.MyPageFragment
+import jp.shiita.yorimichi.ui.note.NoteFragment
 import jp.shiita.yorimichi.ui.searchresult.SearchResultFragment
+import jp.shiita.yorimichi.ui.setting.SettingFragment
+import jp.shiita.yorimichi.ui.shop.ShopFragment
 import jp.shiita.yorimichi.util.addFragment
 import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
@@ -19,8 +22,11 @@ import javax.inject.Inject
 class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var mainFragment: MainFragment
-    @Inject lateinit var searchResultFragment: SearchResultFragment
     @Inject lateinit var myPageFragment: MyPageFragment
+    @Inject lateinit var noteFragment: NoteFragment
+    @Inject lateinit var shopFragment: ShopFragment
+    @Inject lateinit var settingFragment: SettingFragment
+    @Inject lateinit var searchResultFragment: SearchResultFragment
 
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java) }
@@ -54,9 +60,9 @@ class MainActivity : DaggerAppCompatActivity() {
             lockDrawer()
             when (item.itemId) {
                 R.id.menu_drawer_my_page -> supportFragmentManager.replaceFragment(R.id.container, myPageFragment)
-                R.id.menu_drawer_notes -> {}
-                R.id.menu_drawer_shop -> {}
-                R.id.menu_drawer_setting -> {}
+                R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, noteFragment)
+                R.id.menu_drawer_shop    -> supportFragmentManager.replaceFragment(R.id.container, shopFragment)
+                R.id.menu_drawer_setting -> supportFragmentManager.replaceFragment(R.id.container, settingFragment)
             }
             binding.drawerLayout.closeDrawers()
             true

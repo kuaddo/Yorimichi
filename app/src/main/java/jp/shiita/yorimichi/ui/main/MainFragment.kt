@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
@@ -15,14 +16,17 @@ import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragMainBinding
-import jp.shiita.yorimichi.ui.BlankFragment
 import jp.shiita.yorimichi.ui.main.MainFragment.PagerAdapter.Companion.MAP_FRAGMENT
 import jp.shiita.yorimichi.ui.main.MainFragment.PagerAdapter.Companion.SEARCH_FRAGMENT
+import jp.shiita.yorimichi.ui.map.MapFragment
 import jp.shiita.yorimichi.ui.search.SearchFragment
 import javax.inject.Inject
 
 class MainFragment @Inject constructor() : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var mapFragment: MapFragment
+    @Inject lateinit var searchFragment: SearchFragment
+
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java) }
     private lateinit var binding: FragMainBinding
@@ -44,7 +48,7 @@ class MainFragment @Inject constructor() : DaggerFragment() {
         binding.viewModel = viewModel
 
         binding.viewPager.also { vp ->
-            vp.adapter = PagerAdapter(childFragmentManager)
+            vp.adapter = PagerAdapter(childFragmentManager, listOf(mapFragment, searchFragment))
             vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {}
 
@@ -111,12 +115,8 @@ class MainFragment @Inject constructor() : DaggerFragment() {
         actionBar.setTitle(R.string.title_search)
     }
 
-    private class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
-        override fun getItem(position: Int) = when (position) {
-            MAP_FRAGMENT    -> BlankFragment.newInstance()
-            SEARCH_FRAGMENT -> SearchFragment.newInstance()
-            else -> error("invalid position")
-        }
+    private class PagerAdapter(fragmentManager: FragmentManager, private val fragments: List<Fragment>) : FragmentPagerAdapter(fragmentManager) {
+        override fun getItem(position: Int) = fragments[position]
 
         override fun getCount(): Int = 2
 
