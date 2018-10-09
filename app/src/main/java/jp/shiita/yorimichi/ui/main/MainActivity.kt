@@ -7,11 +7,15 @@ import android.os.Bundle
 import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.ActMainBinding
+import jp.shiita.yorimichi.ui.searchresult.SearchResultFragment
+import jp.shiita.yorimichi.util.addFragment
+import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var mainFragment: MainFragment
+    @Inject lateinit var searchResultFragment: SearchResultFragment
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java) }
     private val binding: ActMainBinding
@@ -23,10 +27,11 @@ class MainActivity : DaggerAppCompatActivity() {
         binding.viewModel = viewModel
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().run {
-                add(R.id.container, mainFragment)
-                commit()
-            }
+            supportFragmentManager.addFragment(R.id.container, mainFragment)
         }
+    }
+
+    fun showResultFragment() {
+        supportFragmentManager.replaceFragment(R.id.container, searchResultFragment)
     }
 }
