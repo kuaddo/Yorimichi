@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Yorimichi</string>
+
+    <!-- title -->
+    <string name="title_search">検索</string>
+    <string name="title_search_result">検索結果</string>
+    <string name="title_my_page">マイページ</string>
+    <string name="title_note">ノート</string>
+    <string name="title_shop">ショップ</string>
+    <string name="title_setting">設定</string>
+
+    <!-- tab -->
+    <string name="tab_map">Map</string>
+    <string name="tab_search">Search</string>
+    
+    <!-- drawer -->
+    <string name="drawer_my_pate">マイページ</string>
+    <string name="drawer_note">ノートを見る</string>
+    <string name="drawer_shop">ショップ</string>
+    <string name="drawer_setting">設定</string>
 </resources>
