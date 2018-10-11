@@ -10,8 +10,9 @@ import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragSearchBinding
-import jp.shiita.yorimichi.ui.main.MainActivity
+import jp.shiita.yorimichi.ui.searchresult.SearchResultFragment
 import jp.shiita.yorimichi.util.observe
+import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
 
 class SearchFragment : DaggerFragment() {
@@ -34,8 +35,12 @@ class SearchFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        viewModel.searchEvent.observe(this) { _ ->
-            (activity as? MainActivity)?.showResultFragment()
+        viewModel.searchEvent.observe(this) {
+            // SearchFragmentはネストされたフラグメントであるため
+            activity?.supportFragmentManager?.replaceFragment(
+                    R.id.container,
+                    SearchResultFragment.newInstance(),
+                    SearchResultFragment.TAG)
         }
     }
 

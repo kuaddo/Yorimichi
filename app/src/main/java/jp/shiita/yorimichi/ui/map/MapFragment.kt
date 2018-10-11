@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
@@ -20,7 +19,6 @@ class MapFragment : DaggerFragment() {
     private lateinit var binding: FragMapBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_map, container, false)
         return binding.root
     }
@@ -31,14 +29,6 @@ class MapFragment : DaggerFragment() {
         binding.viewModel = viewModel
 
         observe()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> fragmentManager?.popBackStack()
-            else -> return false
-        }
-        return true
     }
 
     private fun observe() {

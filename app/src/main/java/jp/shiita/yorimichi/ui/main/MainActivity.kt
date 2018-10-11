@@ -6,15 +6,18 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
+import android.view.MenuItem
 import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.ActMainBinding
+import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.OPEN_DRAWER
+import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.POP_BACK_STACK
 import jp.shiita.yorimichi.ui.mypage.MyPageFragment
 import jp.shiita.yorimichi.ui.note.NoteFragment
-import jp.shiita.yorimichi.ui.searchresult.SearchResultFragment
 import jp.shiita.yorimichi.ui.setting.SettingFragment
 import jp.shiita.yorimichi.ui.shop.ShopFragment
 import jp.shiita.yorimichi.util.addFragment
+import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
 
@@ -36,17 +39,32 @@ class MainActivity : DaggerAppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
         }
+
+        observe()
     }
 
-    fun showDrawer() = binding.drawerLayout.openDrawer(GravityCompat.START)
+    private fun observe() {
+        viewModel.also { vm ->
+            vm.titleEvent.observe(this) { supportActionBar?.setTitle(it) }
+            vm.homeAsUpIndicator.observe(this) { supportActionBar?.setHomeAsUpIndicator(it) }
+            vm.displayHomeAsUpEnabled.observe(this) { supportActionBar?.setDisplayHomeAsUpEnabled(it) }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> when (viewModel.homeAsUpType) {
+                OPEN_DRAWER -> binding.drawerLayout.openDrawer(GravityCompat.START)
+                POP_BACK_STACK -> supportFragmentManager.popBackStack()
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
 
     fun lockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
     fun unlockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-
-    fun showResultFragment() {
-        supportFragmentManager.replaceFragment(R.id.container, SearchResultFragment.newInstance(), SearchResultFragment.TAG)
-    }
 
     private fun setupDrawer() {
         binding.navView.setNavigationItemSelectedListener { item ->
