@@ -13,7 +13,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragMapBinding
 import javax.inject.Inject
 
-class MapFragment @Inject constructor() : DaggerFragment() {
+class MapFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: MapViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MapViewModel::class.java) }
@@ -43,5 +43,10 @@ class MapFragment @Inject constructor() : DaggerFragment() {
 
     private fun observe() {
 
+    }
+
+    companion object {
+        val TAG: String = MapFragment::class.java.simpleName
+        fun newInstance() = MapFragment()
     }
 }

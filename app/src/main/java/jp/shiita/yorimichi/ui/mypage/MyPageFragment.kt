@@ -14,7 +14,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragMyPageBinding
 import javax.inject.Inject
 
-class MyPageFragment @Inject constructor() : DaggerFragment() {
+class MyPageFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: MyPageViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MyPageViewModel::class.java) }
@@ -49,5 +49,10 @@ class MyPageFragment @Inject constructor() : DaggerFragment() {
 
     private fun observe() {
 
+    }
+
+    companion object {
+        val TAG: String = MyPageFragment::class.java.simpleName
+        fun newInstance() = MyPageFragment()
     }
 }

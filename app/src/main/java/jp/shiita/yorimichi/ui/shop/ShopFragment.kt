@@ -14,7 +14,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragShopBinding
 import javax.inject.Inject
 
-class ShopFragment @Inject constructor() : DaggerFragment() {
+class ShopFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: ShopViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(ShopViewModel::class.java) }
@@ -49,5 +49,10 @@ class ShopFragment @Inject constructor() : DaggerFragment() {
 
     private fun observe() {
 
+    }
+
+    companion object {
+        val TAG: String = ShopFragment::class.java.simpleName
+        fun newInstance() = ShopFragment()
     }
 }

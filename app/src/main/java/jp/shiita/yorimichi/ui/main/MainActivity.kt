@@ -21,13 +21,6 @@ import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var mainFragment: MainFragment
-    @Inject lateinit var myPageFragment: MyPageFragment
-    @Inject lateinit var noteFragment: NoteFragment
-    @Inject lateinit var shopFragment: ShopFragment
-    @Inject lateinit var settingFragment: SettingFragment
-    @Inject lateinit var searchResultFragment: SearchResultFragment
-
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java) }
     private val binding: ActMainBinding
@@ -41,7 +34,7 @@ class MainActivity : DaggerAppCompatActivity() {
         binding.viewModel = viewModel
 
         if (savedInstanceState == null) {
-            supportFragmentManager.addFragment(R.id.container, mainFragment)
+            supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
         }
     }
 
@@ -52,17 +45,17 @@ class MainActivity : DaggerAppCompatActivity() {
     fun unlockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
     fun showResultFragment() {
-        supportFragmentManager.replaceFragment(R.id.container, searchResultFragment)
+        supportFragmentManager.replaceFragment(R.id.container, SearchResultFragment.newInstance(), SearchResultFragment.TAG)
     }
 
     private fun setupDrawer() {
         binding.navView.setNavigationItemSelectedListener { item ->
             lockDrawer()
             when (item.itemId) {
-                R.id.menu_drawer_my_page -> supportFragmentManager.replaceFragment(R.id.container, myPageFragment)
-                R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, noteFragment)
-                R.id.menu_drawer_shop    -> supportFragmentManager.replaceFragment(R.id.container, shopFragment)
-                R.id.menu_drawer_setting -> supportFragmentManager.replaceFragment(R.id.container, settingFragment)
+                R.id.menu_drawer_my_page -> supportFragmentManager.replaceFragment(R.id.container, MyPageFragment.newInstance(), MyPageFragment.TAG)
+                R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, NoteFragment.newInstance(), NoteFragment.TAG)
+                R.id.menu_drawer_shop    -> supportFragmentManager.replaceFragment(R.id.container, ShopFragment.newInstance(), ShopFragment.TAG)
+                R.id.menu_drawer_setting -> supportFragmentManager.replaceFragment(R.id.container, SettingFragment.newInstance(), SettingFragment.TAG)
             }
             binding.drawerLayout.closeDrawers()
             true

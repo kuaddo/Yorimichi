@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
-import javax.inject.Inject
 
 
-class SearchResultFragment @Inject constructor() : DaggerFragment() {
+class SearchResultFragment : DaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.frag_search_result, container, false)
@@ -32,5 +31,10 @@ class SearchResultFragment @Inject constructor() : DaggerFragment() {
             else -> return false
         }
         return true
+    }
+
+    companion object {
+        val TAG: String = SearchResultFragment::class.java.simpleName
+        fun newInstance() = SearchResultFragment()
     }
 }

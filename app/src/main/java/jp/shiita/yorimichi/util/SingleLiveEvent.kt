@@ -30,6 +30,6 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
     }
 
     companion object {
-        private val TAG = SingleLiveEvent::class.java.simpleName
+        private val TAG: String = SingleLiveEvent::class.java.simpleName
     }
 }

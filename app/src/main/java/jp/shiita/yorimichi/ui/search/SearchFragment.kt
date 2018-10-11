@@ -14,7 +14,7 @@ import jp.shiita.yorimichi.ui.main.MainActivity
 import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
-class SearchFragment @Inject constructor() : DaggerFragment() {
+class SearchFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: SearchViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java) }
@@ -37,5 +37,10 @@ class SearchFragment @Inject constructor() : DaggerFragment() {
         viewModel.searchEvent.observe(this) { _ ->
             (activity as? MainActivity)?.showResultFragment()
         }
+    }
+
+    companion object {
+        val TAG: String = SearchFragment::class.java.simpleName
+        fun newInstance() = SearchFragment()
     }
 }

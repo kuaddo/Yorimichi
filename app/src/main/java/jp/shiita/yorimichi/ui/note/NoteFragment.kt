@@ -14,7 +14,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragNoteBinding
 import javax.inject.Inject
 
-class NoteFragment @Inject constructor() : DaggerFragment() {
+class NoteFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: NoteViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(NoteViewModel::class.java) }
@@ -49,5 +49,10 @@ class NoteFragment @Inject constructor() : DaggerFragment() {
 
     private fun observe() {
 
+    }
+
+    companion object {
+        val TAG: String = NoteFragment::class.java.simpleName
+        fun newInstance() = NoteFragment()
     }
 }

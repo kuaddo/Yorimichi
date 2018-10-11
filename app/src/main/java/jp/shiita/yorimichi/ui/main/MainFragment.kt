@@ -22,11 +22,8 @@ import jp.shiita.yorimichi.ui.map.MapFragment
 import jp.shiita.yorimichi.ui.search.SearchFragment
 import javax.inject.Inject
 
-class MainFragment @Inject constructor() : DaggerFragment() {
+class MainFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var mapFragment: MapFragment
-    @Inject lateinit var searchFragment: SearchFragment
-
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java) }
     private lateinit var binding: FragMainBinding
@@ -48,7 +45,7 @@ class MainFragment @Inject constructor() : DaggerFragment() {
         binding.viewModel = viewModel
 
         binding.viewPager.also { vp ->
-            vp.adapter = PagerAdapter(childFragmentManager, listOf(mapFragment, searchFragment))
+            vp.adapter = PagerAdapter(childFragmentManager, listOf(MapFragment.newInstance(), SearchFragment.newInstance()))
             vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {}
 
@@ -124,5 +121,10 @@ class MainFragment @Inject constructor() : DaggerFragment() {
             const val MAP_FRAGMENT = 0
             const val SEARCH_FRAGMENT = 1
         }
+    }
+
+    companion object {
+        val TAG: String = MainFragment::class.java.simpleName
+        fun newInstance() = MainFragment()
     }
 }

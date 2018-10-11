@@ -14,7 +14,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragSettingBinding
 import javax.inject.Inject
 
-class SettingFragment @Inject constructor() : DaggerFragment() {
+class SettingFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: SettingViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SettingViewModel::class.java) }
@@ -49,5 +49,10 @@ class SettingFragment @Inject constructor() : DaggerFragment() {
 
     private fun observe() {
 
+    }
+
+    companion object {
+        val TAG: String = SettingFragment::class.java.simpleName
+        fun newInstance() = SettingFragment()
     }
 }
