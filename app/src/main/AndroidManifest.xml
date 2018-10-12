@@ -17,5 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- OSS Licenses -->
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"/>
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"/>
     </application>
 </manifest>

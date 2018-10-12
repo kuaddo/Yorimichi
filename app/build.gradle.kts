@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.google.gms.oss.licenses.plugin")
 }
 
 val versionMajor = 1
@@ -54,6 +55,9 @@ dependencies {
     implementation("android.arch.lifecycle:extensions:$archVersion")
     implementation("android.arch.lifecycle:reactivestreams:$archVersion")
     kapt("android.arch.lifecycle:compiler:$archVersion")
+
+    // GMS
+    implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
 
     // Dagger
     val daggerVersion = "2.17"
