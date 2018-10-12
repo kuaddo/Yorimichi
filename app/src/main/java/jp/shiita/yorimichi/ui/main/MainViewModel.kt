@@ -12,12 +12,14 @@ class MainViewModel @Inject constructor() : ViewModel() {
     val titleEvent: LiveData<Int> get() = _titleEvent
     val homeAsUpIndicator: LiveData<Int> get() = _homeAsUpIndicator
     val displayHomeAsUpEnabled: LiveData<Boolean> get() = _displayHomeAsUpEnabled
+    val drawerLock: LiveData<Boolean> get() = _drawerLock
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
     private val _titleEvent = SingleLiveEvent<Int>()
     private val _homeAsUpIndicator = SingleLiveEvent<Int>()
     private val _displayHomeAsUpEnabled = SingleLiveEvent<Boolean>()
+    private val _drawerLock = SingleLiveEvent<Boolean>()
 
     fun setupActionBar(@StringRes titleRes: Int = R.string.app_name,
                        @DrawableRes indicatorRes: Int = R.drawable.ic_back,
@@ -28,6 +30,8 @@ class MainViewModel @Inject constructor() : ViewModel() {
         _displayHomeAsUpEnabled.postValue(enabled)
         homeAsUpType = type
     }
+
+    fun setDrawerLock(locked: Boolean) = _drawerLock.postValue(locked)
 
     enum class HomeAsUpType { OPEN_DRAWER, POP_BACK_STACK }
 }

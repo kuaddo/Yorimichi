@@ -45,9 +45,13 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun observe() {
         viewModel.also { vm ->
+            // ToolBar
             vm.titleEvent.observe(this) { supportActionBar?.setTitle(it) }
             vm.homeAsUpIndicator.observe(this) { supportActionBar?.setHomeAsUpIndicator(it) }
             vm.displayHomeAsUpEnabled.observe(this) { supportActionBar?.setDisplayHomeAsUpEnabled(it) }
+
+            // Drawer
+            vm.drawerLock.observe(this) { if (it) lockDrawer() else unlockDrawer() }
         }
     }
 
@@ -62,9 +66,9 @@ class MainActivity : DaggerAppCompatActivity() {
         return true
     }
 
-    fun lockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    private fun lockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-    fun unlockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    private fun unlockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
     private fun setupDrawer() {
         binding.navView.setNavigationItemSelectedListener { item ->
