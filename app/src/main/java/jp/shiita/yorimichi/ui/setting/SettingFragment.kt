@@ -2,26 +2,29 @@ package jp.shiita.yorimichi.ui.setting
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragSettingBinding
+import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
-class SettingFragment @Inject constructor() : DaggerFragment() {
+class SettingFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val mainViewModel: MainViewModel
+            by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)}
     private val viewModel: SettingViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SettingViewModel::class.java) }
     private lateinit var binding: FragSettingBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_setting, container, false)
         return binding.root
     }
@@ -30,24 +33,19 @@ class SettingFragment @Inject constructor() : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
-        (activity as? AppCompatActivity)?.supportActionBar?.run {
-            setHomeAsUpIndicator(R.drawable.ic_back)
-            setDisplayHomeAsUpEnabled(true)
-            setTitle(R.string.title_setting)
-        }
+        mainViewModel.setupActionBar(R.string.title_setting)
 
         observe()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> fragmentManager?.popBackStack()
-            else -> return false
+    private fun observe() {
+        viewModel.showLicensesEvent.observe(this) {
+            startActivity(Intent(context, OssLicensesMenuActivity::class.java))
         }
-        return true
     }
 
-    private fun observe() {
-
+    companion object {
+        val TAG: String = SettingFragment::class.java.simpleName
+        fun newInstance() = SettingFragment()
     }
 }

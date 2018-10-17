@@ -8,9 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
-import android.support.v7.app.ActionBar
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
@@ -22,33 +20,26 @@ import jp.shiita.yorimichi.ui.map.MapFragment
 import jp.shiita.yorimichi.ui.search.SearchFragment
 import javax.inject.Inject
 
-class MainFragment @Inject constructor() : DaggerFragment() {
+class MainFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var mapFragment: MapFragment
-    @Inject lateinit var searchFragment: SearchFragment
-
     private val viewModel: MainViewModel
             by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java) }
     private lateinit var binding: FragMainBinding
     private var currentPosition = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_main, container, false)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as? MainActivity)?.run {
-            supportActionBar?.let { setupMapActionBar(it) }
-            unlockDrawer()
-        }
+        setupMapActionBar()
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
         binding.viewPager.also { vp ->
-            vp.adapter = PagerAdapter(childFragmentManager, listOf(mapFragment, searchFragment))
+            vp.adapter = PagerAdapter(childFragmentManager, listOf(MapFragment.newInstance(), SearchFragment.newInstance()))
             vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {}
 
@@ -57,18 +48,8 @@ class MainFragment @Inject constructor() : DaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     currentPosition = position
                     when (position) {
-                        MAP_FRAGMENT -> {
-                            (activity as? MainActivity)?.run {
-                                supportActionBar?.let { setupMapActionBar(it) }
-                                unlockDrawer()
-                            }
-                        }
-                        SEARCH_FRAGMENT -> {
-                            (activity as? MainActivity)?.run {
-                                supportActionBar?.let { setupSearchActionBar(it) }
-                                lockDrawer()
-                            }
-                        }
+                        MAP_FRAGMENT -> setupMapActionBar()
+                        SEARCH_FRAGMENT -> setupSearchActionBar()
                     }
                 }
             })
@@ -92,27 +73,14 @@ class MainFragment @Inject constructor() : DaggerFragment() {
         super.onDestroyView()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                if (currentPosition == MAP_FRAGMENT) {
-                    (activity as? MainActivity)?.showDrawer()
-                }
-            }
-            else -> return false
-        }
-        return true
+    private fun setupMapActionBar() {
+        viewModel.setupActionBar(R.string.app_name, R.drawable.ic_menu, true, MainViewModel.HomeAsUpType.OPEN_DRAWER)
+        viewModel.setDrawerLock(false)
     }
 
-    private fun setupMapActionBar(actionBar: ActionBar) {
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu)
-        actionBar.setDisplayHomeAsUpEnabled(true)
-        actionBar.setTitle(R.string.app_name)
-    }
-
-    private fun setupSearchActionBar(actionBar: ActionBar) {
-        actionBar.setDisplayHomeAsUpEnabled(false)
-        actionBar.setTitle(R.string.title_search)
+    private fun setupSearchActionBar() {
+        viewModel.setupActionBar(R.string.title_search, R.drawable.ic_menu, true, MainViewModel.HomeAsUpType.OPEN_DRAWER)
+        viewModel.setDrawerLock(true)
     }
 
     private class PagerAdapter(fragmentManager: FragmentManager, private val fragments: List<Fragment>) : FragmentPagerAdapter(fragmentManager) {
@@ -124,5 +92,10 @@ class MainFragment @Inject constructor() : DaggerFragment() {
             const val MAP_FRAGMENT = 0
             const val SEARCH_FRAGMENT = 1
         }
+    }
+
+    companion object {
+        val TAG: String = MainFragment::class.java.simpleName
+        fun newInstance() = MainFragment()
     }
 }

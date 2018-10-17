@@ -16,16 +16,9 @@ fun FragmentManager.addFragment(@IdRes containerViewId: Int, fragment: Fragment)
             .commit()
 }
 
-fun FragmentManager.addFragmentBS(@IdRes containerViewId: Int, fragment: Fragment) {
-    beginTransaction()
-            .add(containerViewId, fragment)
-            .addToBackStack(null)
-            .commit()
-}
-
-fun FragmentManager.replaceFragment(@IdRes containerViewId: Int, fragment: Fragment) {
+fun FragmentManager.replaceFragment(@IdRes containerViewId: Int, fragment: Fragment, tag: String) {
     beginTransaction()
             .replace(containerViewId, fragment)
-            .addToBackStack(null)
+            .addToBackStack(tag)
             .commit()
 }

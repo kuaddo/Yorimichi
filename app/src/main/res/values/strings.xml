@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">Yorimichi</string>
-
     <!-- title -->
     <string name="title_search">検索</string>
     <string name="title_search_result">検索結果</string>
