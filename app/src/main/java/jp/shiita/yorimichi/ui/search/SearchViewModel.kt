@@ -2,7 +2,7 @@ package jp.shiita.yorimichi.ui.search
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
-import jp.shiita.yorimichi.util.SingleUnitLiveEvent
+import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor() : ViewModel() {

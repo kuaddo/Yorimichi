@@ -74,6 +74,7 @@ dependencies {
 
     // GMS
     implementation("com.google.android.gms:play-services-maps:16.0.0")
+    implementation("com.google.android.gms:play-services-location:16.0.0")
     implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
 
     // Dagger

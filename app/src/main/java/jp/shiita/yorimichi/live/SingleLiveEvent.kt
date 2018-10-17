@@ -1,4 +1,4 @@
-package jp.shiita.yorimichi.util
+package jp.shiita.yorimichi.live
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
