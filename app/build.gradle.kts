@@ -24,8 +24,25 @@ android {
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("keystore/debug.keystore")
+            storePassword = "yorimichi"
+            keyAlias = "androiddebugkey"
+            keyPassword = "yorimichi"
+        }
+    }
+
     buildTypes {
+        getByName("debug") {
+            manifestPlaceholders = mapOf("GOOGLE_MAPS" to ApiKeys.GOOGLE_MAPS)
+            resValue("string", "app_name", "debug_Yorimichi")
+            signingConfig = signingConfigs.getByName("debug")
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
         getByName("release") {
+            resValue("string", "app_name", "Yorimichi")
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
@@ -34,7 +51,6 @@ android {
     lintOptions {
         disable("GoogleAppIndexingWarning")
     }
-
 }
 
 dependencies {
@@ -57,6 +73,7 @@ dependencies {
     kapt("android.arch.lifecycle:compiler:$archVersion")
 
     // GMS
+    implementation("com.google.android.gms:play-services-maps:16.0.0")
     implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
 
     // Dagger
