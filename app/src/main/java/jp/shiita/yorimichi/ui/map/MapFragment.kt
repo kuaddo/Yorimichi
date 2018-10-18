@@ -11,9 +11,9 @@ import android.support.v4.app.ActivityCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.MarkerOptions
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragMapBinding
@@ -34,6 +34,7 @@ class MapFragment : DaggerFragment() {
             by lazy { LocationLiveData(context!!) }
     private lateinit var binding: FragMapBinding
     private var map: GoogleMap? = null
+    private var isLocationObserved = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_map, container, false)
@@ -44,9 +45,6 @@ class MapFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
-        (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
-            map = googleMap
-        }
 
         if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -56,6 +54,7 @@ class MapFragment : DaggerFragment() {
                     REQUEST_LOCATION_PERMISSION)
         }
         else {
+            initMap()
             observe()
         }
     }
@@ -65,10 +64,23 @@ class MapFragment : DaggerFragment() {
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED ||
             grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            initMap()
             observe()
         }
         else {
             mainViewModel.finishApp()
+        }
+    }
+
+    private fun initMap() {
+        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
+        (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
+            map = googleMap
+            map?.isMyLocationEnabled = true
         }
     }
 
@@ -77,14 +89,20 @@ class MapFragment : DaggerFragment() {
     }
 
     private fun plotCurrentLocation(location: Location) {
-        val marker = MarkerOptions()
-                .position(location.latLng)
-        map?.addMarker(marker)
+        if (!isLocationObserved) {
+            isLocationObserved = true
+            map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, INITIAL_ZOOM_LEVEL), object : GoogleMap.CancelableCallback {
+                override fun onFinish() {}
+
+                override fun onCancel() {}
+            })
+        }
     }
 
     companion object {
         val TAG: String = MapFragment::class.java.simpleName
         const val REQUEST_LOCATION_PERMISSION = 0
+        const val INITIAL_ZOOM_LEVEL = 16f
         fun newInstance() = MapFragment()
     }
 }
