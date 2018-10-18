@@ -80,6 +80,7 @@ class MapFragment : DaggerFragment() {
 
         (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
+            map?.uiSettings?.setAllGesturesEnabled(false)
             map?.isMyLocationEnabled = true
         }
     }
@@ -92,9 +93,13 @@ class MapFragment : DaggerFragment() {
         if (!isLocationObserved) {
             isLocationObserved = true
             map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, INITIAL_ZOOM_LEVEL), object : GoogleMap.CancelableCallback {
-                override fun onFinish() {}
+                override fun onFinish() {
+                    map?.uiSettings?.setAllGesturesEnabled(true)
+                }
 
-                override fun onCancel() {}
+                override fun onCancel() {
+                    map?.uiSettings?.setAllGesturesEnabled(true)
+                }
             })
         }
     }
