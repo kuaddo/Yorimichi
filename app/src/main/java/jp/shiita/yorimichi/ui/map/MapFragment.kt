@@ -16,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
+import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragMapBinding
 import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.ui.main.MainViewModel
@@ -88,7 +89,11 @@ class MapFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        locationLiveData.observe(this, ::plotCurrentLocation)
+        locationLiveData.observe(this) {
+            UserInfo.latitude = it.latitude.toString()
+            UserInfo.longitude = it.longitude.toString()
+            plotCurrentLocation(it)
+        }
     }
 
     private fun plotCurrentLocation(location: Location) {
@@ -108,8 +113,8 @@ class MapFragment : DaggerFragment() {
 
     companion object {
         val TAG: String = MapFragment::class.java.simpleName
-        const val REQUEST_LOCATION_PERMISSION = 0
-        const val INITIAL_ZOOM_LEVEL = 16f
+        private const val REQUEST_LOCATION_PERMISSION = 0
+        private const val INITIAL_ZOOM_LEVEL = 16f
         fun newInstance() = MapFragment()
     }
 }

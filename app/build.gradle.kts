@@ -111,6 +111,8 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxkotlin:2.2.0")
     implementation("io.reactivex.rxjava2:rxandroid:2.0.2")
 
+    implementation("com.chibatching.kotpref:kotpref:2.6.0")
+
     // Test
     testImplementation("junit:junit:4.12")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
