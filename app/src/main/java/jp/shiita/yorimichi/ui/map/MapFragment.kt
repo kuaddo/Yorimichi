@@ -80,8 +80,10 @@ class MapFragment : DaggerFragment() {
 
         (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
-            map?.uiSettings?.setAllGesturesEnabled(false)
-            map?.isMyLocationEnabled = true
+            if (!isLocationObserved) {
+                map?.uiSettings?.setAllGesturesEnabled(false)
+                map?.isMyLocationEnabled = true
+            }
         }
     }
 
