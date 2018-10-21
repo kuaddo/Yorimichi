@@ -25,5 +25,7 @@ fun FragmentManager.replaceFragment(@IdRes containerViewId: Int, fragment: Fragm
             .commit()
 }
 
+fun LatLng.toSimpleString() = "($latitude, $longitude)"
+
 val Location.latLng
         get() = LatLng(latitude, longitude)

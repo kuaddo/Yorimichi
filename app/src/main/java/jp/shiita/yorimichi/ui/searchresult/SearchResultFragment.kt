@@ -13,6 +13,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
@@ -28,8 +30,10 @@ class SearchResultFragment : DaggerFragment() {
     private val viewModel: SearchResultViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchResultViewModel::class.java) }
     private lateinit var binding: FragSearchResultBinding
+    private lateinit var searchResultAdapter: SearchResultAdapter
     private var map: GoogleMap? = null
     private val latLng = LatLng(UserInfo.latitude.toDouble(), UserInfo.longitude.toDouble())
+    private lateinit var markers: List<Marker?>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search_result, container, false)
@@ -42,6 +46,9 @@ class SearchResultFragment : DaggerFragment() {
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_search_result)
 
+        searchResultAdapter = SearchResultAdapter(context!!, mutableListOf(), ::showMarker, ::hideMarker)
+        binding.recyclerView.adapter = searchResultAdapter
+
         initMap()
     }
 
@@ -53,8 +60,24 @@ class SearchResultFragment : DaggerFragment() {
                     .radius(10.0)
                     .fillColor(Color.BLUE)
                     .strokeColor(Color.BLUE))
+            val locations = (-4..4).flatMap { dLat -> (-4..4).map { dLng -> LatLng(latLng.latitude + 0.001 * dLat, latLng.longitude + 0.001 * dLng) } }
+            val options = locations.map {
+                MarkerOptions()
+                        .position(it)
+                        .alpha(0f)
+            }
+            searchResultAdapter.addAll(locations)
+            markers = options.map { map?.addMarker(it) }
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INITIAL_ZOOM_LEVEL))
         }
+    }
+
+    private fun showMarker(position: Int) {
+        markers[position]?.alpha = 1f
+    }
+
+    private fun hideMarker(position: Int) {
+        markers[position]?.alpha = 0f
     }
 
     companion object {
