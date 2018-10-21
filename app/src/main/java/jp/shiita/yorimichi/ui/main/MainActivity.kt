@@ -46,7 +46,20 @@ class MainActivity : DaggerAppCompatActivity() {
     private fun observe() {
         viewModel.also { vm ->
             // ToolBar
-            vm.titleEvent.observe(this) { supportActionBar?.setTitle(it) }
+            vm.titleEvent.observe(this) {
+                supportActionBar?.let { bar ->
+                    if (it == R.string.app_name) {
+                        bar.setDisplayShowCustomEnabled(true)
+                        bar.setDisplayShowTitleEnabled(false)
+                        bar.setCustomView(R.layout.action_bar)
+                    }
+                    else {
+                        bar.setDisplayShowCustomEnabled(false)
+                        bar.setDisplayShowTitleEnabled(true)
+                        bar.setTitle(it)
+                    }
+                }
+            }
             vm.homeAsUpIndicator.observe(this) { supportActionBar?.setHomeAsUpIndicator(it) }
             vm.displayHomeAsUpEnabled.observe(this) { supportActionBar?.setDisplayHomeAsUpEnabled(it) }
 
