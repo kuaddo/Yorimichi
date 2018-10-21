@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#D05301</color>
+    <color name="colorPrimaryDark">#D05301</color>
     <color name="colorAccent">#FF4081</color>
     
     <color name="colorDrawerBadgeBackground">#CCCCCC</color>
     <color name="colorDrawerBadgeStroke">#444444</color>
 
+    <color name="colorDefaultBackground">#F0F0F0</color>
     <color name="colorDivider">#666666</color>
+
+    <color name="colorTabBackground">#FFFFFF</color>
+    <color name="colorTabOrange">#D05301</color>
+    <color name="colorTabGrey">#9E9E9E</color>
 </resources>

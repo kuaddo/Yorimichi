@@ -57,14 +57,8 @@ class MainFragment : DaggerFragment() {
 
         binding.tabLayout.also { tl ->
             tl.setupWithViewPager(binding.viewPager)
-            tl.getTabAt(MAP_FRAGMENT)?.also { tab ->
-                tab.setText(R.string.tab_map)
-                tab.setIcon(R.drawable.ic_map)
-            }
-            tl.getTabAt(SEARCH_FRAGMENT)?.also { tab ->
-                tab.setText(R.string.tab_search)
-                tab.setIcon(R.drawable.ic_search)
-            }
+            tl.getTabAt(MAP_FRAGMENT)?.setCustomView(R.layout.tab_map)
+            tl.getTabAt(SEARCH_FRAGMENT)?.setCustomView(R.layout.tab_search)
         }
     }
 

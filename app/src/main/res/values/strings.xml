@@ -8,8 +8,8 @@
     <string name="title_setting">設定</string>
 
     <!-- tab -->
-    <string name="tab_map">Map</string>
-    <string name="tab_search">Search</string>
+    <string name="tab_map">地図</string>
+    <string name="tab_search">よりみちを探す</string>
     
     <!-- drawer -->
     <string name="drawer_my_pate">マイページ</string>
