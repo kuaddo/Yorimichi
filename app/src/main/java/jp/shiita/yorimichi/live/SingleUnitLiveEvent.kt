@@ -1,4 +1,4 @@
-package jp.shiita.yorimichi.util
+package jp.shiita.yorimichi.live
 
 class SingleUnitLiveEvent : SingleLiveEvent<Unit>() {
     fun call() {

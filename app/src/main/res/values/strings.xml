@@ -16,4 +16,8 @@
     <string name="drawer_note">ノートを見る</string>
     <string name="drawer_shop">ショップ</string>
     <string name="drawer_setting">設定</string>
+
+    <!-- dialog -->
+    <string name="dialog_finish_message">位置情報が取得できないため、アプリを終了します。</string>
+    <string name="dialog_finish_positive">OK</string>
 </resources>

@@ -74,6 +74,7 @@ dependencies {
 
     // GMS
     implementation("com.google.android.gms:play-services-maps:16.0.0")
+    implementation("com.google.android.gms:play-services-location:16.0.0")
     implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
 
     // Dagger
@@ -109,6 +110,8 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxjava:2.1.14")
     implementation("io.reactivex.rxjava2:rxkotlin:2.2.0")
     implementation("io.reactivex.rxjava2:rxandroid:2.0.2")
+
+    implementation("com.chibatching.kotpref:kotpref:2.6.0")
 
     // Test
     testImplementation("junit:junit:4.12")
