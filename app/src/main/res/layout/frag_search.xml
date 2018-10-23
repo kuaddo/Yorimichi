@@ -71,6 +71,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3"/>
+
+        <jp.shiita.yorimichi.custom.IconButton
+            android:id="@+id/iconButton1"
+            android:layout_width="@dimen/icon_button_default_width"
+            android:layout_height="@dimen/icon_button_default_height"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/back_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
+
+        <jp.shiita.yorimichi.custom.IconButton
+            android:id="@+id/iconButton2"
+            android:layout_width="@dimen/icon_button_default_width"
+            android:layout_height="@dimen/icon_button_default_height"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/back_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconButton1" />
     </android.support.constraint.ConstraintLayout>
 <!--</ScrollView>-->
 </layout>

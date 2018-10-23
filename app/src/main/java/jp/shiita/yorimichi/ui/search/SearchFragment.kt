@@ -45,6 +45,14 @@ class SearchFragment : DaggerFragment() {
         ))
         binding.categoryRecyclerView.adapter = categoryAdapter
 
+        binding.iconButton1.setSrc(R.drawable.ic_search)
+        binding.iconButton1.setText("検索")
+        binding.iconButton1.isEnabled = true
+
+        binding.iconButton2.setSrc(R.drawable.ic_pin)
+        binding.iconButton2.setText("ここに行く")
+        binding.iconButton2.isEnabled = false
+
         observe()
     }
 
