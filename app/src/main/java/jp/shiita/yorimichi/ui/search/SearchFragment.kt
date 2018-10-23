@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.maps.SupportMapFragment
@@ -46,6 +47,22 @@ class SearchFragment : DaggerFragment() {
         ))
         binding.categoryRecyclerView.adapter = categoryAdapter
 
+        // GoogleMapsのジェスチャーがScrollView内で動くように
+        binding.transparentView.setOnTouchListener { v, event -> when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                binding.scrollView.requestDisallowInterceptTouchEvent(true)
+                false
+            }
+            MotionEvent.ACTION_UP -> {
+                binding.scrollView.requestDisallowInterceptTouchEvent(false)
+                true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                binding.scrollView.requestDisallowInterceptTouchEvent(true)
+                false
+            }
+            else -> true
+        } }
 
         initMap()
         observe()
