@@ -5,8 +5,10 @@ import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.SupportMapFragment
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragSearchBinding
@@ -20,6 +22,7 @@ class SearchFragment : DaggerFragment() {
     private val viewModel: SearchViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java) }
     private lateinit var binding: FragSearchBinding
+    private lateinit var categoryAdapter: CategoryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search, container, false)
@@ -31,7 +34,42 @@ class SearchFragment : DaggerFragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
+        categoryAdapter = CategoryAdapter(context!!, mutableListOf(
+            "shopping_mall" to false,
+            "library" to false,
+            "cafe" to false,
+            "book_store" to false,
+            "park" to false,
+            "movie_theater" to false,
+            "home_goods_store" to false,
+            "clothing_store" to false,
+            "bar" to false
+        ))
+        binding.categoryRecyclerView.adapter = categoryAdapter
+
+        // GoogleMapsのジェスチャーがScrollView内で動くように
+        binding.transparentView.setOnTouchListener { v, event -> when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                binding.scrollView.requestDisallowInterceptTouchEvent(true)
+                false
+            }
+            MotionEvent.ACTION_UP -> {
+                binding.scrollView.requestDisallowInterceptTouchEvent(false)
+                true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                binding.scrollView.requestDisallowInterceptTouchEvent(true)
+                false
+            }
+            else -> true
+        } }
+
+        initMap()
         observe()
+    }
+
+    private fun initMap() {
+        (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync {}
     }
 
     private fun observe() {

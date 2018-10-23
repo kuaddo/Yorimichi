@@ -8,8 +8,8 @@
     <string name="title_setting">設定</string>
 
     <!-- tab -->
-    <string name="tab_map">Map</string>
-    <string name="tab_search">Search</string>
+    <string name="tab_map">地図</string>
+    <string name="tab_search">よりみちを探す</string>
     
     <!-- drawer -->
     <string name="drawer_my_pate">マイページ</string>
@@ -20,4 +20,12 @@
     <!-- dialog -->
     <string name="dialog_finish_message">位置情報が取得できないため、アプリを終了します。</string>
     <string name="dialog_finish_positive">OK</string>
+    
+    <!-- search -->
+    <string name="search_time_required">所要時間</string>
+    <string name="search_category">カテゴリ</string>
+    <string name="search_goto_other">目的地が決まっているなら…</string>
+    <string name="search_query_hint">キーワード・住所で検索する</string>
+    <string name="search_button_search">検索</string>
+    <string name="search_button_goto">ここに行く</string>
 </resources>

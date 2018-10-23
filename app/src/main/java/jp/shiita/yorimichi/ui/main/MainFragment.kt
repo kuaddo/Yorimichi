@@ -34,7 +34,8 @@ class MainFragment : DaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setupMapActionBar()
+        viewModel.setupActionBar(R.string.app_name, R.drawable.ic_menu, true, MainViewModel.HomeAsUpType.OPEN_DRAWER)
+        viewModel.setDrawerLock(false)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
@@ -48,8 +49,8 @@ class MainFragment : DaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     currentPosition = position
                     when (position) {
-                        MAP_FRAGMENT -> setupMapActionBar()
-                        SEARCH_FRAGMENT -> setupSearchActionBar()
+                        MAP_FRAGMENT -> viewModel.setDrawerLock(false)
+                        SEARCH_FRAGMENT -> viewModel.setDrawerLock(true)
                     }
                 }
             })
@@ -57,30 +58,14 @@ class MainFragment : DaggerFragment() {
 
         binding.tabLayout.also { tl ->
             tl.setupWithViewPager(binding.viewPager)
-            tl.getTabAt(MAP_FRAGMENT)?.also { tab ->
-                tab.setText(R.string.tab_map)
-                tab.setIcon(R.drawable.ic_map)
-            }
-            tl.getTabAt(SEARCH_FRAGMENT)?.also { tab ->
-                tab.setText(R.string.tab_search)
-                tab.setIcon(R.drawable.ic_search)
-            }
+            tl.getTabAt(MAP_FRAGMENT)?.setCustomView(R.layout.tab_map)
+            tl.getTabAt(SEARCH_FRAGMENT)?.setCustomView(R.layout.tab_search)
         }
     }
 
     override fun onDestroyView() {
         binding.viewPager.clearOnPageChangeListeners()
         super.onDestroyView()
-    }
-
-    private fun setupMapActionBar() {
-        viewModel.setupActionBar(R.string.app_name, R.drawable.ic_menu, true, MainViewModel.HomeAsUpType.OPEN_DRAWER)
-        viewModel.setDrawerLock(false)
-    }
-
-    private fun setupSearchActionBar() {
-        viewModel.setupActionBar(R.string.title_search, R.drawable.ic_menu, true, MainViewModel.HomeAsUpType.OPEN_DRAWER)
-        viewModel.setDrawerLock(true)
     }
 
     private class PagerAdapter(fragmentManager: FragmentManager, private val fragments: List<Fragment>) : FragmentPagerAdapter(fragmentManager) {

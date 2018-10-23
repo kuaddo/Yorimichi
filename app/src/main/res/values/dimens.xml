@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="icon_button_default_width">170sp</dimen>
+    <dimen name="icon_button_default_height">56sp</dimen>
+    <dimen name="icon_button_tb_margin">10dp</dimen>
+    <dimen name="icon_button_se_margin">20dp</dimen>
+    <dimen name="icon_button_image_size">30dp</dimen>
+    <dimen name="icon_button_text_size">16sp</dimen>
+
+    <dimen name="seekbar_thumb">24dp</dimen>
+    <dimen name="seekbar_progress_margin">9dp</dimen>
+    <dimen name="seekbar_progress_radius">10dp</dimen>
+</resources>
