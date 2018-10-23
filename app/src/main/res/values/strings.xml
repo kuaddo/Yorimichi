@@ -24,4 +24,6 @@
     <!-- search -->
     <string name="search_time_required">所要時間</string>
     <string name="search_category">カテゴリ</string>
+    <string name="search_button_search">検索</string>
+    <string name="search_button_goto">ここに行く</string>
 </resources>
