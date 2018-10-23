@@ -11,14 +11,15 @@
         type="jp.shiita.yorimichi.ui.search.SearchViewModel"/>
 </data>
 
-<!--<ScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:padding="10dp">-->
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDefaultBackground">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/textView2"
@@ -36,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:max="30"
             android:progressDrawable="@drawable/seek_bar"
@@ -51,8 +52,8 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
             android:text="@string/search_category"
             android:textColor="@color/colorTextPrimary"
             app:layout_constraintStart_toStartOf="parent"
@@ -76,26 +77,80 @@
             android:id="@+id/iconButton1"
             android:layout_width="@dimen/icon_button_default_width"
             android:layout_height="@dimen/icon_button_default_height"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/back_button"
             app:src="@drawable/ic_search"
             app:text="@string/search_button_search"
+            android:onClick="@{() -> viewModel.search()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconButton1" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/search_goto_other"
+            android:textColor="@color/colorTextPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorWhite"
+            app:queryBackground="@android:color/transparent"
+            app:queryHint="@string/search_query_hint"
+            app:iconifiedByDefault="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <fragment
+            android:id="@+id/google_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
         <jp.shiita.yorimichi.custom.IconButton
             android:id="@+id/iconButton2"
             android:layout_width="@dimen/icon_button_default_width"
             android:layout_height="@dimen/icon_button_default_height"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/back_button"
-            app:src="@drawable/ic_pin"
-            app:text="@string/search_button_goto"
+            android:onClick="@{() -> viewModel.search()}"
             app:enabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iconButton1" />
+            app:layout_constraintTop_toBottomOf="@+id/google_map"
+            app:src="@drawable/ic_pin"
+            app:text="@string/search_button_goto" />
     </android.support.constraint.ConstraintLayout>
-<!--</ScrollView>-->
+</ScrollView>
 </layout>

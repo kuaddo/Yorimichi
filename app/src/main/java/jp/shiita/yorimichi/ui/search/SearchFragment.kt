@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.SupportMapFragment
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragSearchBinding
@@ -45,7 +46,13 @@ class SearchFragment : DaggerFragment() {
         ))
         binding.categoryRecyclerView.adapter = categoryAdapter
 
+
+        initMap()
         observe()
+    }
+
+    private fun initMap() {
+        (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync {}
     }
 
     private fun observe() {
