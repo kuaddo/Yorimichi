@@ -23,4 +23,5 @@
     
     <!-- search -->
     <string name="search_time_required">所要時間</string>
+    <string name="search_category">カテゴリ</string>
 </resources>

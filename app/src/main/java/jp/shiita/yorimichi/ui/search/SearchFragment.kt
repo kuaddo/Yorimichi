@@ -20,6 +20,7 @@ class SearchFragment : DaggerFragment() {
     private val viewModel: SearchViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java) }
     private lateinit var binding: FragSearchBinding
+    private lateinit var categoryAdapter: CategoryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search, container, false)
@@ -30,6 +31,19 @@ class SearchFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
+
+        categoryAdapter = CategoryAdapter(context!!, mutableListOf(
+            "shopping_mall" to false,
+            "library" to false,
+            "cafe" to false,
+            "book_store" to false,
+            "park" to false,
+            "movie_theater" to false,
+            "home_goods_store" to false,
+            "clothing_store" to false,
+            "bar" to false
+        ))
+        binding.categoryRecyclerView.adapter = categoryAdapter
 
         observe()
     }
