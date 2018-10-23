@@ -20,4 +20,7 @@
     <!-- dialog -->
     <string name="dialog_finish_message">位置情報が取得できないため、アプリを終了します。</string>
     <string name="dialog_finish_positive">OK</string>
+    
+    <!-- search -->
+    <string name="search_time_required">所要時間</string>
 </resources>

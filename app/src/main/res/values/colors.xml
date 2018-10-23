@@ -3,12 +3,14 @@
     <color name="colorPrimary">#D05301</color>
     <color name="colorPrimaryDark">#D05301</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorTransparent">#00000000</color>
     
     <color name="colorDrawerBadgeBackground">#CCCCCC</color>
     <color name="colorDrawerBadgeStroke">#444444</color>
 
     <color name="colorDefaultBackground">#F0F0F0</color>
     <color name="colorDivider">#666666</color>
+    <color name="colorSeekBarGrey">#A4A4A4</color>
 
     <color name="colorTabBackground">#FFFFFF</color>
     <color name="colorTabOrange">#D05301</color>
