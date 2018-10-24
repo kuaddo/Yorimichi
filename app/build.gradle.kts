@@ -5,6 +5,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("com.google.gms.oss.licenses.plugin")
+    id("com.google.gms.google-services")
 }
 
 val versionMajor = 1
@@ -22,6 +23,7 @@ android {
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
 
     signingConfigs {
@@ -60,6 +62,7 @@ dependencies {
     // SupportLibrary
     val supportVersion = "28.0.0"
     implementation("com.android.support.constraint:constraint-layout:1.1.3")
+    implementation("com.android.support:multidex:1.0.3")
     implementation("com.android.support:appcompat-v7:$supportVersion")
     implementation("com.android.support:customtabs:$supportVersion")
     implementation("com.android.support:support-v4:$supportVersion")
@@ -76,6 +79,11 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:16.0.0")
     implementation("com.google.android.gms:play-services-location:16.0.0")
     implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
+
+    // Firebase
+    implementation("com.google.firebase:firebase-core:16.0.4")
+    implementation("com.google.firebase:firebase-auth:16.0.5")
+    implementation("com.google.firebase:firebase-storage:16.0.3")
 
     // Dagger
     val daggerVersion = "2.17"
