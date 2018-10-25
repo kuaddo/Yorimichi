@@ -31,8 +31,9 @@ class SearchResultFragment : DaggerFragment() {
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchResultViewModel::class.java) }
     private lateinit var binding: FragSearchResultBinding
     private lateinit var searchResultAdapter: SearchResultAdapter
+    private val latLng: LatLng? = if (UserInfo.latitude.isNotEmpty() && UserInfo.longitude.isNotEmpty())
+        LatLng(UserInfo.latitude.toDouble(), UserInfo.longitude.toDouble()) else null
     private var map: GoogleMap? = null
-    private val latLng = LatLng(UserInfo.latitude.toDouble(), UserInfo.longitude.toDouble())
     private lateinit var markers: List<Marker?>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -55,6 +56,8 @@ class SearchResultFragment : DaggerFragment() {
     private fun initMap() {
         (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
+            latLng ?: return@getMapAsync
+
             map?.addCircle(CircleOptions()    // 現在地
                     .center(latLng)
                     .radius(10.0)
