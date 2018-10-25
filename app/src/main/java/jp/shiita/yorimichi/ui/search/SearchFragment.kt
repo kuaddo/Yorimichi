@@ -8,7 +8,10 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragSearchBinding
@@ -23,6 +26,8 @@ class SearchFragment : DaggerFragment() {
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java) }
     private lateinit var binding: FragSearchBinding
     private lateinit var categoryAdapter: CategoryAdapter
+    private var map: GoogleMap? = null
+    private var marker: Marker? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search, container, false)
@@ -48,7 +53,7 @@ class SearchFragment : DaggerFragment() {
         binding.categoryRecyclerView.adapter = categoryAdapter
 
         // GoogleMapsのジェスチャーがScrollView内で動くように
-        binding.transparentView.setOnTouchListener { v, event -> when (event.action) {
+        binding.transparentView.setOnTouchListener { _, event -> when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 binding.scrollView.requestDisallowInterceptTouchEvent(true)
                 false
@@ -69,7 +74,18 @@ class SearchFragment : DaggerFragment() {
     }
 
     private fun initMap() {
-        (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync {}
+        (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
+            map = googleMap
+            map?.setOnMapLongClickListener { latLng ->
+                viewModel.select(latLng)
+                if (marker == null) {
+                    marker = map?.addMarker(MarkerOptions().position(latLng))
+                }
+                else {
+                    marker?.position = latLng
+                }
+            }
+        }
     }
 
     private fun observe() {

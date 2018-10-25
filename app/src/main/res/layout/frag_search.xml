@@ -161,7 +161,7 @@
             app:src="@drawable/ic_pin"
             app:text="@string/search_button_goto"
             app:marginCenter="8dp"
-            app:enabled="false"
+            app:enabled="@{viewModel.selected}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mapLayout" />
