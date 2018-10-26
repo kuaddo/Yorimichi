@@ -11,9 +11,7 @@ import jp.shiita.yorimichi.databinding.ItemSearchResultBinding
 
 class SearchResultAdapter(
         context: Context,
-        private val locations: MutableList<LatLng>,
-        private val showMarker: (position: Int) -> Unit,
-        private val hideMarker: (position: Int) -> Unit
+        private val locations: MutableList<LatLng>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
@@ -24,18 +22,12 @@ class SearchResultAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is SearchResultViewHolder) holder.binding.latLng = locations[position]
-        showMarker(position)
     }
 
     fun addAll(locations: List<LatLng>) {
         val start = itemCount
         this.locations.addAll(locations)
         notifyItemRangeInserted(start, locations.size)
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        hideMarker(holder.adapterPosition)
     }
 
     class SearchResultViewHolder(val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root)
