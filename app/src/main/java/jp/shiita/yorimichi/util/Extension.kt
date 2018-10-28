@@ -47,14 +47,14 @@ fun Bitmap.toBytes(): ByteArray = ByteArrayOutputStream().let { stream ->
 
 fun AdView.loadAd() {
     val builder = AdRequest.Builder()
-    if (UserInfo.latitude.isNotEmpty() && UserInfo.longitude.isNotEmpty())
-        builder.setLocation(getLocation(UserInfo.latitude.toDouble(), UserInfo.longitude.toDouble()))
+    val latLng = UserInfo.latLng
+    if (latLng != null)
+        builder.setLocation(getLocation(latLng.latitude, latLng.longitude))
     BuildConfig.ADMOB_TEST_DEVICES.forEach { builder.addTestDevice(it) }
     loadAd(builder.build())
 }
 
 fun ByteArray.toBase64(): String = Base64.encodeToString(this, Base64.NO_WRAP)
-
 
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat
