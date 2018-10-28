@@ -11,7 +11,6 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
-import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
@@ -23,7 +22,7 @@ class MainViewModel @Inject constructor(
     val homeAsUpIndicator: LiveData<Int> get() = _homeAsUpIndicator
     val displayHomeAsUpEnabled: LiveData<Boolean> get() = _displayHomeAsUpEnabled
     val drawerLock: LiveData<Boolean> get() = _drawerLock
-    val finishApp: LiveData<Unit> get() = _finishAppEvent
+    val finishAppMessage: LiveData<Int> get() = _finishAppMessage
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
@@ -31,7 +30,7 @@ class MainViewModel @Inject constructor(
     private val _homeAsUpIndicator = SingleLiveEvent<Int>()
     private val _displayHomeAsUpEnabled = SingleLiveEvent<Boolean>()
     private val _drawerLock = SingleLiveEvent<Boolean>()
-    private val _finishAppEvent = SingleUnitLiveEvent()
+    private val _finishAppMessage = SingleLiveEvent<Int>()
 
     private val disposables = CompositeDisposable()
 
@@ -49,17 +48,14 @@ class MainViewModel @Inject constructor(
 
     fun setDrawerLock(locked: Boolean) = _drawerLock.postValue(locked)
 
-    fun finishApp() = _finishAppEvent.call()
+    fun finishAppLocationPermissionDenied() = _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message)
 
     fun createUser() {
         if (UserInfo.userId.isEmpty()) repository.createUser()
                 .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
                 .subscribeBy(
                         onSuccess = { UserInfo.userId = it },
-                        onError = {
-                            // TODO: 終了ダイアログ、メッセージを指定できるように
-                        }
+                        onError = { _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message) }
                 )
                 .addTo(disposables)
     }

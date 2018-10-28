@@ -65,7 +65,10 @@ class MainActivity : DaggerAppCompatActivity() {
             vm.displayHomeAsUpEnabled.observe(this) { supportActionBar?.setDisplayHomeAsUpEnabled(it) }
 
             vm.drawerLock.observe(this) { if (it) lockDrawer() else unlockDrawer() }
-            vm.finishApp.observe(this) { FinishDialogFragment().show(supportFragmentManager, FinishDialogFragment.TAG) }
+            vm.finishAppMessage.observe(this) {
+                FinishDialogFragment.newInstance(getString(it))
+                    .show(supportFragmentManager, FinishDialogFragment.TAG)
+            }
         }
     }
 

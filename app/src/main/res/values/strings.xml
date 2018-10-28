@@ -18,7 +18,8 @@
     <string name="drawer_setting">設定</string>
 
     <!-- dialog -->
-    <string name="dialog_finish_message">位置情報が取得できないため、アプリを終了します。</string>
+    <string name="dialog_location_permission_denied_message">位置情報が取得できないため、アプリを終了します。</string>
+    <string name="dialog_initialize_user_error_message">アプリの初期設定が失敗しました。ネットワークの状態を確認してください。</string>
     <string name="dialog_finish_positive">OK</string>
     
     <!-- search -->
