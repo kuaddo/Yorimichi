@@ -3,16 +3,16 @@ package jp.shiita.yorimichi.custom
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.annotation.DrawableRes
+import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import jp.shiita.yorimichi.R
 
 
 class IconButton(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
-    private val imageView: ImageView
+    private val imageView: AppCompatImageView
     private val textView: TextView
 
     init {
@@ -25,6 +25,9 @@ class IconButton(context: Context, attrs: AttributeSet? = null) : LinearLayout(c
                 if (hasValue(R.styleable.IconButton_src)) setSrc(getDrawable(R.styleable.IconButton_src))
                 if (hasValue(R.styleable.IconButton_text)) setText(getString(R.styleable.IconButton_text) ?: "")
                 if (hasValue(R.styleable.IconButton_enabled)) isEnabled = getBoolean(R.styleable.IconButton_enabled, true)
+                if (hasValue(R.styleable.IconButton_marginCenter)) textView.layoutParams = textView.layoutParams.also {
+                    (it as LayoutParams).marginStart = getLayoutDimension(R.styleable.IconButton_marginCenter, 0)
+                }
                 recycle()
             }
         }

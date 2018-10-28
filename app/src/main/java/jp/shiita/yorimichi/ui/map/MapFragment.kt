@@ -81,10 +81,7 @@ class MapFragment : DaggerFragment() {
 
         (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
-            if (!isLocationObserved) {
-                map?.uiSettings?.setAllGesturesEnabled(false)
-                map?.isMyLocationEnabled = true
-            }
+            map?.isMyLocationEnabled = true
         }
     }
 
@@ -99,15 +96,7 @@ class MapFragment : DaggerFragment() {
     private fun plotCurrentLocation(location: Location) {
         if (!isLocationObserved) {
             isLocationObserved = true
-            map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, INITIAL_ZOOM_LEVEL), object : GoogleMap.CancelableCallback {
-                override fun onFinish() {
-                    map?.uiSettings?.setAllGesturesEnabled(true)
-                }
-
-                override fun onCancel() {
-                    map?.uiSettings?.setAllGesturesEnabled(true)
-                }
-            })
+            map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, INITIAL_ZOOM_LEVEL))
         }
     }
 
