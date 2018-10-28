@@ -40,6 +40,7 @@ class MainActivity : DaggerAppCompatActivity() {
             supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
         }
 
+        viewModel.createUser()
         observe()
     }
 

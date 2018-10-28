@@ -4,9 +4,9 @@ import android.databinding.BindingAdapter
 import android.widget.ImageView
 import com.google.firebase.storage.FirebaseStorage
 
-@BindingAdapter("app:bucket", "app:cloud_storage_path", requireAll = true)
-fun ImageView.bindImage(bucket: String, path: String) = FirebaseStorage
+@BindingAdapter("app:bucket", "app:image", requireAll = true)
+fun ImageView.bindImage(bucket: String, image: String) = FirebaseStorage
         .getInstance(bucket)
-        .getReference(path)
+        .getReference(image)
         .downloadUrl
         .addOnSuccessListener { uri -> GlideApp.with(this.context).load(uri).into(this) }

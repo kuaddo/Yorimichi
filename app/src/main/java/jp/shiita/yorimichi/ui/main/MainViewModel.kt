@@ -4,12 +4,21 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.R
+import jp.shiita.yorimichi.data.UserInfo
+import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
+import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(
+        private val repository: YorimichiRepository,
+        private val scheduler: BaseSchedulerProvider
+) : ViewModel() {
     val titleEvent: LiveData<Int> get() = _titleEvent
     val homeAsUpIndicator: LiveData<Int> get() = _homeAsUpIndicator
     val displayHomeAsUpEnabled: LiveData<Boolean> get() = _displayHomeAsUpEnabled
@@ -24,6 +33,10 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _drawerLock = SingleLiveEvent<Boolean>()
     private val _finishAppEvent = SingleUnitLiveEvent()
 
+    private val disposables = CompositeDisposable()
+
+    override fun onCleared() = disposables.clear()
+
     fun setupActionBar(@StringRes titleRes: Int = R.string.app_name,
                        @DrawableRes indicatorRes: Int = R.drawable.ic_back,
                        enabled: Boolean = true,
@@ -37,6 +50,19 @@ class MainViewModel @Inject constructor() : ViewModel() {
     fun setDrawerLock(locked: Boolean) = _drawerLock.postValue(locked)
 
     fun finishApp() = _finishAppEvent.call()
+
+    fun createUser() {
+        if (UserInfo.userId.isEmpty()) repository.createUser()
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = { UserInfo.userId = it },
+                        onError = {
+                            // TODO: 終了ダイアログ、メッセージを指定できるように
+                        }
+                )
+                .addTo(disposables)
+    }
 
     enum class HomeAsUpType { OPEN_DRAWER, POP_BACK_STACK }
 }
