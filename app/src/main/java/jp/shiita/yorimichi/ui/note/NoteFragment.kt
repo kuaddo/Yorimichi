@@ -34,6 +34,7 @@ class NoteFragment : DaggerFragment() {
         mainViewModel.setupActionBar(R.string.title_note)
 
         binding.adView.loadAd()
+        binding.penRecyclerView.adapter = PenAdapter(context!!)
 
         observe()
     }
