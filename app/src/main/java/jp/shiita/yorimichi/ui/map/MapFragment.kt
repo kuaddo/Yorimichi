@@ -69,7 +69,7 @@ class MapFragment : DaggerFragment() {
             observe()
         }
         else {
-            mainViewModel.finishApp()
+            mainViewModel.finishAppLocationPermissionDenied()
         }
     }
 
