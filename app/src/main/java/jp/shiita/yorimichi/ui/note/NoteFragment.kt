@@ -11,6 +11,7 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.util.loadAd
 import javax.inject.Inject
 
 class NoteFragment : DaggerFragment() {
@@ -31,6 +32,8 @@ class NoteFragment : DaggerFragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_note)
+
+        binding.adView.loadAd()
 
         observe()
     }
