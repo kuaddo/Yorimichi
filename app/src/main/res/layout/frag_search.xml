@@ -33,6 +33,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="16sp"
+            android:text="@{viewModel.requiredTimeString}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            tools:text="1時間20分" />
+
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="0dp"
@@ -40,14 +52,15 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:max="30"
+            android:max="180"
             android:progressDrawable="@drawable/seek_bar"
             android:splitTrack="false"
             android:thumb="@drawable/seek_bar_thumb"
+            android:progress="@={viewModel.requiredTimeMinute}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2"
-            tools:progress="15" />
+            tools:progress="80" />
 
         <TextView
             android:id="@+id/textView3"
@@ -75,15 +88,16 @@
             app:layout_constraintTop_toBottomOf="@+id/textView3"/>
 
         <jp.shiita.yorimichi.custom.IconButton
+            style="@style/IconButton"
             android:id="@+id/iconButton1"
-            android:layout_width="@dimen/icon_button_default_width"
-            android:layout_height="@dimen/icon_button_default_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/back_button"
+            android:onClick="@{() -> viewModel.search()}"
             app:src="@drawable/ic_search"
             app:text="@string/search_button_search"
-            android:onClick="@{() -> viewModel.search()}"
+            app:marginCenter="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
 
@@ -149,20 +163,21 @@
         </FrameLayout>
 
         <jp.shiita.yorimichi.custom.IconButton
+            style="@style/IconButton"
             android:id="@+id/iconButton2"
-            android:layout_width="@dimen/icon_button_default_width"
-            android:layout_height="@dimen/icon_button_default_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/back_button"
             android:onClick="@{() -> viewModel.search()}"
-            app:enabled="false"
+            app:src="@drawable/ic_pin"
+            app:text="@string/search_button_goto"
+            app:marginCenter="8dp"
+            app:enabled="@{viewModel.selected}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mapLayout"
-            app:src="@drawable/ic_pin"
-            app:text="@string/search_button_goto" />
+            app:layout_constraintTop_toBottomOf="@+id/mapLayout" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
 </layout>

@@ -8,9 +8,11 @@ import android.support.v7.app.AlertDialog
 import jp.shiita.yorimichi.R
 
 class FinishDialogFragment : DialogFragment() {
+    private val message by lazy { arguments!!.getString(ARGS_MESSAGE) }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(activity!!)
-                .setMessage(R.string.dialog_finish_message)
+                .setMessage(message)
                 .setPositiveButton(R.string.dialog_finish_positive) { _, _ -> activity?.finish() }
                 .create()
     }
@@ -22,5 +24,9 @@ class FinishDialogFragment : DialogFragment() {
 
     companion object {
         val TAG: String = FinishDialogFragment::class.java.simpleName
+        private const val ARGS_MESSAGE = "argsMessage"
+        fun newInstance(message: String) = FinishDialogFragment().apply {
+            arguments = Bundle().apply { putString(ARGS_MESSAGE, message) }
+        }
     }
 }
