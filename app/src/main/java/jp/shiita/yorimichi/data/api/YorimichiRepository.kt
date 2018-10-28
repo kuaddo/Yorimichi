@@ -17,7 +17,7 @@ class YorimichiRepository(
             .map { response ->
                 val body = response.body()
                 if (response.code() == 204 || body == null) emptyList()
-                else body.getAsJsonArray("post_array")
+                else body.getAsJsonArray("posts_array")
                     .map { gson.fromJson(it, Post::class.java) }}
 
     fun postPost(uuid: String, placeUid: String, bytes: ByteArray): Completable =
@@ -27,6 +27,6 @@ class YorimichiRepository(
             .map { response ->
                 val body = response.body()
                 if (response.code() == 204 || body == null) emptyList()
-                else body.getAsJsonArray("post_array")
+                else body.getAsJsonArray("posts_array")
                     .map { gson.fromJson(it, Post::class.java) }}
 }
