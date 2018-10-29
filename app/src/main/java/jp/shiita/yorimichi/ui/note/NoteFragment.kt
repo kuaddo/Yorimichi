@@ -35,6 +35,7 @@ class NoteFragment : DaggerFragment() {
 
         binding.adView.loadAd()
         binding.penRecyclerView.adapter = PenAdapter(context!!)
+        binding.colorRecyclerView.adapter = ColorAdapter(context!!)
 
         observe()
     }

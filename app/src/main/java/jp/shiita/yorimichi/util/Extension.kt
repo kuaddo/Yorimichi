@@ -5,10 +5,14 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
 import android.graphics.Bitmap
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.location.Location
+import android.support.annotation.ColorInt
 import android.support.annotation.IdRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.Base64
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -55,6 +59,11 @@ fun AdView.loadAd() {
 }
 
 fun ByteArray.toBase64(): String = Base64.encodeToString(this, Base64.NO_WRAP)
+
+fun Drawable.setTintCompat(@ColorInt color: Int): Drawable = DrawableCompat.wrap(this).mutate().also {
+    DrawableCompat.setTint(it, color)
+    DrawableCompat.setTintMode(it, PorterDuff.Mode.SRC_IN)
+}
 
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat
