@@ -2,5 +2,6 @@ package jp.shiita.yorimichi.data
 
 data class PenColor(
         val color: Int,
-        val locked: Boolean
+        var locked: Boolean,
+        var selected: Boolean
 )

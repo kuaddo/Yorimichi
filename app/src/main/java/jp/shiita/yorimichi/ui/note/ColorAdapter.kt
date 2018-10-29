@@ -18,7 +18,8 @@ class ColorAdapter(
 
     init {
         val ta = context.resources.obtainTypedArray(R.array.colorsPen)
-        penColors = (0 until ta.length()).map { PenColor(ta.getColor(it, 0), it % 2 != 0) }
+        penColors = (0 until ta.length()).map { PenColor(ta.getColor(it, 0), it % 2 != 0, false) }
+        penColors[0].selected = true
         ta.recycle()
     }
 
@@ -31,7 +32,16 @@ class ColorAdapter(
         if (holder is ColorViewHolder) {
             val penColor = penColors[position]
             holder.bind(penColor)
-            if (!penColor.locked) holder.itemView.setOnClickListener { onClickColor(penColor.color) }
+            if (!penColor.locked) holder.itemView.setOnClickListener {
+                onClickColor(penColor.color)
+                val index = penColors.indexOfFirst { it.selected }
+                if (index == position) return@setOnClickListener
+
+                penColors[index].selected = false
+                penColors[position].selected = true
+                notifyItemChanged(index)
+                notifyItemChanged(position)
+            }
         }
     }
 

@@ -19,10 +19,13 @@
 
     <ImageView
         android:id="@+id/view"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:padding="1dp"
         android:src="@drawable/back_circle"
+        android:background="@{penColor.selected ? @drawable/back_color_selected : null}"
         tools:tint="@color/colorPrimary"
+        tools:background="@drawable/back_color_selected"
         app:tint="@{penColor.color}"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
