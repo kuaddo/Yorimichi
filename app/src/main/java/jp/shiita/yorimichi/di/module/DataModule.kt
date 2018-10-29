@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import jp.shiita.yorimichi.BuildConfig
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.data.api.YorimichiService
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
@@ -27,6 +28,11 @@ class DataModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor {
+                it.proceed(it.request()
+                        .newBuilder()
+                        .addHeader("X-API-Token", BuildConfig.X_API_TOKEN)
+                        .build()) }
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 

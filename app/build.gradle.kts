@@ -44,6 +44,7 @@ android {
             resValue("string", "admob_banner_ad_unit_id", ApiKeys.ADMOB_BANNER_AD_UNIT_ID)
             resValue("string", "app_name", "debug_Yorimichi")
             buildConfigField("String[]", "ADMOB_TEST_DEVICES", ApiKeys.ADMOB_TEST_DEVICES)
+            buildConfigField("String", "X_API_TOKEN", ApiKeys.X_API_TOKEN)
             signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
