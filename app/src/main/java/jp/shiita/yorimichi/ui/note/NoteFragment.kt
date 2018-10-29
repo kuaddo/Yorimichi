@@ -35,9 +35,20 @@ class NoteFragment : DaggerFragment() {
 
         binding.adView.loadAd()
         binding.penRecyclerView.adapter = PenAdapter(context!!)
-        binding.colorRecyclerView.adapter = ColorAdapter(context!!)
+        binding.colorRecyclerView.adapter = ColorAdapter(context!!, ::setPenColor)
+
+        // TODO: PaintViewのattr等が全て実装完了したらViewModelを利用する
+        binding.eraserImage.setOnClickListener { setEraser() }
 
         observe()
+    }
+
+    private fun setPenColor(color: Int) {
+        binding.paintView.changePenColor(color)
+    }
+
+    private fun setEraser() {
+        binding.paintView.setEraser()
     }
 
     private fun observe() {
