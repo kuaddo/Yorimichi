@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<data>
+    <import type="android.view.View"/>
+    <variable
+        name="penColor"
+        type="jp.shiita.yorimichi.data.PenColor"/>
+</data>
+
+<android.support.constraint.ConstraintLayout
+    android:layout_width="28dp"
+    android:layout_height="24dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp">
+
+    <ImageView
+        android:id="@+id/view"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:padding="1dp"
+        android:src="@drawable/back_circle"
+        android:background="@{penColor.selected ? @drawable/back_color_selected : null}"
+        tools:tint="@color/colorPrimary"
+        tools:background="@drawable/back_color_selected"
+        app:tint="@{penColor.color}"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_lock"
+        android:visibility="@{penColor.locked ? View.VISIBLE : View.GONE}"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</android.support.constraint.ConstraintLayout>
+</layout>

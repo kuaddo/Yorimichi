@@ -11,6 +11,7 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.util.loadAd
 import javax.inject.Inject
 
 class NoteFragment : DaggerFragment() {
@@ -32,7 +33,22 @@ class NoteFragment : DaggerFragment() {
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_note)
 
+        binding.adView.loadAd()
+        binding.penRecyclerView.adapter = PenAdapter(context!!)
+        binding.colorRecyclerView.adapter = ColorAdapter(context!!, ::setPenColor)
+
+        // TODO: PaintViewのattr等が全て実装完了したらViewModelを利用する
+        binding.eraserImage.setOnClickListener { setEraser() }
+
         observe()
+    }
+
+    private fun setPenColor(color: Int) {
+        binding.paintView.changePenColor(color)
+    }
+
+    private fun setEraser() {
+        binding.paintView.setEraser()
     }
 
     private fun observe() {

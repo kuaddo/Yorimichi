@@ -31,8 +31,7 @@ class SearchFragment : DaggerFragment() {
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java) }
     private lateinit var binding: FragSearchBinding
     private lateinit var categoryAdapter: CategoryAdapter
-    private val latLng: LatLng? = if (UserInfo.latitude.isNotEmpty() && UserInfo.longitude.isNotEmpty())
-        LatLng(UserInfo.latitude.toDouble(), UserInfo.longitude.toDouble()) else null
+    private val latLng: LatLng? = UserInfo.latLng
     private var map: GoogleMap? = null
     private var marker: Marker? = null
 

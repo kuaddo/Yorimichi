@@ -10,3 +10,8 @@ fun ImageView.bindImage(bucket: String, image: String) = FirebaseStorage
         .getReference(image)
         .downloadUrl
         .addOnSuccessListener { uri -> GlideApp.with(this.context).load(uri).into(this) }
+
+@BindingAdapter("app:tint")
+fun ImageView.bindTint(color: Int) {
+    setImageDrawable(drawable.setTintCompat(color))
+}

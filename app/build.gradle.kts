@@ -37,8 +37,14 @@ android {
 
     buildTypes {
         getByName("debug") {
-            manifestPlaceholders = mapOf("GOOGLE_MAPS" to ApiKeys.GOOGLE_MAPS)
+            manifestPlaceholders = mapOf(
+                    "GOOGLE_MAPS" to ApiKeys.GOOGLE_MAPS,
+                    "ADMOB_APP_ID" to ApiKeys.ADMOB_APP_ID)
+            resValue("string", "admob_app_id", ApiKeys.ADMOB_APP_ID)
+            resValue("string", "admob_banner_ad_unit_id", ApiKeys.ADMOB_BANNER_AD_UNIT_ID)
             resValue("string", "app_name", "debug_Yorimichi")
+            buildConfigField("String[]", "ADMOB_TEST_DEVICES", ApiKeys.ADMOB_TEST_DEVICES)
+            buildConfigField("String", "X_API_TOKEN", ApiKeys.X_API_TOKEN)
             signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
@@ -79,6 +85,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:16.0.0")
     implementation("com.google.android.gms:play-services-location:16.0.0")
     implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
+    implementation("com.google.firebase:firebase-ads:17.0.0")
 
     // Firebase
     implementation("com.google.firebase:firebase-core:16.0.4")
