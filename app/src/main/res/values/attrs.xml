@@ -10,4 +10,9 @@
     <declare-styleable name="StarView">
         <attr name="ratio" format="float"/>
     </declare-styleable>
+
+    <declare-styleable name="RatingView">
+        <attr name="rating" format="float"/>
+        <attr name="starSize" format="dimension"/>
+    </declare-styleable>
 </resources>

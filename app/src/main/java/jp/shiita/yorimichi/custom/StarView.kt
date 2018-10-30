@@ -22,13 +22,15 @@ class StarView(context: Context, attrs: AttributeSet? = null) : ImageView(contex
     init {
         if (attrs != null) {
             context.theme.obtainStyledAttributes(attrs, R.styleable.StarView, 0, 0).run {
-                if (hasValue(R.styleable.StarView_ratio)) setRatio(getFloat(R.styleable.StarView_ratio, 0f).toDouble())
+                if (hasValue(R.styleable.StarView_ratio)) setRatio(getFloat(R.styleable.StarView_ratio, 0f))
                 recycle()
             }
         }
     }
 
-    fun setRatio(ratio: Double) {
+    fun setRatio(ratio: Float) {
+        check(ratio in 0..1)
+
         foreDrawable?.bounds = Rect(0, 0, (bitmapWidth * ratio).toInt(), bitmapHeight)
         layerDrawable.draw(canvas)
         canvas.drawBitmap(star, 0f, 0f, DST_IN_PAINT)
