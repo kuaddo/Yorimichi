@@ -67,7 +67,7 @@ fun FragmentManager.replaceFragment(@IdRes containerViewId: Int, fragment: Fragm
             .commit()
 }
 
-fun LatLng.toSimpleString() = "($latitude, $longitude)"
+fun LatLng.toSimpleString() = "$latitude,$longitude"
 
 fun Bitmap.toBytes(): ByteArray = ByteArrayOutputStream().let { stream ->
     compress(Bitmap.CompressFormat.PNG, 100, stream)

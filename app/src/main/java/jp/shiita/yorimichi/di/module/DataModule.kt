@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import jp.shiita.yorimichi.BuildConfig
+import jp.shiita.yorimichi.data.api.PlaceRepository
+import jp.shiita.yorimichi.data.api.PlaceService
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.data.api.YorimichiService
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
@@ -15,6 +17,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module()
@@ -38,24 +41,40 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun providesGitHubService(retrofit: Retrofit): YorimichiService = retrofit.create(YorimichiService::class.java)
+    @Named("yorimichi")
+    fun provideYorimichiRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit =
+            getRetrofit("http://35.200.28.85/v1/", gson, okHttpClient)
 
     @Provides
     @Singleton
-    fun provideGitHubRepository(yorimichiService: YorimichiService, gson: Gson) = YorimichiRepository(yorimichiService, gson)
+    @Named("place")
+    fun providePlaceRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit =
+            getRetrofit("https://maps.googleapis.com/maps/api/place/", gson, okHttpClient)
 
+    @Provides
+    @Singleton
+    fun providesYorimichiService(@Named("yorimichi") retrofit: Retrofit): YorimichiService = retrofit.create(YorimichiService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesPlaceService(@Named("place") retrofit: Retrofit): PlaceService = retrofit.create(PlaceService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideYorimichiRepository(yorimichiService: YorimichiService, gson: Gson) = YorimichiRepository(yorimichiService, gson)
+
+    @Provides
+    @Singleton
+    fun providePlaceRepository(placeService: PlaceService) = PlaceRepository(placeService)
 
     @Provides
     @Singleton
     fun provideBaseSchedulerProvider(): BaseSchedulerProvider = SchedulerProvider
 
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+    private fun getRetrofit(baseUrl: String, gson: Gson, okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
-            .baseUrl("http://35.200.28.85/v1/")
+            .baseUrl(baseUrl)
             .build()
 }
