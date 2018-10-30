@@ -29,13 +29,13 @@ class SearchViewModel @Inject constructor(
 
     fun search() {
         val location = UserInfo.latLng?.toSimpleString() ?: return
-        placeRepository.getPlacesWithType(location, 2000, "cafe")
-                .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
-                .subscribeBy(
-                        onSuccess = {},
-                        onError = {}
-                )
+//        placeRepository.getPlacesWithType(location, 2000, "cafe")
+//                .subscribeOn(scheduler.io())
+//                .observeOn(scheduler.ui())
+//                .subscribeBy(
+//                        onSuccess = {},
+//                        onError = {}
+//                )
         _searchEvent.call()
     }
 
