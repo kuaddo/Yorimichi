@@ -39,5 +39,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/google_map" />
+
+    <jp.shiita.yorimichi.custom.StarView
+        android:id="@+id/starView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:ratio="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/google_map"/>
 </android.support.constraint.ConstraintLayout>
 </layout>

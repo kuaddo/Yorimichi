@@ -6,4 +6,8 @@
         <attr name="marginCenter" format="dimension"/>
         <attr name="enabled" format="boolean"/>
     </declare-styleable>
+    
+    <declare-styleable name="StarView">
+        <attr name="ratio" format="float"/>
+    </declare-styleable>
 </resources>
