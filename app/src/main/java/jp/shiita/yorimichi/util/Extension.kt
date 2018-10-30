@@ -1,15 +1,21 @@
 package jp.shiita.yorimichi.util
 
+import android.annotation.TargetApi
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.location.Location
+import android.os.Build
 import android.support.annotation.ColorInt
 import android.support.annotation.IdRes
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.graphics.drawable.DrawableCompat
@@ -23,6 +29,25 @@ import java.io.ByteArrayOutputStream
 
 val Location.latLng
     get() = LatLng(latitude, longitude)
+
+val VectorDrawable.bitmap: Bitmap
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    get() {
+        val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        setBounds(0, 0, canvas.width, canvas.height)
+        draw(canvas)
+        return bitmap
+    }
+
+val VectorDrawableCompat.bitmap: Bitmap
+    get() {
+        val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        setBounds(0, 0, canvas.width, canvas.height)
+        draw(canvas)
+        return bitmap
+    }
 
 fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (T) -> Unit) =
         observe(owner, Observer<T> { if (it != null) observer(it) })
@@ -63,6 +88,14 @@ fun ByteArray.toBase64(): String = Base64.encodeToString(this, Base64.NO_WRAP)
 fun Drawable.setTintCompat(@ColorInt color: Int): Drawable = DrawableCompat.wrap(this).mutate().also {
     DrawableCompat.setTint(it, color)
     DrawableCompat.setTintMode(it, PorterDuff.Mode.SRC_IN)
+}
+
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+fun Drawable.getBitmap(): Bitmap = when(this) {
+    is BitmapDrawable -> bitmap
+    is VectorDrawableCompat -> bitmap
+    is VectorDrawable -> bitmap
+    else -> error("invalid drawable type")
 }
 
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {

@@ -2,21 +2,21 @@ package jp.shiita.yorimichi.custom
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
-import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.widget.ImageView
 import jp.shiita.yorimichi.R
+import jp.shiita.yorimichi.util.getBitmap
 
 class StarView(context: Context, attrs: AttributeSet? = null) : ImageView(context, attrs) {
-    private val star = (ContextCompat.getDrawable(context, R.drawable.ic_star) as BitmapDrawable).bitmap
+    private val star = ResourcesCompat.getDrawable(resources, R.drawable.ic_star, null)!!.getBitmap()
     private val bitmapWidth = star.width
     private val bitmapHeight = star.height
     private val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
     private val canvas = Canvas(bitmap)
-    private val backDrawable = ContextCompat.getDrawable(context, R.color.colorDarkGrey)
-    private val foreDrawable = ContextCompat.getDrawable(context, R.color.colorStar)
+    private val backDrawable = ResourcesCompat.getDrawable(resources, R.color.colorDarkGrey, null)
+    private val foreDrawable = ResourcesCompat.getDrawable(resources, R.color.colorStar, null)
     private val layerDrawable = LayerDrawable(arrayOf(backDrawable, foreDrawable)).apply { bounds = Rect(0, 0, bitmapWidth, bitmapHeight) }
 
     init {
