@@ -22,6 +22,7 @@ data class PlaceResult(
             val vicinity: String
     ) {
         val latLng get() = LatLng(lat, lng)
+        var selected = false        // RecyclerViewで選択されているか
 
         private var _distance = 0   // m
 

@@ -24,7 +24,10 @@ class PlaceAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is PlaceViewHolder) {
             holder.bind(places[position])
-            holder.itemView.setOnClickListener { onSelected(position) }
+            holder.itemView.setOnClickListener {
+                onSelected(position)
+                select(position)
+            }
         }
     }
 
@@ -32,6 +35,20 @@ class PlaceAdapter(
         this.places.clear()
         this.places.addAll(places)
         notifyDataSetChanged()
+    }
+
+    fun select(position: Int) {
+        val indices = places
+                .mapIndexed { i, place -> if (place.selected) i else -1 }
+                .filterNot { it == -1 }
+        if (position in indices) return
+
+        places[position].selected = true
+        notifyItemChanged(position)
+        indices.forEach {
+            places[it].selected = false
+            notifyItemChanged(it)
+        }
     }
 
     fun sortDistAsc() {

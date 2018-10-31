@@ -121,6 +121,7 @@ class SearchResultFragment : DaggerFragment() {
             map?.setOnMarkerClickListener { marker ->
                 val position = marker?.tag as? Int ?: 0
                 binding.recyclerView.scrollToPosition(position)
+                searchResultAdapter.select(position)
                 viewModel.onSelected(position)
                 false
             }

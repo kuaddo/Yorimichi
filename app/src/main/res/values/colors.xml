@@ -22,6 +22,8 @@
 
     <color name="colorStar">#FFC90E</color>
 
+    <color name="colorSelectedBackground">#EFE4B0</color>
+
     <array name="colorsPen">
         <item>#000000</item>
         <item>#7F7F7F</item>
