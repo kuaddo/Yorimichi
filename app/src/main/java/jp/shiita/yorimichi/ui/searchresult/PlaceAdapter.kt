@@ -11,7 +11,8 @@ import jp.shiita.yorimichi.databinding.ItemSearchResultBinding
 
 class PlaceAdapter(
         context: Context,
-        private val places: MutableList<PlaceResult.Place>
+        private val places: MutableList<PlaceResult.Place>,
+        private val onSelected: (position: Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
@@ -21,7 +22,10 @@ class PlaceAdapter(
     override fun getItemCount(): Int = places.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is PlaceViewHolder) holder.bind(places[position])
+        if (holder is PlaceViewHolder) {
+            holder.bind(places[position])
+            holder.itemView.setOnClickListener { onSelected(position) }
+        }
     }
 
     fun reset(places: List<PlaceResult.Place>) {

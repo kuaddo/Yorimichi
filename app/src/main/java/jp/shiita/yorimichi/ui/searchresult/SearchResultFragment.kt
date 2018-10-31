@@ -25,7 +25,6 @@ import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
-
 class SearchResultFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val mainViewModel: MainViewModel
@@ -39,6 +38,8 @@ class SearchResultFragment : DaggerFragment() {
     private lateinit var markers: List<Marker?>
     private lateinit var smallDescriptor: BitmapDescriptor
     private lateinit var largeDescriptor: BitmapDescriptor
+    private lateinit var selectedSmallDescriptor: BitmapDescriptor
+    private lateinit var selectedLargeDescriptor: BitmapDescriptor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search_result, container, false)
@@ -51,25 +52,17 @@ class SearchResultFragment : DaggerFragment() {
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_search_result)
 
-        searchResultAdapter = PlaceAdapter(context!!, mutableListOf())
+        searchResultAdapter = PlaceAdapter(context!!, mutableListOf(), viewModel::onSelected)
         binding.recyclerView.also { rv ->
             val layoutManager = rv.layoutManager as LinearLayoutManager
             rv.adapter = searchResultAdapter
             rv.clearOnScrollListeners()
             rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                private var oldFirst = 0
-                private var oldLast = 0
-
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val first = layoutManager.findFirstVisibleItemPosition()
                     val last = layoutManager.findLastVisibleItemPosition()
-                    if (first > oldFirst) (oldFirst until first).forEach { markers[it]?.setIcon(smallDescriptor) }    // invisible
-                    if (last < oldLast) (last + 1..oldLast).forEach      { markers[it]?.setIcon(smallDescriptor) }    // invisible
-                    (first..last).forEach                                { markers[it]?.setIcon(largeDescriptor) }    // visible
-
-                    oldFirst = first
-                    oldLast = last
+                    viewModel.onScrolled(first, last)
                 }
             })
         }
@@ -82,9 +75,16 @@ class SearchResultFragment : DaggerFragment() {
     private fun initDescriptor() {
         val pinDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_pin_large, null)!!
         val largeBitmap = pinDrawable.getBitmap(ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
-        val smallBitmap = Bitmap.createScaledBitmap(largeBitmap, largeBitmap.width / 2, largeBitmap.height / 2, false)
+        val selectedLargeBitmap = pinDrawable.getBitmap(ResourcesCompat.getColor(resources, R.color.colorStar, null))
+        val width = largeBitmap.width
+        val height = largeBitmap.height
+
+        val smallBitmap = Bitmap.createScaledBitmap(largeBitmap, width / 2, height / 2, false)
+        val selectedSmallBitmap = Bitmap.createScaledBitmap(selectedLargeBitmap, width / 2, height / 2, false)
         smallDescriptor = BitmapDescriptorFactory.fromBitmap(smallBitmap)
         largeDescriptor = BitmapDescriptorFactory.fromBitmap(largeBitmap)
+        selectedSmallDescriptor = BitmapDescriptorFactory.fromBitmap(selectedSmallBitmap)
+        selectedLargeDescriptor = BitmapDescriptorFactory.fromBitmap(selectedLargeBitmap)
     }
 
     private fun initMap() {
@@ -113,6 +113,10 @@ class SearchResultFragment : DaggerFragment() {
             }
         }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
+        viewModel.smallPinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(smallDescriptor) }}
+        viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(largeDescriptor) }}
+        viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(selectedSmallDescriptor) }}
+        viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(selectedLargeDescriptor) }}
     }
 
     companion object {

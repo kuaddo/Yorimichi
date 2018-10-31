@@ -11,9 +11,22 @@ import javax.inject.Inject
 class SearchResultViewModel @Inject constructor() : ViewModel() {
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
+    val smallPinPositions: LiveData<List<Int>> get() = _smallPinPositions
+    val largePinPositions: LiveData<List<Int>> get() = _largePinPositions
+    val selectedSmallPinPositions: LiveData<List<Int>> get() = _selectedSmallPinPositions
+    val selectedLargePinPositions: LiveData<List<Int>> get() = _selectedLargePinPositions
 
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
     private val _zoomBounds = MutableLiveData<LatLngBounds>()
+    private val _smallPinPositions = MutableLiveData<List<Int>>()
+    private val _largePinPositions = MutableLiveData<List<Int>>()
+    private val _selectedSmallPinPositions = MutableLiveData<List<Int>>()
+    private val _selectedLargePinPositions = MutableLiveData<List<Int>>()
+
+    private var placesSize = -1
+    private var selectedPosition = -1
+    private var first = -1
+    private var last = -1
 
     fun searchPlaces(lat: Double, lng: Double) {
         val place = PlaceResult.Place(
@@ -37,6 +50,7 @@ class SearchResultViewModel @Inject constructor() : ViewModel() {
                 place.copy(rating = 4.9f, lat = place.lat + 0.020, lng = place.lng + 0.005).also { it.setDistance(lat, lng) },
                 place.copy(rating = 0.0f, lat = place.lat + 0.010, lng = place.lng + 0.023).also { it.setDistance(lat, lng) },
                 place.copy(rating = 3.4f, lat = place.lat + 0.004, lng = place.lng + 0.001).also { it.setDistance(lat, lng) })
+        placesSize = ps.size
 
         var minLat = lat
         var minLng = lng
@@ -53,5 +67,27 @@ class SearchResultViewModel @Inject constructor() : ViewModel() {
 
         _places.postValue(ps)
         _zoomBounds.postValue(LatLngBounds(LatLng(minLat - dLat, minLng - dLng), LatLng(maxLat + dLat, maxLng + dLng)))
+    }
+
+    fun onScrolled(first: Int, last: Int) {
+        this.first = first
+        this.last = last
+        updatePinPositions()
+    }
+
+    fun onSelected(position: Int) {
+        selectedPosition = position
+        updatePinPositions()
+    }
+
+    private fun updatePinPositions() {
+        // UIに即反映したいのでpostValueは使わない
+        _smallPinPositions.value = (0 until first).toMutableList().apply {
+            addAll((last + 1 until placesSize))
+            remove(selectedPosition)
+        }
+        _largePinPositions.value = (first..last).toMutableList().apply { remove(selectedPosition) }
+        if      (selectedPosition in first..last)        _selectedLargePinPositions.value = listOf(selectedPosition)
+        else if (selectedPosition in 0 until placesSize) _selectedSmallPinPositions.value = listOf(selectedPosition)
     }
 }
