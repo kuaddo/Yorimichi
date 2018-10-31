@@ -80,7 +80,7 @@ class SearchResultViewModel @Inject constructor() : ViewModel() {
         updatePinPositions()
     }
 
-    fun updatePinPositions() {
+    private fun updatePinPositions() {
         // UIに即反映したいのでpostValueは使わない
         _smallPinPositions.value = (0 until first).toMutableList().apply {
             addAll((last + 1 until placesSize))

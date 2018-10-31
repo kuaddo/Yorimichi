@@ -51,6 +51,11 @@ class PlaceAdapter(
         }
     }
 
+    fun getSelectedPosition(): Int {
+        val place = places.firstOrNull { it.selected } ?: return -1
+        return places.indexOf(place)
+    }
+
     fun sortDistAsc() {
         places.sortBy { it.getDistance() }
         notifyDataSetChanged()

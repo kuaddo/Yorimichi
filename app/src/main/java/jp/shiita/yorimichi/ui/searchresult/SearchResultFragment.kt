@@ -80,12 +80,12 @@ class SearchResultFragment : DaggerFragment() {
             R.id.menu_frag_search_result_sort_dist_asc  -> {
                 sortMarkerAsc()
                 searchResultAdapter.sortDistAsc()
-                viewModel.updatePinPositions()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition())
             }
             R.id.menu_frag_search_result_sort_dist_desc -> {
                 sortMarkerDesc()
                 searchResultAdapter.sortDistDesc()
-                viewModel.updatePinPositions()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition())
             }
             else -> return false
         }
