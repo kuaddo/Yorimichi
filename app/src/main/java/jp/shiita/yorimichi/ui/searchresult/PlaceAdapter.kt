@@ -24,10 +24,10 @@ class PlaceAdapter(
         if (holder is PlaceViewHolder) holder.bind(places[position])
     }
 
-    fun addAll(places: List<PlaceResult.Place>) {
-        val start = itemCount
+    fun reset(places: List<PlaceResult.Place>) {
+        this.places.clear()
         this.places.addAll(places)
-        notifyItemRangeInserted(start, places.size)
+        notifyDataSetChanged()
     }
 
     class PlaceViewHolder(private val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {

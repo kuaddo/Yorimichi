@@ -98,6 +98,20 @@ fun Drawable.getBitmap(): Bitmap = when(this) {
     else -> error("invalid drawable type")
 }
 
+/**
+ * 球面三角法を利用した距離計算
+ * @return 距離(m)
+ */
+fun LatLng.distance(latLng: LatLng): Int {
+    val r = 6378137.0     // 赤道半径
+    val radLat1 = Math.toRadians(latitude)
+    val radLng1 = Math.toRadians(longitude)
+    val radLat2 = Math.toRadians(latLng.latitude)
+    val radLng2 = Math.toRadians(latLng.longitude)
+    return (r * 2 * Math.asin(Math.sqrt(Math.pow(Math.sin((radLat1 - radLat2) / 2), 2.0)
+            + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin((radLng1 - radLng2) / 2), 2.0)))).toInt()
+}
+
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat
     longitude = lng

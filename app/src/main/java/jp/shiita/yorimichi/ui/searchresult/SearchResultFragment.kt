@@ -19,10 +19,10 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
-import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragSearchResultBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
 
@@ -73,6 +73,20 @@ class SearchResultFragment : DaggerFragment() {
         }
 
         initMap()
+        observe()
+    }
+
+    fun observe() {
+        viewModel.places.observe(this) { places ->
+            searchResultAdapter.reset(places)
+            markers = places.map {
+                val marker = MarkerOptions()
+                        .position(it.latLng)
+                        .alpha(0f)
+                map?.addMarker(marker)
+            }
+        }
+        viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
     }
 
     private fun initMap() {
@@ -86,43 +100,12 @@ class SearchResultFragment : DaggerFragment() {
                     .fillColor(Color.BLUE)
                     .strokeColor(Color.BLUE))
 
-            val place = PlaceResult.Place(
-                    "",
-                    "ベックスコーヒーショップ横浜中央口店",
-                    latLng.latitude,
-                    latLng.longitude,
-                    "https://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
-                    emptyList(),
-                    "",
-                    3.6f,
-                    "",
-                    listOf("cafe", "store", "point_of_interest", "food" ,"establishment"),
-                    "")
-
-            val places = mutableListOf(
-                    place.copy(rating = 0.3f, lat = place.lat + 0.001, lng = place.lng + 0.001).also { it.setDistance(latLng) },
-                    place.copy(rating = 2.5f, lat = place.lat + 0.011, lng = place.lng + 0.001).also { it.setDistance(latLng) },
-                    place.copy(rating = 1.6f, lat = place.lat + 0.003, lng = place.lng + 0.021).also { it.setDistance(latLng) },
-                    place.copy(rating = 5.0f, lat = place.lat + 0.004, lng = place.lng + 0.004).also { it.setDistance(latLng) },
-                    place.copy(rating = 4.9f, lat = place.lat + 0.020, lng = place.lng + 0.005).also { it.setDistance(latLng) },
-                    place.copy(rating = 0.0f, lat = place.lat + 0.010, lng = place.lng + 0.023).also { it.setDistance(latLng) },
-                    place.copy(rating = 3.4f, lat = place.lat + 0.004, lng = place.lng + 0.001).also { it.setDistance(latLng) })
-
-            val options = places.map {
-                MarkerOptions()
-                        .position(it.latLng)
-                        .alpha(0f)
-            }
-
-            searchResultAdapter.addAll(places)
-            markers = options.map { map?.addMarker(it) }
-            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INITIAL_ZOOM_LEVEL))
+            viewModel.searchPlaces(latLng.latitude, latLng.longitude)
         }
     }
 
     companion object {
         val TAG: String = SearchResultFragment::class.java.simpleName
-        private const val INITIAL_ZOOM_LEVEL = 16f
 
         fun newInstance() = SearchResultFragment()
     }
