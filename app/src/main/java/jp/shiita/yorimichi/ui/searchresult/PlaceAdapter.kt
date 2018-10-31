@@ -34,6 +34,16 @@ class PlaceAdapter(
         notifyDataSetChanged()
     }
 
+    fun sortDistAsc() {
+        places.sortBy { it.getDistance() }
+        notifyDataSetChanged()
+    }
+
+    fun sortDistDesc() {
+        places.sortByDescending { it.getDistance() }
+        notifyDataSetChanged()
+    }
+
     class PlaceViewHolder(private val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(place: PlaceResult.Place) {
             binding.place = place

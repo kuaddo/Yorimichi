@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_frag_search_result_sort_dist_asc"
+        android:title="@string/menu_sort_dist_asc"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_frag_search_result_sort_dist_desc"
+        android:title="@string/menu_sort_dist_desc"
+        app:showAsAction="never" />
+</menu>

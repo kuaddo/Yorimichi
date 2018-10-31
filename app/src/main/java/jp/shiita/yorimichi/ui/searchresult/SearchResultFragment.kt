@@ -9,9 +9,7 @@ import android.os.Bundle
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -35,13 +33,14 @@ class SearchResultFragment : DaggerFragment() {
     private lateinit var searchResultAdapter: PlaceAdapter
     private val latLng: LatLng? = UserInfo.latLng
     private var map: GoogleMap? = null
-    private lateinit var markers: List<Marker?>
+    private var markers: MutableList<Pair<Marker?, Int>> = mutableListOf()
     private lateinit var smallDescriptor: BitmapDescriptor
     private lateinit var largeDescriptor: BitmapDescriptor
     private lateinit var selectedSmallDescriptor: BitmapDescriptor
     private lateinit var selectedLargeDescriptor: BitmapDescriptor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search_result, container, false)
         return binding.root
     }
@@ -70,6 +69,27 @@ class SearchResultFragment : DaggerFragment() {
         initDescriptor()
         initMap()
         observe()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.frag_search_result, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_frag_search_result_sort_dist_asc  -> {
+                searchResultAdapter.sortDistAsc()
+                markers.sortBy { it.second }
+                viewModel.updatePinPositions()
+            }
+            R.id.menu_frag_search_result_sort_dist_desc -> {
+                markers.sortByDescending { it.second }
+                searchResultAdapter.sortDistDesc()
+                viewModel.updatePinPositions()
+            }
+            else -> return false
+        }
+        return true
     }
 
     private fun initDescriptor() {
@@ -105,18 +125,19 @@ class SearchResultFragment : DaggerFragment() {
     private fun observe() {
         viewModel.places.observe(this) { places ->
             searchResultAdapter.reset(places)
-            markers = places.map {
+            markers.clear()
+            markers.addAll(places.map {
                 val marker = MarkerOptions()
                         .position(it.latLng)
                         .icon(smallDescriptor)
-                map?.addMarker(marker)
-            }
+                map?.addMarker(marker) to it.getDistance()
+            })
         }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
-        viewModel.smallPinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(smallDescriptor) }}
-        viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(largeDescriptor) }}
-        viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(selectedSmallDescriptor) }}
-        viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it]?.setIcon(selectedLargeDescriptor) }}
+        viewModel.smallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(smallDescriptor) }}
+        viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
+        viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
+        viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
     }
 
     companion object {
