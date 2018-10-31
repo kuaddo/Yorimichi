@@ -3,6 +3,8 @@
     <declare-styleable name="IconButton">
         <attr name="src"/>
         <attr name="text" format="string"/>
+        <attr name="iconSize" format="dimension"/>
+        <attr name="textSize" format="dimension"/>
         <attr name="marginCenter" format="dimension"/>
         <attr name="enabled" format="boolean"/>
     </declare-styleable>

@@ -2,6 +2,8 @@
 <resources>
     <dimen name="icon_button_tb_padding">10dp</dimen>
     <dimen name="icon_button_se_padding">20dp</dimen>
+    <dimen name="icon_button_small_tb_padding">5dp</dimen>
+    <dimen name="icon_button_small_se_padding">10dp</dimen>
 
     <dimen name="seekbar_thumb">24dp</dimen>
     <dimen name="seekbar_progress_margin">9dp</dimen>
