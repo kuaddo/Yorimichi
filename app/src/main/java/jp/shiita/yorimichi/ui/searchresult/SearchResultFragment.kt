@@ -78,12 +78,12 @@ class SearchResultFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_frag_search_result_sort_dist_asc  -> {
+                sortMarkerAsc()
                 searchResultAdapter.sortDistAsc()
-                markers.sortBy { it.second }
                 viewModel.updatePinPositions()
             }
             R.id.menu_frag_search_result_sort_dist_desc -> {
-                markers.sortByDescending { it.second }
+                sortMarkerDesc()
                 searchResultAdapter.sortDistDesc()
                 viewModel.updatePinPositions()
             }
@@ -118,6 +118,13 @@ class SearchResultFragment : DaggerFragment() {
                     .fillColor(Color.BLUE)
                     .strokeColor(Color.BLUE))
 
+            map?.setOnMarkerClickListener { marker ->
+                val position = marker?.tag as? Int ?: 0
+                binding.recyclerView.scrollToPosition(position)
+                viewModel.onSelected(position)
+                false
+            }
+
             viewModel.searchPlaces(latLng.latitude, latLng.longitude)
         }
     }
@@ -132,12 +139,23 @@ class SearchResultFragment : DaggerFragment() {
                         .icon(smallDescriptor)
                 map?.addMarker(marker) to it.getDistance()
             })
+            markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
         }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
         viewModel.smallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(smallDescriptor) }}
         viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
         viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
         viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
+    }
+
+    private fun sortMarkerAsc() {
+        markers.sortBy { it.second }
+        markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
+    }
+
+    private fun sortMarkerDesc() {
+        markers.sortByDescending { it.second }
+        markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
 
     companion object {
