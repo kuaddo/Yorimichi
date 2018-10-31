@@ -13,7 +13,8 @@
 
 <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorDefaultBackground">
 
     <fragment
         android:id="@+id/google_map"
@@ -30,7 +31,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:orientation="vertical"
         tools:listitem="@layout/item_search_result"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
@@ -39,16 +41,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/google_map" />
-
-    <jp.shiita.yorimichi.custom.RatingView
-        android:id="@+id/starView"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        app:rating="3.7"
-        app:starSize="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/google_map"/>
 </android.support.constraint.ConstraintLayout>
 </layout>

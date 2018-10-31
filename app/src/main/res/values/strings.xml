@@ -17,6 +17,10 @@
     <string name="drawer_shop">ショップ</string>
     <string name="drawer_setting">設定</string>
 
+    <!-- menu -->
+    <string name="menu_sort_dist_asc">近い順</string>
+    <string name="menu_sort_dist_desc">遠い順</string>
+
     <!-- dialog -->
     <string name="dialog_location_permission_denied_message">位置情報が取得できないため、アプリを終了します。</string>
     <string name="dialog_initialize_user_error_message">アプリの初期設定が失敗しました。ネットワークの状態を確認してください。</string>
