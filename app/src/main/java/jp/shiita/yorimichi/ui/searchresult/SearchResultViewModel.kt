@@ -6,11 +6,13 @@ import android.arch.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import jp.shiita.yorimichi.data.PlaceResult
+import jp.shiita.yorimichi.live.SingleLiveEvent
 import javax.inject.Inject
 
 class SearchResultViewModel @Inject constructor() : ViewModel() {
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
+    val cameraMoveEvent: LiveData<LatLng> get() = _cameraMoveEvent
     val smallPinPositions: LiveData<List<Int>> get() = _smallPinPositions
     val largePinPositions: LiveData<List<Int>> get() = _largePinPositions
     val selectedSmallPinPositions: LiveData<List<Int>> get() = _selectedSmallPinPositions
@@ -18,6 +20,7 @@ class SearchResultViewModel @Inject constructor() : ViewModel() {
 
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
     private val _zoomBounds = MutableLiveData<LatLngBounds>()
+    private val _cameraMoveEvent = SingleLiveEvent<LatLng>()
     private val _smallPinPositions = MutableLiveData<List<Int>>()
     private val _largePinPositions = MutableLiveData<List<Int>>()
     private val _selectedSmallPinPositions = MutableLiveData<List<Int>>()
@@ -75,9 +78,10 @@ class SearchResultViewModel @Inject constructor() : ViewModel() {
         updatePinPositions()
     }
 
-    fun onSelected(position: Int) {
+    fun onSelected(position: Int, latLng: LatLng?) {
         selectedPosition = position
         updatePinPositions()
+        if (latLng != null) _cameraMoveEvent.postValue(latLng)
     }
 
     private fun updatePinPositions() {

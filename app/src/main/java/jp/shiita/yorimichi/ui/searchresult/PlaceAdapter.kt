@@ -12,7 +12,7 @@ import jp.shiita.yorimichi.databinding.ItemSearchResultBinding
 class PlaceAdapter(
         context: Context,
         private val places: MutableList<PlaceResult.Place>,
-        private val onSelected: (position: Int) -> Unit
+        private val selectPlace: (position: Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
@@ -24,12 +24,11 @@ class PlaceAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is PlaceViewHolder) {
             holder.bind(places[position])
-            holder.itemView.setOnClickListener {
-                onSelected(position)
-                select(position)
-            }
+            holder.itemView.setOnClickListener { selectPlace(position) }
         }
     }
+
+    fun getItem(position: Int) = places[position]
 
     fun reset(places: List<PlaceResult.Place>) {
         this.places.clear()
