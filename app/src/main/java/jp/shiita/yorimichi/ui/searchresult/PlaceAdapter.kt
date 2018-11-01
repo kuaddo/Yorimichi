@@ -56,12 +56,12 @@ class PlaceAdapter(
         return places.indexOf(place)
     }
 
-    fun sortDistAsc() {
+    fun sortByDistAsc() {
         places.sortBy { it.getDistance() }
         notifyDataSetChanged()
     }
 
-    fun sortDistDesc() {
+    fun sortByDistDesc() {
         places.sortByDescending { it.getDistance() }
         notifyDataSetChanged()
     }

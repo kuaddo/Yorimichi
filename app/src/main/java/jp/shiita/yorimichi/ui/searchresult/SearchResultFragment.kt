@@ -78,13 +78,13 @@ class SearchResultFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_frag_search_result_sort_dist_asc  -> {
-                sortMarkerAsc()
-                searchResultAdapter.sortDistAsc()
+                sortMarkerByDistAsc()
+                searchResultAdapter.sortByDistAsc()
                 viewModel.onSelected(searchResultAdapter.getSelectedPosition())
             }
             R.id.menu_frag_search_result_sort_dist_desc -> {
-                sortMarkerDesc()
-                searchResultAdapter.sortDistDesc()
+                sortMarkerByDistDesc()
+                searchResultAdapter.sortByDistDesc()
                 viewModel.onSelected(searchResultAdapter.getSelectedPosition())
             }
             else -> return false
@@ -149,12 +149,12 @@ class SearchResultFragment : DaggerFragment() {
         viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
     }
 
-    private fun sortMarkerAsc() {
+    private fun sortMarkerByDistAsc() {
         markers.sortBy { it.second }
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
 
-    private fun sortMarkerDesc() {
+    private fun sortMarkerByDistDesc() {
         markers.sortByDescending { it.second }
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
