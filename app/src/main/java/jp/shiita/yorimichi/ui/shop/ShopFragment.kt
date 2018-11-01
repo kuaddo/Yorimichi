@@ -79,6 +79,7 @@ class ShopFragment : DaggerFragment() {
         class NotesViewHolder(private val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
             fun bind(post: Post) {
                 binding.post = post
+                binding.executePendingBindings()
             }
         }
     }

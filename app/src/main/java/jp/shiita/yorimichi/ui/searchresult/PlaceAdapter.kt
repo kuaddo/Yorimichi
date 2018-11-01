@@ -69,6 +69,7 @@ class PlaceAdapter(
     class PlaceViewHolder(private val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(place: PlaceResult.Place) {
             binding.place = place
+            binding.executePendingBindings()
         }
     }
 }
