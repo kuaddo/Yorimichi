@@ -1,15 +1,32 @@
 package jp.shiita.yorimichi.custom
 
 import android.content.Context
-import android.graphics.*
 import android.util.AttributeSet
+import android.graphics.*
 import android.view.MotionEvent
 import android.view.View
 
-class PaintView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+
+class PaintView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
+
+    // ペンの種類
+    enum class Pen (
+            val alpha: Int = 255,
+            val style: Paint.Style = Paint.Style.STROKE,
+            val join: Paint.Join = Paint.Join.ROUND,
+            val cap: Paint.Cap = Paint.Cap.ROUND,
+            val xfermode: PorterDuffXfermode? = null,
+            val isAntiAlias: Boolean = true
+    ) {
+        Normal(),
+        Flat(join = Paint.Join.BEVEL, cap = Paint.Cap.SQUARE),
+        ERASER(alpha = 0, xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR))
+        ;
+    }
+
 
     // 1回の描画距離の閾値
-    private val TOUCH_TOLERANCE: Float = 4f
+    private val touchTolerance: Float = 4f
 
     private val paint: Paint = Paint(Paint.DITHER_FLAG)
     private val path: Path = Path()
@@ -25,8 +42,6 @@ class PaintView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var mY: Float = 0f
 
 
-    constructor(context: Context): this(context, null)
-
     init {
         paint.apply {
             alpha = 255
@@ -34,9 +49,11 @@ class PaintView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
-            strokeWidth = 10f
+            strokeWidth = 20f
             isAntiAlias = true
         }
+
+        setPen(Pen.Flat)
     }
 
 
@@ -47,17 +64,17 @@ class PaintView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    touch_start(x, y)
+                    swipeAtBeginning(x, y)
                     invalidate()
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    touch_move(x, y)
+                    swipeInMoving(x, y)
                     invalidate()
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    touch_up()
+                    swipeAtEnd()
                     invalidate()
                 }
             }
@@ -92,37 +109,45 @@ class PaintView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
         paint.strokeWidth = width
     }
 
-    // このメソッドの挙動は試してない
-    fun changePenJoin(join: Paint.Join) {
-        paint.strokeJoin = join
-    }
-
-    // このメソッドの挙動は試してない
-    fun changePenCap(cap: Paint.Cap) {
-        paint.strokeCap = cap
-    }
 
     // 色変更はこれで可能
-    // 消しゴム使用後はxfermodeプロパティはnullに戻さないといけない
     fun changePenColor(color: Int) {
         paint.apply {
             this.color = color
-            xfermode = null
-
         }
     }
 
-    // 消しゴムはpaintの設定を変える必要がある
-    // colorじゃなくてalphaプロパティでも大丈夫なのかも
-    fun setEraser() {
+
+    // 実際に描画されているBitmapの取得
+    fun getMainBitmap() : Bitmap = mBitmap
+
+
+    // 描画された内容の削除
+    // デバッグ用
+    fun clear() {
+        mBitmap = Bitmap.createBitmap(mBitmap.width, mBitmap.height, Bitmap.Config.ARGB_8888)
+        workBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888, true)
+        mCanvas = Canvas(mBitmap)
+        workCanvas = Canvas(workBitmap)
+        path.reset()
+
+        invalidate()
+    }
+
+    fun setPen(pen: Pen) {
         paint.apply {
-            color = Color.argb(0, 255, 255, 255)
-            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+            alpha = pen.alpha
+            style = pen.style
+            strokeJoin = pen.join
+            strokeCap = pen.cap
+            isAntiAlias = pen.isAntiAlias
+            xfermode = pen.xfermode
         }
     }
+
 
     // スワイプ始めの挙動
-    private fun touch_start(x: Float, y: Float) {
+    private fun swipeAtBeginning(x: Float, y: Float) {
         path.apply {
             reset()
             moveTo(x, y)
@@ -132,10 +157,10 @@ class PaintView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     }
 
     // スワイプ中の挙動
-    private fun touch_move(x: Float, y: Float) {
+    private fun swipeInMoving(x: Float, y: Float) {
         val dx: Float = Math.abs(x - mX)
         val dy: Float = Math.abs(y - mY)
-        if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+        if (dx >= touchTolerance || dy >= touchTolerance) {
             path.quadTo(mX, mY, (x + mX)/2, (y + mY)/2)
             mX = x
             mY = y
@@ -143,7 +168,7 @@ class PaintView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     }
 
     // スワイプ終わりの挙動
-    private fun touch_up() {
+    private fun swipeAtEnd() {
         path.lineTo(mX, mY)
         mCanvas.drawPath(path, paint)
         path.reset()
