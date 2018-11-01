@@ -51,7 +51,7 @@ class SearchResultFragment : DaggerFragment() {
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_search_result)
 
-        searchResultAdapter = PlaceAdapter(context!!, mutableListOf(), viewModel::onSelected)
+        searchResultAdapter = PlaceAdapter(context!!, mutableListOf(), ::selectPlace)
         binding.recyclerView.also { rv ->
             val layoutManager = rv.layoutManager as LinearLayoutManager
             rv.adapter = searchResultAdapter
@@ -78,14 +78,14 @@ class SearchResultFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_frag_search_result_sort_dist_asc  -> {
-                sortMarkerAsc()
-                searchResultAdapter.sortDistAsc()
-                viewModel.onSelected(searchResultAdapter.getSelectedPosition())
+                sortMarkerByDistAsc()
+                searchResultAdapter.sortByDistAsc()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
             }
             R.id.menu_frag_search_result_sort_dist_desc -> {
-                sortMarkerDesc()
-                searchResultAdapter.sortDistDesc()
-                viewModel.onSelected(searchResultAdapter.getSelectedPosition())
+                sortMarkerByDistDesc()
+                searchResultAdapter.sortByDistDesc()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
             }
             else -> return false
         }
@@ -121,9 +121,8 @@ class SearchResultFragment : DaggerFragment() {
             map?.setOnMarkerClickListener { marker ->
                 val position = marker?.tag as? Int ?: 0
                 binding.recyclerView.scrollToPosition(position)
-                searchResultAdapter.select(position)
-                viewModel.onSelected(position)
-                false
+                selectPlace(position)
+                true        // cameraのアニメーションは自前でやる
             }
 
             viewModel.searchPlaces(latLng.latitude, latLng.longitude)
@@ -143,18 +142,24 @@ class SearchResultFragment : DaggerFragment() {
             markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
         }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
+        viewModel.cameraMoveEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
         viewModel.smallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(smallDescriptor) }}
         viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
         viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
         viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
     }
 
-    private fun sortMarkerAsc() {
+    private fun selectPlace(position: Int) {
+        searchResultAdapter.select(position)
+        viewModel.onSelected(position, searchResultAdapter.getItem(position).latLng)
+    }
+
+    private fun sortMarkerByDistAsc() {
         markers.sortBy { it.second }
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
 
-    private fun sortMarkerDesc() {
+    private fun sortMarkerByDistDesc() {
         markers.sortByDescending { it.second }
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }

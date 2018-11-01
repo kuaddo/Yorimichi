@@ -24,7 +24,7 @@ class RatingView(context: Context, attrs: AttributeSet? = null) : LinearLayout(c
     }
 
     fun setRating(rating: Float) {
-        check(rating in 0..5)
+        require(rating in 0..5)
 
         starViews.forEachIndexed { i, starView -> starView.setRatio(minOf(1f, maxOf(0f, rating - i))) }
     }

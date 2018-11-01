@@ -29,7 +29,7 @@ class StarView(context: Context, attrs: AttributeSet? = null) : ImageView(contex
     }
 
     fun setRatio(ratio: Float) {
-        check(ratio in 0..1)
+        require(ratio in 0..1)
 
         foreDrawable?.bounds = Rect(0, 0, (bitmapWidth * ratio).toInt(), bitmapHeight)
         layerDrawable.draw(canvas)

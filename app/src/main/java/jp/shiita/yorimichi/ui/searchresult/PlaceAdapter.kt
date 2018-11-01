@@ -12,7 +12,7 @@ import jp.shiita.yorimichi.databinding.ItemSearchResultBinding
 class PlaceAdapter(
         context: Context,
         private val places: MutableList<PlaceResult.Place>,
-        private val onSelected: (position: Int) -> Unit
+        private val selectPlace: (position: Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
@@ -24,12 +24,11 @@ class PlaceAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is PlaceViewHolder) {
             holder.bind(places[position])
-            holder.itemView.setOnClickListener {
-                onSelected(position)
-                select(position)
-            }
+            holder.itemView.setOnClickListener { selectPlace(position) }
         }
     }
+
+    fun getItem(position: Int) = places[position]
 
     fun reset(places: List<PlaceResult.Place>) {
         this.places.clear()
@@ -38,17 +37,15 @@ class PlaceAdapter(
     }
 
     fun select(position: Int) {
-        val indices = places
-                .mapIndexed { i, place -> if (place.selected) i else -1 }
-                .filterNot { it == -1 }
-        if (position in indices) return
+        val index = places.indexOfFirst { it.selected }
+        if (index == position) return
 
+        if (index != -1) {
+            places[index].selected = false
+            notifyItemChanged(index)
+        }
         places[position].selected = true
         notifyItemChanged(position)
-        indices.forEach {
-            places[it].selected = false
-            notifyItemChanged(it)
-        }
     }
 
     fun getSelectedPosition(): Int {
@@ -56,12 +53,12 @@ class PlaceAdapter(
         return places.indexOf(place)
     }
 
-    fun sortDistAsc() {
+    fun sortByDistAsc() {
         places.sortBy { it.getDistance() }
         notifyDataSetChanged()
     }
 
-    fun sortDistDesc() {
+    fun sortByDistDesc() {
         places.sortByDescending { it.getDistance() }
         notifyDataSetChanged()
     }
@@ -69,6 +66,7 @@ class PlaceAdapter(
     class PlaceViewHolder(private val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(place: PlaceResult.Place) {
             binding.place = place
+            binding.executePendingBindings()
         }
     }
 }
