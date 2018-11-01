@@ -38,17 +38,15 @@ class PlaceAdapter(
     }
 
     fun select(position: Int) {
-        val indices = places
-                .mapIndexed { i, place -> if (place.selected) i else -1 }
-                .filterNot { it == -1 }
-        if (position in indices) return
+        val index = places.indexOfFirst { it.selected }
+        if (index == position) return
 
+        if (index != -1) {
+            places[index].selected = false
+            notifyItemChanged(index)
+        }
         places[position].selected = true
         notifyItemChanged(position)
-        indices.forEach {
-            places[it].selected = false
-            notifyItemChanged(it)
-        }
     }
 
     fun getSelectedPosition(): Int {
