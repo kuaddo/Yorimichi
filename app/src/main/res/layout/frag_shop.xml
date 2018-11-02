@@ -7,9 +7,6 @@
 <data>
     <import type="android.view.View"/>
     <variable
-        name="handlers"
-        type="jp.shiita.yorimichi.ui.shop.ShopFragment.Handlers"/>
-    <variable
         name="viewModel"
         type="jp.shiita.yorimichi.ui.shop.ShopViewModel"/>
 </data>
@@ -20,22 +17,13 @@
     android:background="@color/colorDefaultBackground">
 
     <Button
-        android:id="@+id/postButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="post post"
-        android:onClick="@{handlers::onClickPost}"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="get user posts"
         android:onClick="@{() -> viewModel.getUserPosts()}"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postButton" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
         android:id="@+id/button4"

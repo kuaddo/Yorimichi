@@ -12,12 +12,14 @@ import jp.shiita.yorimichi.R
 
 class SimpleDialogFragment : DialogFragment() {
     private val message by lazy { arguments!!.getString(ARGS_MESSAGE) }
+    private val showsCancel by lazy { arguments!!.getBoolean(ARGS_SHOWS_CANCEL) }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
                 .setMessage(message)
-                .setPositiveButton(R.string.dialog_finish_positive) { _, _ -> sendResult(Activity.RESULT_OK) }
-                .create()
+                .setPositiveButton(R.string.dialog_simple_positive) { _, _ -> sendResult(Activity.RESULT_OK) }
+        if (showsCancel) builder.setNegativeButton(R.string.dialog_simple_negative) { _, _ -> sendResult(Activity.RESULT_CANCELED) }
+        return builder.create()
     }
 
     override fun onCancel(dialog: DialogInterface?) {
@@ -36,8 +38,13 @@ class SimpleDialogFragment : DialogFragment() {
     companion object {
         val TAG: String = SimpleDialogFragment::class.java.simpleName
         private const val ARGS_MESSAGE = "argsMessage"
-        fun newInstance(message: String) = SimpleDialogFragment().apply {
-            arguments = Bundle().apply { putString(ARGS_MESSAGE, message) }
+        private const val ARGS_SHOWS_CANCEL = "argsShowsCancel"
+
+        fun newInstance(message: String, showsCancel: Boolean) = SimpleDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARGS_MESSAGE, message)
+                putBoolean(ARGS_SHOWS_CANCEL, showsCancel)
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import jp.shiita.yorimichi.data.Post
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
+import jp.shiita.yorimichi.ui.note.NoteViewModel.Companion.TEST_PLACE_UID
 import javax.inject.Inject
 
 class ShopViewModel @Inject constructor(
@@ -23,24 +24,7 @@ class ShopViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
 
-    private val testPlaceUid = "testPlaceUid"
-
     override fun onCleared() = disposables.clear()
-
-    fun postPost(bytes: ByteArray) {
-        repository.postPost(UserInfo.userId, testPlaceUid, bytes)
-                .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
-                .subscribeBy(
-                        onComplete = {
-                            Log.d(TAG, "onComplete:postPost")
-                        },
-                        onError = {
-                            Log.e(TAG, "onError:postPost", it)
-                        }
-                )
-                .addTo(disposables)
-    }
 
     fun getUserPosts() {
         repository.getUserPosts(UserInfo.userId)
@@ -60,7 +44,7 @@ class ShopViewModel @Inject constructor(
     }
 
     fun getPlacePosts() {
-        repository.getPlacePosts(testPlaceUid)
+        repository.getPlacePosts(TEST_PLACE_UID)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(

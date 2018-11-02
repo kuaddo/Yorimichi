@@ -67,8 +67,10 @@ class MainActivity : DaggerAppCompatActivity() {
 
             vm.drawerLock.observe(this) { if (it) lockDrawer() else unlockDrawer() }
             vm.finishAppMessage.observe(this) {
-                SimpleDialogFragment.newInstance(getString(it))
-                    .show(supportFragmentManager, SimpleDialogFragment.TAG)
+                SimpleDialogFragment.newInstance(getString(it), false).apply {
+                    setTargetFragment(null, REQUEST_FINISH_DIALOG)
+                    show(supportFragmentManager, SimpleDialogFragment.TAG)
+                }
             }
         }
     }
@@ -85,6 +87,7 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != REQUEST_FINISH_DIALOG) return
 
         when (resultCode) {
@@ -111,6 +114,6 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     companion object {
-        const val REQUEST_FINISH_DIALOG = 0
+        private const val REQUEST_FINISH_DIALOG = 0
     }
 }
