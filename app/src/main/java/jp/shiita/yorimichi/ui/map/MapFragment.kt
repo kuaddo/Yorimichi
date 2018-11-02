@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
-import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.view.LayoutInflater
@@ -24,7 +23,6 @@ import jp.shiita.yorimichi.util.latLng
 import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
-
 class MapFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val mainViewModel: MainViewModel
@@ -35,7 +33,6 @@ class MapFragment : DaggerFragment() {
             by lazy { LocationLiveData(context!!) }
     private lateinit var binding: FragMapBinding
     private var map: GoogleMap? = null
-    private var isLocationObserved = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_map, container, false)
@@ -74,30 +71,21 @@ class MapFragment : DaggerFragment() {
     }
 
     private fun initMap() {
-        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)   != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
 
-        (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
+        (childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
             map?.isMyLocationEnabled = true
         }
     }
 
     private fun observe() {
-        locationLiveData.observe(this) {
-            UserInfo.latitude = it.latitude.toString()
-            UserInfo.longitude = it.longitude.toString()
-            plotCurrentLocation(it)
-        }
-    }
-
-    private fun plotCurrentLocation(location: Location) {
-        if (!isLocationObserved) {
-            isLocationObserved = true
-            map?.animateCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, INITIAL_ZOOM_LEVEL))
-        }
+        locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
+        viewModel.latLng.observe(this) { UserInfo.latLng = it }
+        viewModel.cameraMoveEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL)) }
     }
 
     companion object {

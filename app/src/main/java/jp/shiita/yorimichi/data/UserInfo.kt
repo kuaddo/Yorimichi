@@ -8,9 +8,15 @@ object UserInfo : KotprefModel() {
     var latitude by stringPref()
     var longitude by stringPref()
 
-    val latLng: LatLng?
+    var latLng: LatLng?
         get() =
             if (UserInfo.latitude.isNotEmpty() && UserInfo.longitude.isNotEmpty())
                 LatLng(UserInfo.latitude.toDouble(), UserInfo.longitude.toDouble())
             else null
+        set(value) {
+            if (value != null) {
+                latitude = value.latitude.toString()
+                longitude = value.longitude.toString()
+            }
+        }
 }
