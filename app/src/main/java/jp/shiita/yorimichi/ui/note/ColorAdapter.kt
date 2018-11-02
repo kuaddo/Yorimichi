@@ -37,12 +37,21 @@ class ColorAdapter(
                 val index = penColors.indexOfFirst { it.selected }
                 if (index == position) return@setOnClickListener
 
-                penColors[index].selected = false
+                if (index != -1) {
+                    penColors[index].selected = false
+                    notifyItemChanged(index)
+                }
                 penColors[position].selected = true
-                notifyItemChanged(index)
                 notifyItemChanged(position)
             }
         }
+    }
+
+    fun resetSelected() {
+        val index = penColors.indexOfFirst { it.selected }
+        if (index == -1) return
+        penColors[index].selected = false
+        notifyItemChanged(index)
     }
 
     class ColorViewHolder(private val binding: ItemColorBinding) : RecyclerView.ViewHolder(binding.root) {
