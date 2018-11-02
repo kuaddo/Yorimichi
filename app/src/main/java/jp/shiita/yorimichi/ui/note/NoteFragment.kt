@@ -12,6 +12,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.util.loadAd
+import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
 class NoteFragment : DaggerFragment() {
@@ -21,6 +22,8 @@ class NoteFragment : DaggerFragment() {
     private val viewModel: NoteViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(NoteViewModel::class.java) }
     private lateinit var binding: FragNoteBinding
+    private lateinit var penAdapter: PenAdapter
+    private lateinit var colorAdapter: ColorAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_note, container, false)
@@ -34,25 +37,24 @@ class NoteFragment : DaggerFragment() {
         mainViewModel.setupActionBar(R.string.title_note)
 
         binding.adView.loadAd()
-        binding.penRecyclerView.adapter = PenAdapter(context!!)
-        binding.colorRecyclerView.adapter = ColorAdapter(context!!, ::setPenColor)
-
-        // TODO: PaintViewのattr等が全て実装完了したらViewModelを利用する
-        binding.eraserImage.setOnClickListener { setEraser() }
+        penAdapter = PenAdapter(context!!, viewModel::setPen)
+        colorAdapter = ColorAdapter(context!!, viewModel::setPenColor)
+        binding.penRecyclerView.adapter = penAdapter
+        binding.colorRecyclerView.adapter = colorAdapter
 
         observe()
     }
 
-    private fun setPenColor(color: Int) {
-        binding.paintView.changePenColor(color)
-    }
-
-    private fun setEraser() {
-        binding.paintView.setEraser()
-    }
-
     private fun observe() {
-
+        // TODO: paintViewでもbindingする
+        viewModel.pen.observe(this) { binding.paintView.setPen(it) }
+        viewModel.penColor.observe(this) { binding.paintView.changePenColor(it) }
+        viewModel.penWidth.observe(this) { binding.paintView.changePenWidth(it) }
+        viewModel.canErase.observe(this) {
+            if (it) {
+                penAdapter.resetSelected()
+            }
+        }
     }
 
     companion object {

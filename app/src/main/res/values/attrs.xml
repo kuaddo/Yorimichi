@@ -17,4 +17,9 @@
         <attr name="rating" format="float"/>
         <attr name="starSize" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="WidthSelector">
+        <attr name="penWidth" format="float"/>
+        <attr name="color" format="color"/>
+    </declare-styleable>
 </resources>
