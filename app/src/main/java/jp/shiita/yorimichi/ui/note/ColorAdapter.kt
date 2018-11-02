@@ -48,6 +48,7 @@ class ColorAdapter(
     class ColorViewHolder(private val binding: ItemColorBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(penColor: PenColor) {
             binding.penColor = penColor
+            binding.executePendingBindings()
         }
     }
 }

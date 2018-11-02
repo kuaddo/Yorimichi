@@ -4,8 +4,8 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.databinding.DataBindingUtil
-import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +16,7 @@ import jp.shiita.yorimichi.data.Post
 import jp.shiita.yorimichi.databinding.FragShopBinding
 import jp.shiita.yorimichi.databinding.ItemNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.toBytes
 import javax.inject.Inject
@@ -44,7 +45,7 @@ class ShopFragment : DaggerFragment() {
         binding.notesRecyclerView.adapter = noteAdapter
         binding.handlers = object : Handlers {
             override fun onClickPost(view: View) {
-                val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_pin)
+                val bitmap = ResourcesCompat.getDrawable(resources, R.drawable.ic_pin, null)!!.getBitmap()
                 viewModel.postPost(bitmap.toBytes())
             }
         }
@@ -78,6 +79,7 @@ class ShopFragment : DaggerFragment() {
         class NotesViewHolder(private val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
             fun bind(post: Post) {
                 binding.post = post
+                binding.executePendingBindings()
             }
         }
     }

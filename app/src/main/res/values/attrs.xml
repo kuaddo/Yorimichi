@@ -3,7 +3,18 @@
     <declare-styleable name="IconButton">
         <attr name="src"/>
         <attr name="text" format="string"/>
+        <attr name="iconSize" format="dimension"/>
+        <attr name="textSize" format="dimension"/>
         <attr name="marginCenter" format="dimension"/>
         <attr name="enabled" format="boolean"/>
+    </declare-styleable>
+    
+    <declare-styleable name="StarView">
+        <attr name="ratio" format="float"/>
+    </declare-styleable>
+
+    <declare-styleable name="RatingView">
+        <attr name="rating" format="float"/>
+        <attr name="starSize" format="dimension"/>
     </declare-styleable>
 </resources>

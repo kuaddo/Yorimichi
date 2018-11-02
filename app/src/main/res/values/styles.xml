@@ -12,4 +12,12 @@
         <item name="android:paddingEnd">@dimen/icon_button_se_padding</item>
         <item name="android:background">@drawable/back_button</item>
     </style>
+
+    <style name="IconButtonSmall">
+        <item name="android:paddingTop">@dimen/icon_button_small_tb_padding</item>
+        <item name="android:paddingBottom">@dimen/icon_button_small_tb_padding</item>
+        <item name="android:paddingStart">@dimen/icon_button_small_se_padding</item>
+        <item name="android:paddingEnd">@dimen/icon_button_small_se_padding</item>
+        <item name="android:background">@drawable/back_button</item>
+    </style>
 </resources>
