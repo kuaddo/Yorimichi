@@ -37,7 +37,7 @@ class NoteFragment : DaggerFragment() {
         mainViewModel.setupActionBar(R.string.title_note)
 
         binding.adView.loadAd()
-        penAdapter = PenAdapter(context!!)
+        penAdapter = PenAdapter(context!!, viewModel::setPen)
         colorAdapter = ColorAdapter(context!!, viewModel::setPenColor)
         binding.penRecyclerView.adapter = penAdapter
         binding.colorRecyclerView.adapter = colorAdapter
@@ -47,9 +47,14 @@ class NoteFragment : DaggerFragment() {
 
     private fun observe() {
         // TODO: paintViewでもbindingする
+        viewModel.pen.observe(this) { binding.paintView.setPen(it) }
         viewModel.penColor.observe(this) { binding.paintView.changePenColor(it) }
         viewModel.penWidth.observe(this) { binding.paintView.changePenWidth(it) }
-        viewModel.canErase.observe(this) { if (it) colorAdapter.resetSelected() }
+        viewModel.canErase.observe(this) {
+            if (it) {
+                penAdapter.resetSelected()
+            }
+        }
     }
 
     companion object {

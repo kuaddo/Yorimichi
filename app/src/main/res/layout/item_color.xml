@@ -23,9 +23,9 @@
         android:layout_height="18dp"
         android:padding="1dp"
         android:src="@drawable/back_circle"
-        android:background="@{penColor.selected ? @drawable/back_color_selected : null}"
+        android:background="@{penColor.selected ? @drawable/back_selected : null}"
         tools:tint="@color/colorPrimary"
-        tools:background="@drawable/back_color_selected"
+        tools:background="@drawable/back_selected"
         app:tint="@{penColor.color}"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>

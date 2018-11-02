@@ -108,7 +108,7 @@
         android:padding="1dp"
         android:scaleType="fitXY"
         android:src="@drawable/eraser"
-        android:background="@{viewModel.canErase ? @drawable/back_color_selected : null}"
+        android:background="@{viewModel.canErase ? @drawable/back_selected : null}"
         android:onClick="@{() -> viewModel.setErase()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
