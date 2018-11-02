@@ -2,6 +2,7 @@ package jp.shiita.yorimichi.ui.main
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
@@ -66,8 +67,8 @@ class MainActivity : DaggerAppCompatActivity() {
 
             vm.drawerLock.observe(this) { if (it) lockDrawer() else unlockDrawer() }
             vm.finishAppMessage.observe(this) {
-                FinishDialogFragment.newInstance(getString(it))
-                    .show(supportFragmentManager, FinishDialogFragment.TAG)
+                SimpleDialogFragment.newInstance(getString(it))
+                    .show(supportFragmentManager, SimpleDialogFragment.TAG)
             }
         }
     }
@@ -81,6 +82,14 @@ class MainActivity : DaggerAppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode != REQUEST_FINISH_DIALOG) return
+
+        when (resultCode) {
+            RESULT_OK, RESULT_CANCELED -> finish()
+        }
     }
 
     private fun lockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -99,5 +108,9 @@ class MainActivity : DaggerAppCompatActivity() {
             binding.drawerLayout.closeDrawers()
             true
         }
+    }
+
+    companion object {
+        const val REQUEST_FINISH_DIALOG = 0
     }
 }
