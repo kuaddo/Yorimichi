@@ -11,6 +11,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
+import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ class MainViewModel @Inject constructor(
     val displayHomeAsUpEnabled: LiveData<Boolean> get() = _displayHomeAsUpEnabled
     val drawerLock: LiveData<Boolean> get() = _drawerLock
     val finishAppMessage: LiveData<Int> get() = _finishAppMessage
+    val searchEvent: LiveData<Unit> get() = _searchEvent
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
@@ -31,6 +33,7 @@ class MainViewModel @Inject constructor(
     private val _displayHomeAsUpEnabled = SingleLiveEvent<Boolean>()
     private val _drawerLock = SingleLiveEvent<Boolean>()
     private val _finishAppMessage = SingleLiveEvent<Int>()
+    private val _searchEvent = SingleUnitLiveEvent()
 
     private val disposables = CompositeDisposable()
 
@@ -58,6 +61,10 @@ class MainViewModel @Inject constructor(
                         onError = { _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message) }
                 )
                 .addTo(disposables)
+    }
+
+    fun search() {
+        _searchEvent.call()
     }
 
     enum class HomeAsUpType { OPEN_DRAWER, POP_BACK_STACK }

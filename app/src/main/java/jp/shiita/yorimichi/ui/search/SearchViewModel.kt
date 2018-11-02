@@ -4,22 +4,13 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
-import io.reactivex.rxkotlin.subscribeBy
-import jp.shiita.yorimichi.data.UserInfo
-import jp.shiita.yorimichi.data.api.PlaceRepository
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
-import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.util.map
-import jp.shiita.yorimichi.util.toSimpleString
 import javax.inject.Inject
 
-class SearchViewModel @Inject constructor(
-        private val placeRepository: PlaceRepository,
-        private val scheduler: BaseSchedulerProvider
-) : ViewModel() {
+class SearchViewModel @Inject constructor() : ViewModel() {
     val searchEvent       : LiveData<Unit>    get() = _searchEvent
     val requiredTimeString: LiveData<String>  get() = requiredTimeMinute.map { toTimeString(it) }
-    val latLng            : LiveData<LatLng>  get() = _latLng
     val selected          : LiveData<Boolean> get() = _latLng.map { it != null }
 
     val requiredTimeMinute = MutableLiveData<Int>().apply { value = 80 }
@@ -28,14 +19,6 @@ class SearchViewModel @Inject constructor(
     private val _latLng             = MutableLiveData<LatLng>()
 
     fun search() {
-        val location = UserInfo.latLng?.toSimpleString() ?: return
-//        placeRepository.getPlacesWithType(location, 2000, "cafe")
-//                .subscribeOn(scheduler.io())
-//                .observeOn(scheduler.ui())
-//                .subscribeBy(
-//                        onSuccess = {},
-//                        onError = {}
-//                )
         _searchEvent.call()
     }
 

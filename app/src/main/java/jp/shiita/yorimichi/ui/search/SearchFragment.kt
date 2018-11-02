@@ -20,11 +20,14 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragSearchBinding
+import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
 class SearchFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val mainViewModel: MainViewModel
+            by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)}
     private val viewModel: SearchViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java) }
     private lateinit var binding: FragSearchBinding
@@ -101,14 +104,7 @@ class SearchFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        viewModel.searchEvent.observe(this) {
-            // SearchFragmentはネストされたフラグメントであるため
-            // TODO: tab
-//            activity?.supportFragmentManager?.replaceFragment(
-//                    R.id.container,
-//                    SearchResultFragment.newInstance(),
-//                    SearchResultFragment.TAG)
-        }
+        viewModel.searchEvent.observe(this) { mainViewModel.search() }
     }
 
     companion object {

@@ -160,6 +160,7 @@ class MapFragment : DaggerFragment() {
 
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
+        mainViewModel.searchEvent.observe(this) { viewModel.searchPlaces() }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { places ->
             searchResultAdapter.reset(places)
