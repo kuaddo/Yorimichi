@@ -9,6 +9,8 @@ class NoteViewModel @Inject constructor() : ViewModel() {
     val penColor: LiveData<Int> get() = _penColor
     val canErase: LiveData<Boolean> get() = _canErase
 
+    val penWidth = MutableLiveData<Float>().apply { value = 20f }
+
     private val _penColor = MutableLiveData<Int>()
     private val _canErase = MutableLiveData<Boolean>().apply { value = false }
 

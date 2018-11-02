@@ -46,7 +46,9 @@ class NoteFragment : DaggerFragment() {
     }
 
     private fun observe() {
+        // TODO: paintViewでもbindingする
         viewModel.penColor.observe(this) { binding.paintView.changePenColor(it) }
+        viewModel.penWidth.observe(this) { binding.paintView.changePenWidth(it) }
         viewModel.canErase.observe(this) { if (it) colorAdapter.resetSelected() }
     }
 

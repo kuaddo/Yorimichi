@@ -20,6 +20,7 @@ class ColorAdapter(
         val ta = context.resources.obtainTypedArray(R.array.colorsPen)
         penColors = (0 until ta.length()).map { PenColor(ta.getColor(it, 0), it % 2 != 0, false) }
         penColors[0].selected = true
+        onClickColor(penColors[0].color)
         ta.recycle()
     }
 
