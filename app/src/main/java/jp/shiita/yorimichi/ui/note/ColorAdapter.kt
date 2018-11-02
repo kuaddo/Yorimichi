@@ -32,17 +32,22 @@ class ColorAdapter(
         if (holder is ColorViewHolder) {
             val penColor = penColors[position]
             holder.bind(penColor)
-            if (!penColor.locked) holder.itemView.setOnClickListener {
-                onClickColor(penColor.color)
-                val index = penColors.indexOfFirst { it.selected }
-                if (index == position) return@setOnClickListener
+            if (!penColor.locked) {
+                holder.itemView.setOnClickListener {
+                    onClickColor(penColor.color)
+                    val index = penColors.indexOfFirst { it.selected }
+                    if (index == position) return@setOnClickListener
 
-                if (index != -1) {
-                    penColors[index].selected = false
-                    notifyItemChanged(index)
+                    if (index != -1) {
+                        penColors[index].selected = false
+                        notifyItemChanged(index)
+                    }
+                    penColors[position].selected = true
+                    notifyItemChanged(position)
                 }
-                penColors[position].selected = true
-                notifyItemChanged(position)
+            }
+            else {
+                holder.itemView.setOnClickListener(null)
             }
         }
     }
