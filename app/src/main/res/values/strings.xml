@@ -16,6 +16,7 @@
     <string name="drawer_note">ノートを見る</string>
     <string name="drawer_shop">ショップ</string>
     <string name="drawer_setting">設定</string>
+    <string name="drawer_points">%1$dp</string>
 
     <!-- menu -->
     <string name="menu_sort_dist_asc">近い順</string>

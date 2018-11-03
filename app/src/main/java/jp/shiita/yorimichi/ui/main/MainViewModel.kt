@@ -1,6 +1,7 @@
 package jp.shiita.yorimichi.ui.main
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
@@ -23,6 +24,7 @@ class MainViewModel @Inject constructor(
     val displayHomeAsUpEnabled: LiveData<Boolean> get() = _displayHomeAsUpEnabled
     val drawerLock: LiveData<Boolean> get() = _drawerLock
     val finishAppMessage: LiveData<Int> get() = _finishAppMessage
+    val points: LiveData<Int> get() = _points
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
@@ -31,6 +33,7 @@ class MainViewModel @Inject constructor(
     private val _displayHomeAsUpEnabled = SingleLiveEvent<Boolean>()
     private val _drawerLock = SingleLiveEvent<Boolean>()
     private val _finishAppMessage = SingleLiveEvent<Int>()
+    private val _points = MutableLiveData<Int>().apply { value = UserInfo.points }
 
     private val disposables = CompositeDisposable()
 
@@ -50,14 +53,32 @@ class MainViewModel @Inject constructor(
 
     fun finishAppLocationPermissionDenied() = _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message)
 
-    fun createUser() {
-        if (UserInfo.userId.isEmpty()) repository.createUser()
-                .subscribeOn(scheduler.io())
-                .subscribeBy(
-                        onSuccess = { UserInfo.userId = it },
-                        onError = { _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message) }
-                )
-                .addTo(disposables)
+    fun setPoints(points: Int) {
+        _points.postValue(points)
+    }
+
+    fun createOrUpdateUser() {
+        if (UserInfo.userId.isEmpty()) {
+            repository.createUser()
+                    .subscribeOn(scheduler.io())
+                    .subscribeBy(
+                            onSuccess = { UserInfo.userId = it },
+                            onError = { _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message) }
+                    )
+                    .addTo(disposables)
+        }
+        else {
+            repository.getUser(UserInfo.userId)
+                    .subscribeOn(scheduler.io())
+                    .subscribeBy(
+                            onSuccess = {
+                                UserInfo.points = it
+                                setPoints(it)
+                            },
+                            onError = {}
+                    )
+                    .addTo(disposables)
+        }
     }
 
     enum class HomeAsUpType { OPEN_DRAWER, POP_BACK_STACK }

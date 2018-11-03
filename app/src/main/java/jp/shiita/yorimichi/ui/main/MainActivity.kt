@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
+import android.widget.TextView
 import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.ActMainBinding
@@ -41,7 +42,7 @@ class MainActivity : DaggerAppCompatActivity() {
             supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
         }
 
-        viewModel.createUser()
+        viewModel.createOrUpdateUser()
         observe()
     }
 
@@ -71,6 +72,12 @@ class MainActivity : DaggerAppCompatActivity() {
                     setTargetFragment(null, REQUEST_FINISH_DIALOG)
                     show(supportFragmentManager, SimpleDialogFragment.TAG)
                 }
+            }
+            vm.points.observe(this) {
+                binding.navView
+                        .getHeaderView(0)
+                        .findViewById<TextView>(R.id.pointsText)
+                        .text = getString(R.string.drawer_points, it)
             }
         }
     }

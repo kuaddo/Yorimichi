@@ -46,6 +46,7 @@ class ShopFragment : DaggerFragment() {
 
     private fun observe() {
         viewModel.posts.observe(this) { noteAdapter.reset(it) }
+        viewModel.pointsEvent.observe(this) { mainViewModel.setPoints(it) }
     }
 
     // テストのための実装なのでここで定義する

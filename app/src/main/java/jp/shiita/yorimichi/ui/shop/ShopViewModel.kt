@@ -10,6 +10,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.data.Post
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
+import jp.shiita.yorimichi.live.SingleLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.ui.note.NoteViewModel.Companion.TEST_PLACE_UID
 import javax.inject.Inject
@@ -19,8 +20,10 @@ class ShopViewModel @Inject constructor(
         private val scheduler: BaseSchedulerProvider
 ) : ViewModel() {
     val posts: LiveData<List<Post>> get() = _posts
+    val pointsEvent: LiveData<Int> get() = _pointsEvent
 
     private val _posts = MutableLiveData<List<Post>>()
+    private val _pointsEvent = SingleLiveEvent<Int>()
 
     private val disposables = CompositeDisposable()
 
@@ -56,6 +59,20 @@ class ShopViewModel @Inject constructor(
                         onError = {
                             Log.e(TAG, "onError:getPlacePosts", it)
                         }
+                )
+                .addTo(disposables)
+    }
+
+    fun addTenPoints() {
+        repository.addPoints(UserInfo.userId, 10)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onComplete = {
+                            UserInfo.points += 10
+                            _pointsEvent.postValue(UserInfo.points)
+                        },
+                        onError = {}
                 )
                 .addTo(disposables)
     }
