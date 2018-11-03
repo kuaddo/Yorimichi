@@ -27,11 +27,17 @@ class CategoryAdapter(
             val category = categories[position]
             holder.bind(category)
             holder.itemView.setOnClickListener {
-                categories[position] = category.copy(second = !category.second)
-                notifyItemChanged(position)
+                if (!categories[position].second || selectedCount() > 1) {
+                    categories[position] = category.copy(second = !category.second)
+                    notifyItemChanged(position)
+                }
             }
         }
     }
+
+    fun getSelectedCategories(): List<String> = categories.filter { it.second }.map { it.first }
+
+    private fun selectedCount(): Int = categories.count { it.second }
 
     class CategoryViewHolder(view: View, private val resources: Resources) : RecyclerView.ViewHolder(view) {
         val text = view as TextView

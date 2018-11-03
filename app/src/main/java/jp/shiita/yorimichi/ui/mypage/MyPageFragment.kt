@@ -22,6 +22,7 @@ class MyPageFragment : DaggerFragment() {
     private lateinit var binding: FragMyPageBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_my_page, container, false)
         return binding.root
     }

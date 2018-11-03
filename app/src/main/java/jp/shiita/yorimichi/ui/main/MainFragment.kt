@@ -18,6 +18,7 @@ import jp.shiita.yorimichi.ui.main.MainFragment.PagerAdapter.Companion.MAP_FRAGM
 import jp.shiita.yorimichi.ui.main.MainFragment.PagerAdapter.Companion.SEARCH_FRAGMENT
 import jp.shiita.yorimichi.ui.map.MapFragment
 import jp.shiita.yorimichi.ui.search.SearchFragment
+import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
 class MainFragment : DaggerFragment() {
@@ -61,11 +62,17 @@ class MainFragment : DaggerFragment() {
             tl.getTabAt(MAP_FRAGMENT)?.setCustomView(R.layout.tab_map)
             tl.getTabAt(SEARCH_FRAGMENT)?.setCustomView(R.layout.tab_search)
         }
+
+        observe()
     }
 
     override fun onDestroyView() {
         binding.viewPager.clearOnPageChangeListeners()
         super.onDestroyView()
+    }
+
+    private fun observe() {
+        viewModel.searchEvent.observe(this) { binding.viewPager.setCurrentItem(MAP_FRAGMENT, true) }
     }
 
     private class PagerAdapter(fragmentManager: FragmentManager, private val fragments: List<Fragment>) : FragmentPagerAdapter(fragmentManager) {

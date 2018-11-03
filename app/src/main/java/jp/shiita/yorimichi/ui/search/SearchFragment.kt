@@ -20,13 +20,14 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragSearchBinding
-import jp.shiita.yorimichi.ui.searchresult.SearchResultFragment
+import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.util.observe
-import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
 
 class SearchFragment : DaggerFragment() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val mainViewModel: MainViewModel
+            by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)}
     private val viewModel: SearchViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java) }
     private lateinit var binding: FragSearchBinding
@@ -36,6 +37,7 @@ class SearchFragment : DaggerFragment() {
     private var marker: Marker? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search, container, false)
         return binding.root
     }
@@ -45,17 +47,9 @@ class SearchFragment : DaggerFragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
-        categoryAdapter = CategoryAdapter(context!!, mutableListOf(
-            "shopping_mall" to false,
-            "library" to false,
-            "cafe" to false,
-            "book_store" to false,
-            "park" to false,
-            "movie_theater" to false,
-            "home_goods_store" to false,
-            "clothing_store" to false,
-            "bar" to false
-        ))
+        val categories = resources.getStringArray(R.array.place_types).map { it to false }.toMutableList()
+        categories[0] = categories[0].copy(second = true)
+        categoryAdapter = CategoryAdapter(context!!, categories)
         binding.categoryRecyclerView.adapter = categoryAdapter
 
         // GoogleMapsのジェスチャーがScrollView内で動くように
@@ -103,12 +97,8 @@ class SearchFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        viewModel.searchEvent.observe(this) {
-            // SearchFragmentはネストされたフラグメントであるため
-            activity?.supportFragmentManager?.replaceFragment(
-                    R.id.container,
-                    SearchResultFragment.newInstance(),
-                    SearchResultFragment.TAG)
+        viewModel.searchRadiusEvent.observe(this) {
+            mainViewModel.search(categoryAdapter.getSelectedCategories(), it)
         }
     }
 

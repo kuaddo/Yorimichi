@@ -29,6 +29,8 @@ class NoteViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
 
+    override fun onCleared() = disposables.clear()
+
     fun setPenColor(color: Int) {
         _penColor.postValue(color)
     }

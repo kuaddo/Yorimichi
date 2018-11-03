@@ -1,4 +1,4 @@
-package jp.shiita.yorimichi.ui.searchresult
+package jp.shiita.yorimichi.ui.map
 
 import android.content.Context
 import android.databinding.DataBindingUtil

@@ -37,4 +37,27 @@
     <string name="search_query_hint">キーワード・住所で検索する</string>
     <string name="search_button_search">検索</string>
     <string name="search_button_goto">ここに行く</string>
+
+    <!-- place types -->
+    <string-array name="place_types">
+        <item>カフェ</item>
+        <item>ショッピングモール</item>
+        <item>図書館</item>
+        <item>本屋</item>
+        <item>公園</item>
+        <item>映画館</item>
+        <item>ホームセンター</item>
+        <item>洋服屋</item>
+        <item>バー</item>
+        <item>パン屋</item>
+        <item>レストラン</item>
+        <item>ペットショップ</item>
+        <item>コンビニ</item>
+        <item>美術館</item>
+        <item>店</item>
+        <item>ジム</item>
+        <item>ネットカフェ</item>
+        <item>CDレンタル店</item>
+        <item>カラオケ</item>
+    </string-array>
 </resources>

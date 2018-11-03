@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -54,7 +54,6 @@
             android:layout_width="100dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             app:rating="@{place.rating}"
             app:starSize="20dp"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -66,7 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:text="@{place.types[0]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView2"

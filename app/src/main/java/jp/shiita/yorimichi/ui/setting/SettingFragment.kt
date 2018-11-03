@@ -25,6 +25,7 @@ class SettingFragment : DaggerFragment() {
     private lateinit var binding: FragSettingBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_setting, container, false)
         return binding.root
     }
