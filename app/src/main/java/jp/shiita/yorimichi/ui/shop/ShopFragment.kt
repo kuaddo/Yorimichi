@@ -28,6 +28,7 @@ class ShopFragment : DaggerFragment() {
     private lateinit var noteAdapter: NoteAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_shop, container, false)
         return binding.root
     }

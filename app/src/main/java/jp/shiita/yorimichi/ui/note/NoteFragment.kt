@@ -28,8 +28,8 @@ class NoteFragment : DaggerFragment() {
     private lateinit var colorAdapter: ColorAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.frag_note, container, false)
         setHasOptionsMenu(true)
+        binding = DataBindingUtil.inflate(inflater, R.layout.frag_note, container, false)
         return binding.root
     }
 

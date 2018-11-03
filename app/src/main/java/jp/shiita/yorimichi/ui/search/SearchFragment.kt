@@ -37,6 +37,7 @@ class SearchFragment : DaggerFragment() {
     private var marker: Marker? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_search, container, false)
         return binding.root
     }
