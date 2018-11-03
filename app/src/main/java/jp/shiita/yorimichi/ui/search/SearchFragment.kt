@@ -47,17 +47,8 @@ class SearchFragment : DaggerFragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
-        categoryAdapter = CategoryAdapter(context!!, mutableListOf(
-            "shopping_mall" to false,
-            "library" to false,
-            "cafe" to false,
-            "book_store" to false,
-            "park" to false,
-            "movie_theater" to false,
-            "home_goods_store" to false,
-            "clothing_store" to false,
-            "bar" to false
-        ))
+        val categories = resources.getStringArray(R.array.place_types).map { it to false }.toMutableList()
+        categoryAdapter = CategoryAdapter(context!!, categories)
         binding.categoryRecyclerView.adapter = categoryAdapter
 
         // GoogleMapsのジェスチャーがScrollView内で動くように
