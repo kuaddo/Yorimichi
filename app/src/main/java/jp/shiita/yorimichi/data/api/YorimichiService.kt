@@ -35,7 +35,7 @@ interface YorimichiService {
     @GET("places/searchbykeyword/")
     fun getPlacesWithKeyword(@Query("location") location: String,
                              @Query("radius") radius: Int,
-                             @Query("keyword") keyword: String): Single<PlaceResult>
+                             @Query("keyword", encoded = true) keyword: String): Single<PlaceResult>
 
     @GET("places/getnext/")
     fun getNextPlaces(@Query("pageToken") pageToken: String): Single<PlaceResult>

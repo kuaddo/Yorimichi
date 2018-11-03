@@ -3,6 +3,7 @@ package jp.shiita.yorimichi.ui.map
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import io.reactivex.rxkotlin.subscribeBy
@@ -11,6 +12,7 @@ import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.util.toSimpleString
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class MapViewModel @Inject constructor(
@@ -49,11 +51,17 @@ class MapViewModel @Inject constructor(
         _latLng.value = latLng
         if (!isLocationObserved) {
             isLocationObserved = true
-            searchPlaces()
+            searchPlacesDefault()
         }
     }
 
-    fun searchPlaces() {
+    fun searchPlacesDefault() {
+        // TODO: 初期検索キーワードを実装。とりあえずカフェにする
+        searchPlaces(listOf("カフェ"), radius = 2000)
+    }
+
+    fun searchPlaces(categories: List<String>, radius: Int) {
+        if (categories.isEmpty()) return
         if (!isLocationObserved) return
         val latLng = this.latLng.value ?: return
 
@@ -73,7 +81,10 @@ class MapViewModel @Inject constructor(
 //                        }
 //                )
 
-        repository.getPlacesWithKeyword(latLng.toSimpleString(), 4000, "カフェ")
+        // "+"がエンコードされないように自前でエンコード処理を行う
+        val keywords = categories.map { URLEncoder.encode(it, "UTF-8") }.joinToString(separator = "+OR+")
+        Log.d("keywords", keywords)
+        repository.getPlacesWithKeyword(latLng.toSimpleString(), radius, keywords)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(

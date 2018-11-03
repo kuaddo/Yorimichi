@@ -11,8 +11,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
+import jp.shiita.yorimichi.live.LiveEvent
 import jp.shiita.yorimichi.live.SingleLiveEvent
-import jp.shiita.yorimichi.live.UnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class MainViewModel @Inject constructor(
     val drawerLock: LiveData<Boolean> get() = _drawerLock
     val finishAppMessage: LiveData<Int> get() = _finishAppMessage
     val points: LiveData<Int> get() = _points
-    val searchEvent: LiveData<Unit> get() = _searchEvent
+    val searchEvent: LiveData<Pair<List<String>, Int>> get() = _searchEvent
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(
     private val _drawerLock = SingleLiveEvent<Boolean>()
     private val _finishAppMessage = SingleLiveEvent<Int>()
     private val _points = MutableLiveData<Int>().apply { value = UserInfo.points }
-    private val _searchEvent = UnitLiveEvent()
+    private val _searchEvent = LiveEvent<Pair<List<String>, Int>>()
 
     private val disposables = CompositeDisposable()
 
@@ -84,8 +84,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun search() {
-        _searchEvent.call()
+    fun search(categories: List<String>, radius: Int) {
+        _searchEvent.postValue(categories to radius)
     }
 
     enum class HomeAsUpType { OPEN_DRAWER, POP_BACK_STACK }

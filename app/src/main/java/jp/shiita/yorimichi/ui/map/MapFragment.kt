@@ -154,13 +154,13 @@ class MapFragment : DaggerFragment() {
                 true        // cameraのアニメーションは自前でやる
             }
 
-            viewModel.searchPlaces()
+            viewModel.searchPlacesDefault()
         }
     }
 
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
-        mainViewModel.searchEvent.observe(this) { viewModel.searchPlaces() }
+        mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { places ->
             searchResultAdapter.reset(places)

@@ -40,14 +40,14 @@
 
     <!-- place types -->
     <string-array name="place_types">
+        <item>カフェ</item>
         <item>ショッピングモール</item>
         <item>図書館</item>
-        <item>カフェ</item>
         <item>本屋</item>
         <item>公園</item>
         <item>映画館</item>
         <item>ホームセンター</item>
-        <item>服屋</item>
+        <item>洋服屋</item>
         <item>バー</item>
         <item>パン屋</item>
         <item>レストラン</item>

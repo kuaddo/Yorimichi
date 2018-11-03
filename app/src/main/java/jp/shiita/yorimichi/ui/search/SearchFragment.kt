@@ -48,6 +48,7 @@ class SearchFragment : DaggerFragment() {
         binding.viewModel = viewModel
 
         val categories = resources.getStringArray(R.array.place_types).map { it to false }.toMutableList()
+        categories[0] = categories[0].copy(second = true)
         categoryAdapter = CategoryAdapter(context!!, categories)
         binding.categoryRecyclerView.adapter = categoryAdapter
 
@@ -96,7 +97,9 @@ class SearchFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        viewModel.searchEvent.observe(this) { mainViewModel.search() }
+        viewModel.searchRadiusEvent.observe(this) {
+            mainViewModel.search(categoryAdapter.getSelectedCategories(), it)
+        }
     }
 
     companion object {

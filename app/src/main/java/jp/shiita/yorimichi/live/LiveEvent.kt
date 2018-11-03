@@ -1,7 +1,7 @@
 package jp.shiita.yorimichi.live
 
 import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.support.annotation.MainThread
 import java.util.concurrent.CopyOnWriteArrayList
@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 /**
  * [SingleLiveEvent]で不十分である、複数のオブザーバがある場合に利用
  */
-open class LiveEvent<T> : LiveData<T>() {
+open class LiveEvent<T> : MutableLiveData<T>() {
     private val dispatchedTagList = CopyOnWriteArrayList<String>()
 
     @MainThread
