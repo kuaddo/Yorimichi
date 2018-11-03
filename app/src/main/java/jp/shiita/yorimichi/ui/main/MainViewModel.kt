@@ -12,7 +12,7 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
-import jp.shiita.yorimichi.live.SingleUnitLiveEvent
+import jp.shiita.yorimichi.live.UnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(
     private val _drawerLock = SingleLiveEvent<Boolean>()
     private val _finishAppMessage = SingleLiveEvent<Int>()
     private val _points = MutableLiveData<Int>().apply { value = UserInfo.points }
-    private val _searchEvent = SingleUnitLiveEvent()
+    private val _searchEvent = UnitLiveEvent()
 
     private val disposables = CompositeDisposable()
 
