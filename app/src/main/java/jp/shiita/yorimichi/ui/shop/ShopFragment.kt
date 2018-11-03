@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +15,7 @@ import jp.shiita.yorimichi.data.Post
 import jp.shiita.yorimichi.databinding.FragShopBinding
 import jp.shiita.yorimichi.databinding.ItemNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
-import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.observe
-import jp.shiita.yorimichi.util.toBytes
 import javax.inject.Inject
 
 class ShopFragment : DaggerFragment() {
@@ -43,18 +40,13 @@ class ShopFragment : DaggerFragment() {
 
         noteAdapter = NoteAdapter(context!!, mutableListOf())
         binding.notesRecyclerView.adapter = noteAdapter
-        binding.handlers = object : Handlers {
-            override fun onClickPost(view: View) {
-                val bitmap = ResourcesCompat.getDrawable(resources, R.drawable.ic_pin, null)!!.getBitmap()
-                viewModel.postPost(bitmap.toBytes())
-            }
-        }
 
         observe()
     }
 
     private fun observe() {
         viewModel.posts.observe(this) { noteAdapter.reset(it) }
+        viewModel.pointsEvent.observe(this) { mainViewModel.setPoints(it) }
     }
 
     // テストのための実装なのでここで定義する
@@ -82,10 +74,6 @@ class ShopFragment : DaggerFragment() {
                 binding.executePendingBindings()
             }
         }
-    }
-
-    interface Handlers {
-        fun onClickPost(view: View)
     }
 
     companion object {

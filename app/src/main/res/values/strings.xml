@@ -16,16 +16,20 @@
     <string name="drawer_note">ノートを見る</string>
     <string name="drawer_shop">ショップ</string>
     <string name="drawer_setting">設定</string>
+    <string name="drawer_points">%1$dp</string>
 
     <!-- menu -->
     <string name="menu_sort_dist_asc">近い順</string>
     <string name="menu_sort_dist_desc">遠い順</string>
+    <string name="menu_upload_note">アップロード</string>
 
     <!-- dialog -->
+    <string name="dialog_simple_positive">OK</string>
+    <string name="dialog_simple_negative">Cancel</string>
     <string name="dialog_location_permission_denied_message">位置情報が取得できないため、アプリを終了します。</string>
     <string name="dialog_initialize_user_error_message">アプリの初期設定が失敗しました。ネットワークの状態を確認してください。</string>
-    <string name="dialog_finish_positive">OK</string>
-    
+    <string name="dialog_upload_note_confirm_message">ノートを送信します</string>
+
     <!-- search -->
     <string name="search_time_required">所要時間</string>
     <string name="search_category">カテゴリ</string>

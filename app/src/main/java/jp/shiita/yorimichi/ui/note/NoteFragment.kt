@@ -1,18 +1,20 @@
 package jp.shiita.yorimichi.ui.note
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.ui.main.SimpleDialogFragment
 import jp.shiita.yorimichi.util.loadAd
 import jp.shiita.yorimichi.util.observe
+import jp.shiita.yorimichi.util.toBytes
 import javax.inject.Inject
 
 class NoteFragment : DaggerFragment() {
@@ -27,6 +29,7 @@ class NoteFragment : DaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_note, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -45,6 +48,33 @@ class NoteFragment : DaggerFragment() {
         observe()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.frag_note, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_frag_note_upload -> {
+                SimpleDialogFragment.newInstance(getString(R.string.dialog_upload_note_confirm_message), true).let {
+                    it.setTargetFragment(this, REQUEST_UPLOAD_NOTE)
+                    it.show(fragmentManager, SimpleDialogFragment.TAG)
+                }
+            }
+            else -> return false
+        }
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_UPLOAD_NOTE -> when (resultCode) {
+                Activity.RESULT_OK -> viewModel.uploadNote(binding.paintView.getMainBitmap().toBytes())
+            }
+        }
+    }
+
     private fun observe() {
         // TODO: paintViewでもbindingする
         viewModel.pen.observe(this) { binding.paintView.setPen(it) }
@@ -59,6 +89,7 @@ class NoteFragment : DaggerFragment() {
 
     companion object {
         val TAG: String = NoteFragment::class.java.simpleName
+        private const val REQUEST_UPLOAD_NOTE = 1000
         fun newInstance() = NoteFragment()
     }
 }

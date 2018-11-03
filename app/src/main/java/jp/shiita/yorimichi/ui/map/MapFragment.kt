@@ -199,7 +199,7 @@ class MapFragment : DaggerFragment() {
 
     companion object {
         val TAG: String = MapFragment::class.java.simpleName
-        private const val REQUEST_LOCATION_PERMISSION = 0
+        private const val REQUEST_LOCATION_PERMISSION = 1000
         fun newInstance() = MapFragment()
     }
 }

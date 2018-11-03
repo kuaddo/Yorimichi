@@ -2,11 +2,13 @@ package jp.shiita.yorimichi.ui.main
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
+import android.widget.TextView
 import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.ActMainBinding
@@ -40,7 +42,7 @@ class MainActivity : DaggerAppCompatActivity() {
             supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
         }
 
-        viewModel.createUser()
+        viewModel.createOrUpdateUser()
         observe()
     }
 
@@ -66,8 +68,16 @@ class MainActivity : DaggerAppCompatActivity() {
 
             vm.drawerLock.observe(this) { if (it) lockDrawer() else unlockDrawer() }
             vm.finishAppMessage.observe(this) {
-                FinishDialogFragment.newInstance(getString(it))
-                    .show(supportFragmentManager, FinishDialogFragment.TAG)
+                SimpleDialogFragment.newInstance(getString(it), false).apply {
+                    setTargetFragment(null, REQUEST_FINISH_DIALOG)
+                    show(supportFragmentManager, SimpleDialogFragment.TAG)
+                }
+            }
+            vm.points.observe(this) {
+                binding.navView
+                        .getHeaderView(0)
+                        .findViewById<TextView>(R.id.pointsText)
+                        .text = getString(R.string.drawer_points, it)
             }
         }
     }
@@ -81,6 +91,15 @@ class MainActivity : DaggerAppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_FINISH_DIALOG) return
+
+        when (resultCode) {
+            RESULT_OK, RESULT_CANCELED -> finish()
+        }
     }
 
     private fun lockDrawer() = binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -99,5 +118,9 @@ class MainActivity : DaggerAppCompatActivity() {
             binding.drawerLayout.closeDrawers()
             true
         }
+    }
+
+    companion object {
+        private const val REQUEST_FINISH_DIALOG = 0
     }
 }

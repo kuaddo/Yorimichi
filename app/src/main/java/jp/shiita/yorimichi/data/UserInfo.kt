@@ -7,6 +7,7 @@ object UserInfo : KotprefModel() {
     var userId by stringPref()
     var latitude by stringPref()
     var longitude by stringPref()
+    var points by intPref(0)
 
     var latLng: LatLng?
         get() =
