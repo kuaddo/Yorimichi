@@ -3,6 +3,7 @@ package jp.shiita.yorimichi.data.api
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Single
+import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.Post
 import jp.shiita.yorimichi.util.toBase64
 
@@ -38,4 +39,15 @@ class YorimichiRepository(
                 if (response.code() == 204 || body == null) emptyList()
                 else body.getAsJsonArray("posts_array")
                     .map { gson.fromJson(it, Post::class.java) }}
+
+    fun getPlacesWithType(location: String, radius: Int, type: String): Single<PlaceResult> =
+            yorimichiService.getPlacesWithType(location, radius, type)
+
+
+    fun getPlacesWithKeyword(location: String, radius: Int, keyword: String): Single<PlaceResult> =
+            yorimichiService.getPlacesWithKeyword(location, radius, keyword)
+
+
+    fun getNextPlaces(pageToken: String): Single<PlaceResult> =
+            yorimichiService.getNextPlaces(pageToken)
 }

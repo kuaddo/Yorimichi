@@ -34,6 +34,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:orientation="vertical"
+        android:visibility="@{viewModel.showsSearchResult ? View.VISIBLE : View.GONE}"
         tools:listitem="@layout/item_search_result"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintVertical_weight="1"

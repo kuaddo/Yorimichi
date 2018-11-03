@@ -11,8 +11,7 @@ data class PlaceResult(
     data class Place(
             val id: String,
             val name: String,
-            val lat: Double,
-            val lng: Double,
+            val geometry: Geometry,
             val icon: String,
             val photos: List<Photo>,
             val placeId: String,
@@ -21,6 +20,8 @@ data class PlaceResult(
             val types: List<String>,
             val vicinity: String
     ) {
+        val lat get() = geometry.location.lat
+        val lng get() = geometry.location.lng
         val latLng get() = LatLng(lat, lng)
         var selected = false        // RecyclerViewで選択されているか
 
@@ -37,6 +38,21 @@ data class PlaceResult(
         fun setDistance(targetLat: Double, targetLng: Double) =
                 setDistance(LatLng(targetLat, targetLng))
     }
+
+    data class Geometry(
+            val location: Location,
+            val viewport: Viewport
+    )
+
+    data class Location(
+            val lat: Double,
+            val lng: Double
+    )
+
+    data class Viewport(
+            val northeast: Location,
+            val southwest: Location
+    )
 
     data class Photo(
             val width: Int,

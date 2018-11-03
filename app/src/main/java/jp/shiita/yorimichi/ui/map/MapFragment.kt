@@ -176,6 +176,7 @@ class MapFragment : DaggerFragment() {
         }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
         viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
+        viewModel.moveCameraErrorEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
         viewModel.smallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(smallDescriptor) }}
         viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
         viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
@@ -200,6 +201,7 @@ class MapFragment : DaggerFragment() {
     companion object {
         val TAG: String = MapFragment::class.java.simpleName
         private const val REQUEST_LOCATION_PERMISSION = 1000
+        private const val INITIAL_ZOOM_LEVEL = 16f
         fun newInstance() = MapFragment()
     }
 }
