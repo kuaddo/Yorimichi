@@ -8,9 +8,11 @@ import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
+import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.ActMainBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.OPEN_DRAWER
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.POP_BACK_STACK
@@ -19,6 +21,7 @@ import jp.shiita.yorimichi.ui.note.NoteFragment
 import jp.shiita.yorimichi.ui.setting.SettingFragment
 import jp.shiita.yorimichi.ui.shop.ShopFragment
 import jp.shiita.yorimichi.util.addFragment
+import jp.shiita.yorimichi.util.bindImageCloudStrage
 import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
@@ -73,11 +76,18 @@ class MainActivity : DaggerAppCompatActivity() {
                     show(supportFragmentManager, SimpleDialogFragment.TAG)
                 }
             }
-            vm.points.observe(this) {
+            vm.updatePointEvent.observe(this) {
                 binding.navView
                         .getHeaderView(0)
                         .findViewById<TextView>(R.id.pointsText)
-                        .text = getString(R.string.drawer_point_value, it)
+                        .text = getString(R.string.drawer_point_value, UserInfo.points)
+            }
+            vm.updateIconEvent.observe(this) {
+                binding.navView
+                        .getHeaderView(0)
+                        .findViewById<ImageView>(R.id.iconImage)
+                        .bindImageCloudStrage("gs://${UserInfo.iconBucket}", UserInfo.iconFileName)
+                // TODO: 応急処置
             }
         }
     }
