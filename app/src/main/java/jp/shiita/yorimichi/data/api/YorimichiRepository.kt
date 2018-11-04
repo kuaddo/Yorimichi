@@ -26,7 +26,7 @@ class YorimichiRepository(
                 else body.getAsJsonArray("posts_array")
                     .map { gson.fromJson(it, Post::class.java) }}
 
-    fun addPoints(uuid: String, additionalPoints: Int): Completable =
+    fun addPoints(uuid: String, additionalPoints: Int): Single<User> =
             yorimichiService.addPoints(uuid, mapOf("point" to additionalPoints.toString()))
 
     fun getGoods(uuid: String): Single<GoodResult> =

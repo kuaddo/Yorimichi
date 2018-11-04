@@ -21,7 +21,7 @@ interface YorimichiService {
     fun getUserPosts(@Path("uuid") uuid: String): Single<Response<JsonObject>>
 
     @POST("users/{uuid}/points/")
-    fun addPoints(@Path("uuid") uuid: String, @Body body: Map<String, String>): Completable
+    fun addPoints(@Path("uuid") uuid: String, @Body body: Map<String, String>): Single<User>
 
     @GET("users/{uuid}/goods")
     fun getGoods(@Path("uuid") uuid: String): Single<GoodResult>
