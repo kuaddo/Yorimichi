@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:paddingTop="40dp"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingEnd="16dp"
+    android:background="@color/colorDefaultBackground">
 
     <TextView
         android:id="@+id/textView7"
@@ -23,8 +24,10 @@
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:padding="12dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_launcher"
+        android:background="@drawable/back_drawer_icon"
         app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/linearLayout"
@@ -46,9 +49,10 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:padding="4dp"
         android:background="@drawable/back_drawer_badge"
         android:orientation="horizontal"
-        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/textView8">
@@ -76,7 +80,7 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:text="@string/drawer_point"
         android:textColor="@color/colorTextSecondary"
         android:textSize="@dimen/text_small"
@@ -87,9 +91,10 @@
         android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:padding="4dp"
         android:background="@drawable/back_drawer_badge"
         android:orientation="horizontal"
-        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView9"
         app:layout_constraintTop_toBottomOf="@+id/textView9">
@@ -116,8 +121,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_marginTop="24dp"
-        android:background="@color/colorDivider"
+        android:background="@color/colorDarkGrey"
         app:layout_constraintTop_toBottomOf="@+id/imageView"/>
 </android.support.constraint.ConstraintLayout>
