@@ -21,6 +21,7 @@ class MapViewModel @Inject constructor(
 ) : ViewModel() {
     val latLng: LiveData<LatLng> get() = _latLng
     val places: LiveData<List<PlaceResult.Place>> get() = _places
+    val routes: LiveData<List<LatLng>> get() = _routes
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
     val moveCameraErrorEvent: LiveData<LatLng> get() = _moveCameraErrorEvent
@@ -32,6 +33,7 @@ class MapViewModel @Inject constructor(
 
     private val _latLng = MutableLiveData<LatLng>()
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
+    private val _routes = MutableLiveData<List<LatLng>>()
     private val _zoomBounds = MutableLiveData<LatLngBounds>()
     private val _moveCameraEvent = SingleLiveEvent<LatLng>()
     private val _moveCameraErrorEvent = SingleLiveEvent<LatLng>()
@@ -114,7 +116,10 @@ class MapViewModel @Inject constructor(
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
-                        onSuccess = {},
+                        onSuccess = {
+                            val routes = it.routes[0].overviewPolyline.routes
+                            _routes.postValue(routes)
+                        },
                         onError = {}
                 )
     }

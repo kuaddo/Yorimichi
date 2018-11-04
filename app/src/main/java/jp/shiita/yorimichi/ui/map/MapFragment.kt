@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.res.ResourcesCompat
@@ -15,10 +16,7 @@ import android.view.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
@@ -163,9 +161,8 @@ class MapFragment : DaggerFragment() {
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { places ->
+            resetMap()
             searchResultAdapter.reset(places)
-            markers.clear()
-            map?.clear()
             markers.addAll(places.map {
                 val marker = MarkerOptions()
                         .position(it.latLng)
@@ -174,6 +171,12 @@ class MapFragment : DaggerFragment() {
             })
             markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
         }
+        viewModel.routes.observe(this) { routes ->
+            resetMap()
+            map?.addPolyline(PolylineOptions()
+                    .color(Color.BLUE)
+                    .addAll(routes))
+        }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
         viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
         viewModel.moveCameraErrorEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
@@ -181,6 +184,11 @@ class MapFragment : DaggerFragment() {
         viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
         viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
         viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
+    }
+
+    private fun resetMap() {
+        markers.clear()
+        map?.clear()
     }
 
     private fun selectPlace(position: Int) {
