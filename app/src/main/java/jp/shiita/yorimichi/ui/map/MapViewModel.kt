@@ -108,6 +108,17 @@ class MapViewModel @Inject constructor(
                 )
     }
 
+    fun searchDirection(placeId: String) {
+        val latLng = this.latLng.value ?: return
+        repository.getDirection(latLng.toSimpleString(), "place_id:$placeId")
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {},
+                        onError = {}
+                )
+    }
+
     fun onScrolled(first: Int, last: Int) {
         this.first = first
         this.last = last

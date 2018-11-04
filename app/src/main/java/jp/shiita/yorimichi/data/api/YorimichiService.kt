@@ -3,6 +3,7 @@ package jp.shiita.yorimichi.data.api
 import com.google.gson.JsonObject
 import io.reactivex.Completable
 import io.reactivex.Single
+import jp.shiita.yorimichi.data.DirectionResult
 import jp.shiita.yorimichi.data.PlaceResult
 import retrofit2.Response
 import retrofit2.http.*
@@ -39,4 +40,8 @@ interface YorimichiService {
 
     @GET("places/getnext/")
     fun getNextPlaces(@Query("pageToken") pageToken: String): Single<PlaceResult>
+
+    @GET("places/direction/")
+    fun getDirection(@Query("origin") origin: String,
+                     @Query("destination") destination: String): Single<DirectionResult>
 }

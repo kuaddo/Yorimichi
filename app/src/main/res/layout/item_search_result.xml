@@ -82,6 +82,7 @@
             tools:text="500m" />
 
         <jp.shiita.yorimichi.custom.IconButton
+            android:id="@+id/gotoButton"
             style="@style/IconButtonSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

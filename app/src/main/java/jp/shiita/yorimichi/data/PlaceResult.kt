@@ -44,16 +44,6 @@ data class PlaceResult(
             val viewport: Viewport
     )
 
-    data class Location(
-            val lat: Double,
-            val lng: Double
-    )
-
-    data class Viewport(
-            val northeast: Location,
-            val southwest: Location
-    )
-
     data class Photo(
             val width: Int,
             val height: Int,

@@ -3,6 +3,7 @@ package jp.shiita.yorimichi.data.api
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Single
+import jp.shiita.yorimichi.data.DirectionResult
 import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.Post
 import jp.shiita.yorimichi.util.toBase64
@@ -50,4 +51,7 @@ class YorimichiRepository(
 
     fun getNextPlaces(pageToken: String): Single<PlaceResult> =
             yorimichiService.getNextPlaces(pageToken)
+
+    fun getDirection(origin: String, destination: String): Single<DirectionResult> =
+            yorimichiService.getDirection(origin, destination)
 }
