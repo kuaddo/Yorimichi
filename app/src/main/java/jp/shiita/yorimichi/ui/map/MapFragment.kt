@@ -19,6 +19,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
+import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragMapBinding
 import jp.shiita.yorimichi.live.LocationLiveData
@@ -152,7 +153,11 @@ class MapFragment : DaggerFragment() {
                 true        // cameraのアニメーションは自前でやる
             }
 
-            viewModel.searchPlacesDefault()
+            if (viewModel.places.value == null && viewModel.routes.value == null)
+                viewModel.searchPlacesDefault()
+
+            viewModel.places.value?.let { addPlaces(it) }
+            viewModel.routes.value?.let { addRoute(it) }
         }
     }
 
@@ -160,35 +165,41 @@ class MapFragment : DaggerFragment() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
-        viewModel.places.observe(this) { places ->
-            resetMap()
-            searchResultAdapter.reset(places)
-            markers.addAll(places.map {
-                val marker = MarkerOptions()
-                        .position(it.latLng)
-                        .icon(smallDescriptor)
-                map?.addMarker(marker) to it.getDistance()
-            })
-            markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
-        }
-        viewModel.routes.observe(this) { routes ->
-            resetMap()
-            map?.addPolyline(PolylineOptions()
-                    .color(Color.BLUE)
-                    .addAll(routes))
-        }
+        viewModel.places.observe(this) { addPlaces(it) }
+        viewModel.routes.observe(this) { addRoute(it) }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
         viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
-        viewModel.moveCameraErrorEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
-        viewModel.smallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(smallDescriptor) }}
-        viewModel.largePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
-        viewModel.selectedSmallPinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
-        viewModel.selectedLargePinPositions.observe(this) { positions -> positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
+        viewModel.moveCameraZoomEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
+        viewModel.smallPinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(smallDescriptor) }}
+        viewModel.largePinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
+        viewModel.selectedSmallPinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
+        viewModel.selectedLargePinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
     }
 
     private fun resetMap() {
         markers.clear()
         map?.clear()
+    }
+
+    private fun addPlaces(places: List<PlaceResult.Place>) {
+        if (places.isEmpty()) return
+        resetMap()
+        searchResultAdapter.reset(places)
+        markers.addAll(places.map {
+            val marker = MarkerOptions()
+                    .position(it.latLng)
+                    .icon(smallDescriptor)
+            map?.addMarker(marker) to it.getDistance()
+        })
+        markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
+    }
+
+    private fun addRoute(routes: List<LatLng>) {
+        if (routes.isEmpty()) return
+        resetMap()
+        map?.addPolyline(PolylineOptions()
+                .color(Color.BLUE)
+                .addAll(routes))
     }
 
     private fun selectPlace(position: Int) {

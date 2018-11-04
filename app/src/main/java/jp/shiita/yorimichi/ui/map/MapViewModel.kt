@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.api.YorimichiRepository
@@ -24,30 +25,35 @@ class MapViewModel @Inject constructor(
     val routes: LiveData<List<LatLng>> get() = _routes
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
-    val moveCameraErrorEvent: LiveData<LatLng> get() = _moveCameraErrorEvent
+    val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
     val smallPinPositions: LiveData<List<Int>> get() = _smallPinPositions
     val largePinPositions: LiveData<List<Int>> get() = _largePinPositions
     val selectedSmallPinPositions: LiveData<List<Int>> get() = _selectedSmallPinPositions
     val selectedLargePinPositions: LiveData<List<Int>> get() = _selectedLargePinPositions
     val showsSearchResult: LiveData<Boolean> get() = _showsSearchResult
 
-    private val _latLng = MutableLiveData<LatLng>()
-    private val _places = MutableLiveData<List<PlaceResult.Place>>()
-    private val _routes = MutableLiveData<List<LatLng>>()
-    private val _zoomBounds = MutableLiveData<LatLngBounds>()
-    private val _moveCameraEvent = SingleLiveEvent<LatLng>()
-    private val _moveCameraErrorEvent = SingleLiveEvent<LatLng>()
-    private val _smallPinPositions = MutableLiveData<List<Int>>()
-    private val _largePinPositions = MutableLiveData<List<Int>>()
+    private val _latLng                    = MutableLiveData<LatLng>()
+    private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
+    private val _routes                    = MutableLiveData<List<LatLng>>()
+    private val _zoomBounds                = MutableLiveData<LatLngBounds>()
+    private val _smallPinPositions         = MutableLiveData<List<Int>>()
+    private val _largePinPositions         = MutableLiveData<List<Int>>()
     private val _selectedSmallPinPositions = MutableLiveData<List<Int>>()
     private val _selectedLargePinPositions = MutableLiveData<List<Int>>()
-    private val _showsSearchResult = MutableLiveData<Boolean>()
+    private val _showsSearchResult         = MutableLiveData<Boolean>()
+
+    private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
+    private val _moveCameraZoomEvent = SingleLiveEvent<LatLng>()
 
     private var isLocationObserved = false
     private var placesSize = -1
     private var selectedPosition = -1
     private var first = -1
     private var last = -1
+
+    private val disposables = CompositeDisposable()
+
+    override fun onCleared() = disposables.clear()
 
     fun setLatLng(latLng: LatLng) {
         _latLng.value = latLng
@@ -63,25 +69,11 @@ class MapViewModel @Inject constructor(
     }
 
     fun searchPlaces(categories: List<String>, radius: Int) {
+        clearRoutes()
+
         if (categories.isEmpty()) return
         if (!isLocationObserved) return
         val latLng = this.latLng.value ?: return
-
-        // タイプ検索の精度が悪そうなので、全てキーワード検索にしたほうが良いかも
-//        repository.getPlacesWithType(latLng.toSimpleString(), 4000, "cafe")
-//                .subscribeOn(scheduler.io())
-//                .observeOn(scheduler.ui())
-//                .subscribeBy(
-//                        onSuccess = { result ->
-//                            placesSize = result.results.size
-//                            calcZoomBounds(result.results, latLng.latitude, latLng.longitude)
-//                            _places.postValue(result.results)
-//                            _showsSearchResult.postValue(true)
-//                        },
-//                        onError = {
-//                            _showsSearchResult.postValue(false)
-//                        }
-//                )
 
         // "+"がエンコードされないように自前でエンコード処理を行う
         val keywords = categories.map { URLEncoder.encode(it, "UTF-8") }.joinToString(separator = "+OR+")
@@ -92,8 +84,8 @@ class MapViewModel @Inject constructor(
                 .subscribeBy(
                         onSuccess = { result ->
                             if (result.results.isEmpty()) {
-                                _showsSearchResult.postValue(false)
-                                _moveCameraErrorEvent.postValue(latLng)
+                                clearPlaces()
+                                _moveCameraZoomEvent.postValue(latLng)
                             }
                             else {
                                 placesSize = result.results.size
@@ -104,13 +96,15 @@ class MapViewModel @Inject constructor(
                             }
                         },
                         onError = {
-                            _showsSearchResult.postValue(false)
-                            _moveCameraErrorEvent.postValue(latLng)
+                            clearPlaces()
+                            _moveCameraZoomEvent.postValue(latLng)
                         }
                 )
     }
 
     fun searchDirection(placeId: String) {
+        clearPlaces()
+
         val latLng = this.latLng.value ?: return
         repository.getDirection(latLng.toSimpleString(), "place_id:$placeId")
                 .subscribeOn(scheduler.io())
@@ -119,6 +113,7 @@ class MapViewModel @Inject constructor(
                         onSuccess = {
                             val routes = it.routes[0].overviewPolyline.routes
                             _routes.postValue(routes)
+                            _moveCameraZoomEvent.postValue(latLng)
                         },
                         onError = {}
                 )
@@ -134,6 +129,20 @@ class MapViewModel @Inject constructor(
         selectedPosition = position
         updatePinPositions()
         if (latLng != null) _moveCameraEvent.postValue(latLng)
+    }
+
+    private fun clearPlaces() {
+        _places.postValue(emptyList())
+        _zoomBounds.postValue(null)
+        _showsSearchResult.postValue(false)
+        _smallPinPositions.postValue(null)
+        _largePinPositions.postValue(null)
+        _selectedLargePinPositions.postValue(null)
+        _selectedSmallPinPositions.postValue(null)
+    }
+
+    private fun clearRoutes() {
+        _routes.postValue(emptyList())
     }
 
     private fun updatePinPositions() {
