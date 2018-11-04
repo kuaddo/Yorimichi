@@ -14,6 +14,7 @@ import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.LiveEvent
 import jp.shiita.yorimichi.live.SingleLiveEvent
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
+import jp.shiita.yorimichi.live.UnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class MainViewModel @Inject constructor(
     private val _drawerLock = SingleLiveEvent<Boolean>()
     private val _finishAppMessage = SingleLiveEvent<Int>()
     private val _updatePointEvent = SingleUnitLiveEvent()
-    private val _updateIconEvent = SingleUnitLiveEvent()
+    private val _updateIconEvent = UnitLiveEvent()
     private val _searchEvent = LiveEvent<Pair<List<String>, Int>>()
 
     private val disposables = CompositeDisposable()

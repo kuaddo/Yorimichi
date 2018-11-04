@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.data.PlaceResult
+import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
@@ -23,6 +24,8 @@ class MapViewModel @Inject constructor(
     val latLng: LiveData<LatLng> get() = _latLng
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val routes: LiveData<List<LatLng>> get() = _routes
+    val bucket: LiveData<String> get() = _bucket
+    val fileName: LiveData<String> get() = _fileName
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
     val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
@@ -31,16 +34,20 @@ class MapViewModel @Inject constructor(
     val selectedSmallPinPositions: LiveData<List<Int>> get() = _selectedSmallPinPositions
     val selectedLargePinPositions: LiveData<List<Int>> get() = _selectedLargePinPositions
     val showsSearchResult: LiveData<Boolean> get() = _showsSearchResult
+    val showsChick: LiveData<Boolean> get() = _showsChick
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
     private val _routes                    = MutableLiveData<List<LatLng>>()
+    private val _bucket                    = MutableLiveData<String>().apply { value = "gs://${UserInfo.iconBucket}" }    // TODO: 応急処置
+    private val _fileName                  = MutableLiveData<String>().apply { value = UserInfo.iconFileName }
     private val _zoomBounds                = MutableLiveData<LatLngBounds>()
     private val _smallPinPositions         = MutableLiveData<List<Int>>()
     private val _largePinPositions         = MutableLiveData<List<Int>>()
     private val _selectedSmallPinPositions = MutableLiveData<List<Int>>()
     private val _selectedLargePinPositions = MutableLiveData<List<Int>>()
     private val _showsSearchResult         = MutableLiveData<Boolean>()
+    private val _showsChick                = MutableLiveData<Boolean>()
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
     private val _moveCameraZoomEvent = SingleLiveEvent<LatLng>()
@@ -61,6 +68,11 @@ class MapViewModel @Inject constructor(
             isLocationObserved = true
             searchPlacesDefault()
         }
+    }
+
+    fun setIcon(bucket: String, name: String) {
+        _bucket.postValue("gs://$bucket")   // TODO: 応急処置
+        _fileName.postValue(name)
     }
 
     fun searchPlacesDefault() {
@@ -114,6 +126,7 @@ class MapViewModel @Inject constructor(
                             val routes = it.routes[0].overviewPolyline.routes
                             _routes.postValue(routes)
                             _moveCameraZoomEvent.postValue(latLng)
+                            _showsChick.postValue(true)
                         },
                         onError = {}
                 )
@@ -143,6 +156,7 @@ class MapViewModel @Inject constructor(
 
     private fun clearRoutes() {
         _routes.postValue(emptyList())
+        _showsChick.postValue(false)
     }
 
     private fun updatePinPositions() {

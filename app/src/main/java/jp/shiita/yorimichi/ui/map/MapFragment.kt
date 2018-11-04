@@ -164,6 +164,7 @@ class MapFragment : DaggerFragment() {
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
+        mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { addPlaces(it) }
         viewModel.routes.observe(this) { addRoute(it) }

@@ -27,6 +27,33 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView" />
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitXY"
+        android:visibility="@{viewModel.showsChick ? View.VISIBLE : View.GONE}"
+        app:bucket="@{viewModel.bucket}"
+        app:image="@{viewModel.fileName}"
+        app:layout_constraintStart_toStartOf="@+id/googleMap"
+        app:layout_constraintTop_toTopOf="@+id/googleMap" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="20dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="@drawable/balloon_small"
+        android:gravity="center"
+        android:text="いつもより多めに回ってやんよ"
+        android:visibility="@{viewModel.showsChick ? View.VISIBLE : View.GONE}"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/googleMap" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
