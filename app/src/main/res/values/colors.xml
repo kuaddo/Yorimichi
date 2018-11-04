@@ -12,8 +12,7 @@
     <color name="colorTextPrimary">#222222</color>
     <color name="colorTextSecondary">#949494</color>
     
-    <color name="colorDrawerBadgeBackground">#CCCCCC</color>
-    <color name="colorDrawerBadgeStroke">#444444</color>
+    <color name="colorDrawerSelectedBackground">#DCDCDC</color>
 
     <color name="colorDefaultBackground">#F0F0F0</color>
     <color name="colorDivider">#666666</color>

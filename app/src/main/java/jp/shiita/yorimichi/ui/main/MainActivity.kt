@@ -77,7 +77,7 @@ class MainActivity : DaggerAppCompatActivity() {
                 binding.navView
                         .getHeaderView(0)
                         .findViewById<TextView>(R.id.pointsText)
-                        .text = getString(R.string.drawer_points, it)
+                        .text = getString(R.string.drawer_point_value, it)
             }
         }
     }
