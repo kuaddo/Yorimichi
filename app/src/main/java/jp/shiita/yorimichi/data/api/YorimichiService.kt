@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import io.reactivex.Completable
 import io.reactivex.Single
 import jp.shiita.yorimichi.data.DirectionResult
+import jp.shiita.yorimichi.data.GoodResult
 import jp.shiita.yorimichi.data.PlaceResult
 import retrofit2.Response
 import retrofit2.http.*
@@ -20,6 +21,9 @@ interface YorimichiService {
 
     @POST("users/{uuid}/points/")
     fun addPoints(@Path("uuid") uuid: String, @Body body: Map<String, String>): Completable
+
+    @GET("users/{uuid}/goods")
+    fun getGoods(@Path("uuid") uuid: String): Single<GoodResult>
 
     @POST("posts/")
     fun postPost(@Body body: Map<String, String>): Completable
