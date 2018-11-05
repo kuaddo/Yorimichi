@@ -44,6 +44,20 @@
     <!-- map -->
     <string name="map_reached">ついた！</string>
 
+    <!-- remind -->
+    <string name="remind_reached_message">お疲れ様！\n帰りの案内は必要？\n\n時間の五分前になると、\n通知が来るよ！</string>
+    <string name="remind_goto_message">どこに帰りたい？</string>
+    <string name="remind_place_message">どこに行く？</string>
+    <string name="remind_time_message">何時に帰る？</string>
+    <string name="remind_need_finish_message">お疲れ様！\n\n戻る時間になったら\nリマインドするね！</string>
+    <string name="remind_no_need_finish_message">ありがとう！\n\nよりみちをしたくなったら\nいつでもよんでね！</string>
+    <string name="remind_need">必要！</string>
+    <string name="remind_no_need">いらないよ</string>
+    <string name="remind_go_back">もとの場所に戻る</string>
+    <string name="remind_go_other">別の場所に戻る</string>
+    <string name="remind_time_selected">決定！</string>
+    <string name="remind_finish">案内を終了する</string>
+
     <!-- place types -->
     <string-array name="place_types">
         <item>カフェ</item>

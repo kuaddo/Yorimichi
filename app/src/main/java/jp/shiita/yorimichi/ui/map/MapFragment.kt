@@ -25,6 +25,8 @@ import jp.shiita.yorimichi.databinding.FragMapBinding
 import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.live.MagneticLiveData
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.ui.remind.RemindFragment
+import jp.shiita.yorimichi.util.addFragmentBS
 import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.latLng
 import jp.shiita.yorimichi.util.observe
@@ -55,6 +57,10 @@ class MapFragment : DaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // TODO: test
+        activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(), RemindFragment.TAG)
+
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
