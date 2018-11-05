@@ -13,6 +13,7 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
+import jp.shiita.yorimichi.util.distance
 import jp.shiita.yorimichi.util.toSimpleString
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -24,6 +25,7 @@ class MapViewModel @Inject constructor(
     val latLng: LiveData<LatLng> get() = _latLng
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val routes: LiveData<List<LatLng>> get() = _routes
+    val targetPlace: LiveData<PlaceResult.Place> get() = _targetPlace
     val bucket: LiveData<String> get() = _bucket
     val fileName: LiveData<String> get() = _fileName
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
@@ -35,10 +37,12 @@ class MapViewModel @Inject constructor(
     val selectedLargePinPositions: LiveData<List<Int>> get() = _selectedLargePinPositions
     val showsSearchResult: LiveData<Boolean> get() = _showsSearchResult
     val showsChick: LiveData<Boolean> get() = _showsChick
+    val isNear: LiveData<Boolean> get() = _isNear
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
     private val _routes                    = MutableLiveData<List<LatLng>>()
+    private val _targetPlace               = MutableLiveData<PlaceResult.Place>()
     private val _bucket                    = MutableLiveData<String>().apply { value = UserInfo.iconBucket }
     private val _fileName                  = MutableLiveData<String>().apply { value = UserInfo.iconFileName }
     private val _zoomBounds                = MutableLiveData<LatLngBounds>()
@@ -48,6 +52,7 @@ class MapViewModel @Inject constructor(
     private val _selectedLargePinPositions = MutableLiveData<List<Int>>()
     private val _showsSearchResult         = MutableLiveData<Boolean>()
     private val _showsChick                = MutableLiveData<Boolean>()
+    private val _isNear                    = MutableLiveData<Boolean>()
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
     private val _moveCameraZoomEvent = SingleLiveEvent<LatLng>()
@@ -64,6 +69,14 @@ class MapViewModel @Inject constructor(
 
     fun setLatLng(latLng: LatLng) {
         _latLng.value = latLng
+        _targetPlace.value?.let { place ->
+            if (place.latLng.distance(latLng) < 50) {
+                _isNear.postValue(true)
+            }
+            else {
+                _isNear.postValue(false)
+            }
+        }
         if (!isLocationObserved) {
             isLocationObserved = true
             searchPlacesDefault()
@@ -73,6 +86,11 @@ class MapViewModel @Inject constructor(
     fun setIcon(bucket: String, name: String) {
         _bucket.postValue(bucket)
         _fileName.postValue(name)
+    }
+
+    fun setTarget(place: PlaceResult.Place) {
+        _targetPlace.postValue(place)
+        searchDirection(place.placeId)
     }
 
     fun searchPlacesDefault() {
@@ -156,7 +174,9 @@ class MapViewModel @Inject constructor(
 
     private fun clearRoutes() {
         _routes.postValue(emptyList())
+        _targetPlace.postValue(null)
         _showsChick.postValue(false)
+        _isNear.postValue(false)
     }
 
     private fun updatePinPositions() {

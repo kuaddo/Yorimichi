@@ -13,7 +13,7 @@ class PlaceAdapter(
         context: Context,
         private val places: MutableList<PlaceResult.Place>,
         private val selectPlace: (position: Int) -> Unit,
-        private val goto: (placeId: String) -> Unit
+        private val goto: (place: PlaceResult.Place) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
@@ -66,9 +66,9 @@ class PlaceAdapter(
 
     class PlaceViewHolder(private val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(place: PlaceResult.Place,
-                 goto: (placeId: String) -> Unit) {
+                 goto: (place: PlaceResult.Place) -> Unit) {
             binding.place = place
-            binding.gotoButton.setOnClickListener { goto(place.placeId) }
+            binding.gotoButton.setOnClickListener { goto(place) }
             binding.executePendingBindings()
         }
     }
