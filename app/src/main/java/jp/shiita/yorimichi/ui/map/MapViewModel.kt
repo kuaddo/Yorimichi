@@ -39,7 +39,7 @@ class MapViewModel @Inject constructor(
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
     private val _routes                    = MutableLiveData<List<LatLng>>()
-    private val _bucket                    = MutableLiveData<String>().apply { value = "gs://${UserInfo.iconBucket}" }    // TODO: 応急処置
+    private val _bucket                    = MutableLiveData<String>().apply { value = UserInfo.iconBucket }
     private val _fileName                  = MutableLiveData<String>().apply { value = UserInfo.iconFileName }
     private val _zoomBounds                = MutableLiveData<LatLngBounds>()
     private val _smallPinPositions         = MutableLiveData<List<Int>>()
@@ -71,7 +71,7 @@ class MapViewModel @Inject constructor(
     }
 
     fun setIcon(bucket: String, name: String) {
-        _bucket.postValue("gs://$bucket")   // TODO: 応急処置
+        _bucket.postValue(bucket)
         _fileName.postValue(name)
     }
 

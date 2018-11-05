@@ -86,8 +86,7 @@ class MainActivity : DaggerAppCompatActivity() {
                 binding.navView
                         .getHeaderView(0)
                         .findViewById<ImageView>(R.id.iconImage)
-                        .bindImageCloudStrage("gs://${UserInfo.iconBucket}", UserInfo.iconFileName)
-                // TODO: 応急処置
+                        .bindImageCloudStrage(UserInfo.iconBucket, UserInfo.iconFileName)
             }
         }
     }
