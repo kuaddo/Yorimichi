@@ -41,6 +41,9 @@
     <string name="search_button_search">検索</string>
     <string name="search_button_goto">ここに行く</string>
 
+    <!-- map -->
+    <string name="map_reached">ついた！</string>
+
     <!-- place types -->
     <string-array name="place_types">
         <item>カフェ</item>

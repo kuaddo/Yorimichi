@@ -3,8 +3,7 @@ package jp.shiita.yorimichi.data.api
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Single
-import jp.shiita.yorimichi.data.PlaceResult
-import jp.shiita.yorimichi.data.Post
+import jp.shiita.yorimichi.data.*
 import jp.shiita.yorimichi.util.toBase64
 
 class YorimichiRepository(
@@ -14,11 +13,11 @@ class YorimichiRepository(
     fun createUser(): Single<String> = yorimichiService.createUser()
             .map { json -> json.getAsJsonPrimitive("uuid").asString }
 
-    fun getUser(uuid: String): Single<Int> = yorimichiService.getUser(uuid)
+    fun getUser(uuid: String): Single<User> = yorimichiService.getUser(uuid)
             .map { response ->
                 val body = response.body()
-                if (response.code() == 204 || body == null) 0
-                else body.getAsJsonPrimitive("points").asInt }
+                if (response.code() == 204 || body == null) error("no content")
+                else body }
 
     fun getUserPosts(uuid: String): Single<List<Post>> = yorimichiService.getUserPosts(uuid)
             .map { response ->
@@ -27,8 +26,11 @@ class YorimichiRepository(
                 else body.getAsJsonArray("posts_array")
                     .map { gson.fromJson(it, Post::class.java) }}
 
-    fun addPoints(uuid: String, additionalPoints: Int): Completable =
+    fun addPoints(uuid: String, additionalPoints: Int): Single<User> =
             yorimichiService.addPoints(uuid, mapOf("point" to additionalPoints.toString()))
+
+    fun getGoods(uuid: String): Single<GoodResult> =
+            yorimichiService.getGoods(uuid)
 
     fun postPost(uuid: String, placeUid: String, bytes: ByteArray): Completable =
             yorimichiService.postPost(mapOf("uuid" to uuid, "place_uid" to placeUid, "b64image" to bytes.toBase64()))
@@ -50,4 +52,10 @@ class YorimichiRepository(
 
     fun getNextPlaces(pageToken: String): Single<PlaceResult> =
             yorimichiService.getNextPlaces(pageToken)
+
+    fun getDirection(origin: String, destination: String): Single<DirectionResult> =
+            yorimichiService.getDirection(origin, destination)
+
+    fun getIcon(iconId: Int): Single<Pair<String, String>> = yorimichiService.getIcon(iconId)
+            .map { json -> json.getAsJsonPrimitive("bucket").asString to json.getAsJsonPrimitive("filename").asString }
 }

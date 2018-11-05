@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.Post
+import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragShopBinding
 import jp.shiita.yorimichi.databinding.ItemNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
@@ -47,7 +48,7 @@ class ShopFragment : DaggerFragment() {
 
     private fun observe() {
         viewModel.posts.observe(this) { noteAdapter.reset(it) }
-        viewModel.pointsEvent.observe(this) { mainViewModel.setPoints(it) }
+        viewModel.pointsEvent.observe(this) { mainViewModel.updatePoints() }
     }
 
     // テストのための実装なのでここで定義する

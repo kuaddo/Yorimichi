@@ -8,6 +8,8 @@ object UserInfo : KotprefModel() {
     var latitude by stringPref()
     var longitude by stringPref()
     var points by intPref(0)
+    var iconBucket by stringPref("yorimichi_goods")
+    var iconFileName by stringPref("icon_normal.png")
 
     var latLng: LatLng?
         get() =

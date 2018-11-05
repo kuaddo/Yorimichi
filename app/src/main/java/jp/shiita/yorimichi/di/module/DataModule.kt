@@ -10,6 +10,7 @@ import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.data.api.YorimichiService
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.scheduler.SchedulerProvider
+import jp.shiita.yorimichi.util.BooleanAdapter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,6 +25,7 @@ class DataModule {
     @Singleton
     fun provideLowerCaseGson(): Gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .registerTypeAdapter(Boolean::class.java, BooleanAdapter())
             .create()
 
     @Provides
