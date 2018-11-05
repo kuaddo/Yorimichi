@@ -22,10 +22,11 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
-    val requiredTimeString: LiveData<String>  get() = requiredTimeMinute.map { toTimeString(it) }
+    val requiredTimeString: LiveData<String> get() = requiredTimeMinute.map { toTimeString(it) }
     val selected          : LiveData<Boolean> get() = _latLng.map { it != null }
 
-    val searchRadiusEvent : LiveData<Int>     get() = _searchRadiusEvent
+    val searchRadiusEvent : LiveData<Int> get() = _searchRadiusEvent
+    val directionsEvent: LiveData<LatLng> get() = _directionsEvent
 
     val requiredTimeMinute = MutableLiveData<Int>().apply { value = 80 }
 
@@ -33,12 +34,18 @@ class SearchViewModel @Inject constructor(
     private val _zoomBounds = MutableLiveData<LatLngBounds>()
     private val _latLng = MutableLiveData<LatLng>()
 
-    private val _searchRadiusEvent  = SingleLiveEvent<Int>()
+    private val _searchRadiusEvent = SingleLiveEvent<Int>()
+    private val _directionsEvent = SingleLiveEvent<LatLng>()
 
     fun search() {
         // 1分で歩ける距離は80mらしい
         val radius = requiredTimeMinute.value!! * 80
         _searchRadiusEvent.postValue(radius)
+    }
+
+    fun setRoute() {
+        _directionsEvent.postValue(_latLng.value)
+        _latLng.postValue(null)
     }
 
     fun select(latLng: LatLng?) = _latLng.postValue(latLng)

@@ -140,13 +140,14 @@ class SearchFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        viewModel.searchRadiusEvent.observe(this) {
-            mainViewModel.search(categoryAdapter.getSelectedCategories(), it)
+        viewModel.searchRadiusEvent.observe(this) { mainViewModel.search(categoryAdapter.getSelectedCategories(), it) }
+        viewModel.directionsEvent.observe(this) {
+            clearMap()
+            binding.searchView.setQuery("", false)
+            mainViewModel.setRoute(it)
         }
         viewModel.places.observe(this) { places ->
-            map?.clear()
-            marker = null
-            markers.clear()
+            clearMap()
             markers.addAll(places.map {
                 val marker = map?.addMarker(MarkerOptions()
                         .position(it.latLng)
@@ -173,6 +174,12 @@ class SearchFragment : DaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun clearMap() {
+        map?.clear()
+        marker = null
+        markers.clear()
     }
 
     data class MarkerTag(val latLng: LatLng, var selected: Boolean)

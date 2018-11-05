@@ -170,7 +170,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
-            android:onClick="@{() -> viewModel.search()}"
+            android:onClick="@{() -> viewModel.setRoute()}"
             app:src="@drawable/ic_pin"
             app:text="@string/search_button_goto"
             app:marginCenter="8dp"

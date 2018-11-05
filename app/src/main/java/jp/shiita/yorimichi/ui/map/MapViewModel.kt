@@ -95,7 +95,7 @@ class MapViewModel @Inject constructor(
 
     fun setTarget(place: PlaceResult.Place) {
         _targetPlace.postValue(place)
-        searchDirection(place.placeId)
+        searchDirection("place_id:${place.placeId}")
     }
 
     fun searchPlacesDefault() {
@@ -136,11 +136,11 @@ class MapViewModel @Inject constructor(
                 )
     }
 
-    fun searchDirection(placeId: String) {
+    fun searchDirection(destination: String) {
         clearPlaces()
 
         val latLng = this.latLng.value ?: return
-        repository.getDirection(latLng.toSimpleString(), "place_id:$placeId")
+        repository.getDirection(latLng.toSimpleString(), destination)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
