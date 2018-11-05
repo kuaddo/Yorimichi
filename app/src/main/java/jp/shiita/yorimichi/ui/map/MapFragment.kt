@@ -23,6 +23,7 @@ import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragMapBinding
 import jp.shiita.yorimichi.live.LocationLiveData
+import jp.shiita.yorimichi.live.MagneticLiveData
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.latLng
@@ -35,8 +36,8 @@ class MapFragment : DaggerFragment() {
             by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)}
     private val viewModel: MapViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MapViewModel::class.java) }
-    private val locationLiveData: LocationLiveData
-            by lazy { LocationLiveData(context!!) }
+    private val locationLiveData: LocationLiveData by lazy { LocationLiveData(context!!) }
+    private val magneticLiveData: MagneticLiveData by lazy { MagneticLiveData(context!!) }
     private lateinit var binding: FragMapBinding
     private lateinit var searchResultAdapter: PlaceAdapter
     private var map: GoogleMap? = null
@@ -163,6 +164,7 @@ class MapFragment : DaggerFragment() {
 
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
+        magneticLiveData.observe(this) { binding.iconImage.rotation = it }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
