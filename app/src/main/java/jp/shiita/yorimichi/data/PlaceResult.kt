@@ -1,6 +1,7 @@
 package jp.shiita.yorimichi.data
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import jp.shiita.yorimichi.util.distance
 
 data class PlaceResult(
@@ -49,4 +50,21 @@ data class PlaceResult(
             val height: Int,
             val photoReference: String
     )
+
+    fun calcBounds(currentLat: Double, currentLng: Double): LatLngBounds {
+        var minLat = currentLat
+        var minLng = currentLng
+        var maxLat = currentLat
+        var maxLng = currentLng
+        results.forEach {
+            minLat = minOf(minLat, it.lat)
+            minLng = minOf(minLng, it.lng)
+            maxLat = maxOf(maxLat, it.lat)
+            maxLng = maxOf(maxLng, it.lng)
+        }
+        val dLat = (maxLat - minLat) * 0.1
+        val dLng = (maxLng - minLng) * 0.1
+
+        return LatLngBounds(LatLng(minLat - dLat, minLng - dLng), LatLng(maxLat + dLat, maxLng + dLng))
+    }
 }

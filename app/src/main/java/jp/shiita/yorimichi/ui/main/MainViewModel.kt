@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
+import com.google.android.gms.maps.model.LatLng
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -30,6 +31,7 @@ class MainViewModel @Inject constructor(
     val updatePointEvent: LiveData<Unit> get() = _updatePointEvent
     val updateIconEvent: LiveData<Unit> get() = _updateIconEvent
     val searchEvent: LiveData<Pair<List<String>, Int>> get() = _searchEvent
+    val directionsEvent: LiveData<LatLng> get() = _directionsEvent
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
@@ -41,6 +43,7 @@ class MainViewModel @Inject constructor(
     private val _updatePointEvent = SingleUnitLiveEvent()
     private val _updateIconEvent = UnitLiveEvent()
     private val _searchEvent = LiveEvent<Pair<List<String>, Int>>()
+    private val _directionsEvent = LiveEvent<LatLng>()
 
     private val disposables = CompositeDisposable()
 
@@ -62,6 +65,10 @@ class MainViewModel @Inject constructor(
 
     fun search(categories: List<String>, radius: Int) {
         _searchEvent.postValue(categories to radius)
+    }
+
+    fun setRoute(latLng: LatLng) {
+        _directionsEvent.postValue(latLng)
     }
 
     fun updatePoints() = _updatePointEvent.call()

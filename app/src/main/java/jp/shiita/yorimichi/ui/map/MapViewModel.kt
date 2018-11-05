@@ -3,7 +3,6 @@ package jp.shiita.yorimichi.ui.map
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import io.reactivex.disposables.CompositeDisposable
@@ -96,7 +95,7 @@ class MapViewModel @Inject constructor(
 
     fun setTarget(place: PlaceResult.Place) {
         _targetPlace.postValue(place)
-        searchDirection(place.placeId)
+        searchDirection("place_id:${place.placeId}")
     }
 
     fun searchPlacesDefault() {
@@ -104,17 +103,16 @@ class MapViewModel @Inject constructor(
         searchPlaces(listOf("カフェ"), radius = 2000)
     }
 
-    fun searchPlaces(categories: List<String>, radius: Int) {
+    fun searchPlaces(keywords: List<String>, radius: Int) {
         clearRoutes()
 
-        if (categories.isEmpty()) return
+        if (keywords.isEmpty()) return
         if (!isLocationObserved) return
         val latLng = this.latLng.value ?: return
 
         // "+"がエンコードされないように自前でエンコード処理を行う
-        val keywords = categories.map { URLEncoder.encode(it, "UTF-8") }.joinToString(separator = "+OR+")
-        Log.d("keywords", keywords)
-        repository.getPlacesWithKeyword(latLng.toSimpleString(), radius, keywords)
+        val keyword = keywords.map { URLEncoder.encode(it, "UTF-8") }.joinToString(separator = "+OR+")
+        repository.getPlacesWithKeyword(latLng.toSimpleString(), radius, keyword)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
@@ -126,7 +124,7 @@ class MapViewModel @Inject constructor(
                             else {
                                 placesSize = result.results.size
                                 result.results.forEach { it.setDistance(latLng) }
-                                calcZoomBounds(result.results, latLng.latitude, latLng.longitude)
+                                _zoomBounds.postValue(result.calcBounds(latLng.latitude, latLng.longitude))
                                 _places.postValue(result.results.sortedBy { it.getDistance() })
                                 _showsSearchResult.postValue(true)
                             }
@@ -138,11 +136,11 @@ class MapViewModel @Inject constructor(
                 )
     }
 
-    fun searchDirection(placeId: String) {
+    fun searchDirection(destination: String) {
         clearPlaces()
 
         val latLng = this.latLng.value ?: return
-        repository.getDirection(latLng.toSimpleString(), "place_id:$placeId")
+        repository.getDirection(latLng.toSimpleString(), destination)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
@@ -209,22 +207,5 @@ class MapViewModel @Inject constructor(
         _largePinPositions.value = (first..last).toMutableList().apply { remove(selectedPosition) }
         if      (selectedPosition in first..last)        _selectedLargePinPositions.value = listOf(selectedPosition)
         else if (selectedPosition in 0 until placesSize) _selectedSmallPinPositions.value = listOf(selectedPosition)
-    }
-
-    private fun calcZoomBounds(places: List<PlaceResult.Place>, currentLat: Double, currentLng: Double) {
-        var minLat = currentLat
-        var minLng = currentLng
-        var maxLat = currentLat
-        var maxLng = currentLng
-        places.forEach {
-            minLat = minOf(minLat, it.lat)
-            minLng = minOf(minLng, it.lng)
-            maxLat = maxOf(maxLat, it.lat)
-            maxLng = maxOf(maxLng, it.lng)
-        }
-        val dLat = (maxLat - minLat) * 0.1
-        val dLng = (maxLng - minLng) * 0.1
-
-        _zoomBounds.postValue(LatLngBounds(LatLng(minLat - dLat, minLng - dLng), LatLng(maxLat + dLat, maxLng + dLng)))
     }
 }

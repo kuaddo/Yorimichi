@@ -73,6 +73,7 @@ class MainFragment : DaggerFragment() {
 
     private fun observe() {
         viewModel.searchEvent.observe(this) { binding.viewPager.setCurrentItem(MAP_FRAGMENT, true) }
+        viewModel.directionsEvent.observe(this) { binding.viewPager.setCurrentItem(MAP_FRAGMENT, true) }
     }
 
     private class PagerAdapter(fragmentManager: FragmentManager, private val fragments: List<Fragment>) : FragmentPagerAdapter(fragmentManager) {

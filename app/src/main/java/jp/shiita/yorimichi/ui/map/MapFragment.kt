@@ -26,10 +26,7 @@ import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.live.MagneticLiveData
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.remind.RemindFragment
-import jp.shiita.yorimichi.util.addFragmentBS
-import jp.shiita.yorimichi.util.getBitmap
-import jp.shiita.yorimichi.util.latLng
-import jp.shiita.yorimichi.util.observe
+import jp.shiita.yorimichi.util.*
 import javax.inject.Inject
 
 class MapFragment : DaggerFragment() {
@@ -178,6 +175,7 @@ class MapFragment : DaggerFragment() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
         magneticLiveData.observe(this) { binding.iconImage.rotation = it }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
+        mainViewModel.directionsEvent.observe(this) { viewModel.searchDirection(it.toSimpleString()) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { addPlaces(it) }
