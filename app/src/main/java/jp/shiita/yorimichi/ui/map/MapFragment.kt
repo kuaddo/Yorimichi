@@ -104,20 +104,30 @@ class MapFragment : DaggerFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.frag_search_result, menu)
+        if (viewModel.places.value?.isNotEmpty() == true) {
+            inflater?.inflate(R.menu.frag_map_search_result, menu)
+        }
+        else if (viewModel.routes.value?.isNotEmpty() == true) {
+            inflater?.inflate(R.menu.frag_map_route, menu)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.menu_frag_search_result_sort_dist_asc  -> {
+            R.id.menu_frag_map_search_result_sort_dist_asc  -> {
                 sortMarkerByDistAsc()
                 searchResultAdapter.sortByDistAsc()
                 viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
             }
-            R.id.menu_frag_search_result_sort_dist_desc -> {
+            R.id.menu_frag_map_search_result_sort_dist_desc -> {
                 sortMarkerByDistDesc()
                 searchResultAdapter.sortByDistDesc()
                 viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
+            }
+            R.id.menu_frag_map_finish_guide -> {
+                resetMap()
+                activity?.invalidateOptionsMenu()
+                viewModel.clearRoutes()
             }
             else -> return false
         }
@@ -180,7 +190,10 @@ class MapFragment : DaggerFragment() {
         viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
         viewModel.moveCameraZoomEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
         viewModel.pointsEvent.observe(this) { mainViewModel.updatePoints() }
-        viewModel.reachedEvent.observe(this) { activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(), RemindFragment.TAG) }
+        viewModel.reachedEvent.observe(this) {
+            activity?.invalidateOptionsMenu()
+            activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(), RemindFragment.TAG)
+        }
     }
 
     private fun resetMap() {
@@ -191,6 +204,7 @@ class MapFragment : DaggerFragment() {
     private fun addPlaces(places: List<PlaceResult.Place>) {
         if (places.isEmpty()) return
         resetMap()
+        activity?.invalidateOptionsMenu()
         searchResultAdapter.reset(places)
         markers.addAll(places.map {
             val marker = MarkerOptions()
@@ -204,6 +218,7 @@ class MapFragment : DaggerFragment() {
     private fun addRoute(routes: List<LatLng>) {
         if (routes.isEmpty()) return
         resetMap()
+        activity?.invalidateOptionsMenu()
         map?.addPolyline(PolylineOptions()
                 .color(Color.BLUE)
                 .addAll(routes))

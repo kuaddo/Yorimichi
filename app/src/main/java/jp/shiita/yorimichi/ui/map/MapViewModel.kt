@@ -193,7 +193,7 @@ class MapViewModel @Inject constructor(
         _selectedSmallPinPositions.postValue(null)
     }
 
-    private fun clearRoutes() {
+    fun clearRoutes() {
         _routes.postValue(emptyList())
         _targetPlace.postValue(null)
         _showsChick.postValue(false)

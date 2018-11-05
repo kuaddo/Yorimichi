@@ -24,6 +24,7 @@
     <!-- menu -->
     <string name="menu_sort_dist_asc">近い順</string>
     <string name="menu_sort_dist_desc">遠い順</string>
+    <string name="menu_finish_guide">案内終了</string>
     <string name="menu_upload_note">アップロード</string>
 
     <!-- dialog -->
