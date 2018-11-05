@@ -57,10 +57,6 @@ class MapFragment : DaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        // TODO: test
-        activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(), RemindFragment.TAG)
-
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
@@ -177,12 +173,14 @@ class MapFragment : DaggerFragment() {
         viewModel.places.observe(this) { addPlaces(it) }
         viewModel.routes.observe(this) { addRoute(it) }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
-        viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
-        viewModel.moveCameraZoomEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
         viewModel.smallPinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(smallDescriptor) }}
         viewModel.largePinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(largeDescriptor) }}
         viewModel.selectedSmallPinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
         viewModel.selectedLargePinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
+        viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
+        viewModel.moveCameraZoomEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
+        viewModel.pointsEvent.observe(this) { mainViewModel.updatePoints() }
+        viewModel.reachedEvent.observe(this) { activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(), RemindFragment.TAG) }
     }
 
     private fun resetMap() {

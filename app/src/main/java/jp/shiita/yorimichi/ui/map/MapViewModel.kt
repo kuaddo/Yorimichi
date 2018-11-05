@@ -12,6 +12,7 @@ import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
+import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.util.distance
 import jp.shiita.yorimichi.util.toSimpleString
@@ -29,8 +30,6 @@ class MapViewModel @Inject constructor(
     val bucket: LiveData<String> get() = _bucket
     val fileName: LiveData<String> get() = _fileName
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
-    val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
-    val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
     val smallPinPositions: LiveData<List<Int>> get() = _smallPinPositions
     val largePinPositions: LiveData<List<Int>> get() = _largePinPositions
     val selectedSmallPinPositions: LiveData<List<Int>> get() = _selectedSmallPinPositions
@@ -38,6 +37,11 @@ class MapViewModel @Inject constructor(
     val showsSearchResult: LiveData<Boolean> get() = _showsSearchResult
     val showsChick: LiveData<Boolean> get() = _showsChick
     val isNear: LiveData<Boolean> get() = _isNear
+
+    val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
+    val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
+    val pointsEvent: LiveData<Unit> get() = _pointsEvent
+    val reachedEvent: LiveData<Unit> get() = _reachedEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
@@ -55,7 +59,9 @@ class MapViewModel @Inject constructor(
     private val _isNear                    = MutableLiveData<Boolean>()
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
-    private val _moveCameraZoomEvent = SingleLiveEvent<LatLng>()
+    private val _moveCameraZoomEvent  = SingleLiveEvent<LatLng>()
+    private val _pointsEvent          = SingleUnitLiveEvent()
+    private val _reachedEvent         = SingleUnitLiveEvent()
 
     private var isLocationObserved = false
     private var placesSize = -1
@@ -160,6 +166,21 @@ class MapViewModel @Inject constructor(
         selectedPosition = position
         updatePinPositions()
         if (latLng != null) _moveCameraEvent.postValue(latLng)
+    }
+
+    fun reached() {
+        clearRoutes()
+        _reachedEvent.call()
+        repository.addPoints(UserInfo.userId, 20)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            UserInfo.points = it.points
+                            _pointsEvent.call()
+                        },
+                        onError = {}
+                )
     }
 
     private fun clearPlaces() {

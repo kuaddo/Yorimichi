@@ -96,7 +96,8 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_large"
                 android:text="@string/map_reached"
-                android:background="@drawable/back_button"/>
+                android:background="@drawable/back_button"
+                android:onClick="@{() -> viewModel.reached()}"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
