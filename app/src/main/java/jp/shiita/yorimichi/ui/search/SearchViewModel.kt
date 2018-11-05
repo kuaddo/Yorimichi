@@ -41,7 +41,7 @@ class SearchViewModel @Inject constructor(
         _searchRadiusEvent.postValue(radius)
     }
 
-    fun select(latLng: LatLng) = _latLng.postValue(latLng)
+    fun select(latLng: LatLng?) = _latLng.postValue(latLng)
 
     fun searchPlaces(keywords: List<String>) {
         if (keywords.isEmpty()) return
@@ -61,6 +61,7 @@ class SearchViewModel @Inject constructor(
                                 result.results.forEach { it.setDistance(latLng) }
                                 _zoomBounds.postValue(result.calcBounds(latLng.latitude, latLng.longitude))
                                 _places.postValue(result.results.sortedBy { it.getDistance() })
+                                _latLng.postValue(null)
                             }
                         },
                         onError = {}

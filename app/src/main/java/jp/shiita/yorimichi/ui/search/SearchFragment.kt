@@ -16,10 +16,7 @@ import android.view.ViewGroup
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
@@ -114,16 +111,29 @@ class SearchFragment : DaggerFragment() {
 
             map?.setOnMapLongClickListener { latLng ->
                 viewModel.select(latLng)
+                resetMarkerSelected()
                 if (marker == null) {
                     marker = map?.addMarker(MarkerOptions()
-                            .icon(selectedDescriptor)
-                            .position(latLng))
-                    marker?.tag = latLng
+                            .position(latLng)
+                            .icon(selectedDescriptor))
+                    marker?.tag = MarkerTag(latLng, true)
                 }
                 else {
-                    marker?.position = latLng
-                    marker?.tag = latLng
+                    marker?.let {
+                        it.isVisible = true
+                        it.position = latLng
+                        it.tag = MarkerTag(latLng, true)
+                    }
                 }
+            }
+            map?.setOnMarkerClickListener { marker ->
+                resetMarkerSelected()
+                marker?.tag?.let { if (it is MarkerTag) {
+                    it.selected = true
+                    viewModel.select(it.latLng)
+                } }
+                marker?.setIcon(selectedDescriptor)
+                false
             }
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(UserInfo.latLng, INITIAL_ZOOM_LEVEL))
         }
@@ -135,17 +145,37 @@ class SearchFragment : DaggerFragment() {
         }
         viewModel.places.observe(this) { places ->
             map?.clear()
+            marker = null
             markers.clear()
             markers.addAll(places.map {
                 val marker = map?.addMarker(MarkerOptions()
                         .position(it.latLng)
                         .icon(descriptor))
-                marker?.tag = it.latLng
+                marker?.tag = MarkerTag(it.latLng, false)
                 marker
             })
         }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
     }
+
+    private fun resetMarkerSelected() {
+        marker?.tag?.let {
+            if (it is MarkerTag && it.selected) {
+                it.selected = false
+                marker?.isVisible = false
+            }
+        }
+        markers.forEach { m ->
+            m?.tag?.let {
+                if (it is MarkerTag && it.selected) {
+                    it.selected = false
+                    m.setIcon(descriptor)
+                }
+            }
+        }
+    }
+
+    data class MarkerTag(val latLng: LatLng, var selected: Boolean)
 
     companion object {
         val TAG: String = SearchFragment::class.java.simpleName
