@@ -1,8 +1,10 @@
 package jp.shiita.yorimichi.ui.remind
 
 import android.Manifest
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -68,6 +70,17 @@ class RemindFragment : DaggerFragment() {
         observe()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK || data == null) return
+
+        when (requestCode) {
+            REQUEST_SHOW_TIME_PICKER -> {
+                val (hour, minute) = TimePickerDialogFragment.parseResult(data)
+                viewModel.setTime(hour, minute)
+            }
+        }
+    }
+
     private fun initDescriptor() {
         val pinDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_pin_large, null)!!
         val bitmap = pinDrawable.getBitmap(ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
@@ -117,10 +130,6 @@ class RemindFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        viewModel.finishEvent.observe(this) {
-            // TODO: set result
-            fragmentManager?.popBackStack()
-        }
         viewModel.places.observe(this) { places ->
             clearMap()
             markers.addAll(places.map {
@@ -132,6 +141,15 @@ class RemindFragment : DaggerFragment() {
             })
         }
         viewModel.zoomBounds.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngBounds(it, 0)) }
+        viewModel.showTimePickerEvent.observe(this) { timePair ->
+            TimePickerDialogFragment.newInstance(timePair.first, timePair.second).also { fragment ->
+                fragment.setTargetFragment(this, REQUEST_SHOW_TIME_PICKER)
+            }.show(fragmentManager, TimePickerDialogFragment.TAG)
+        }
+        viewModel.finishEvent.observe(this) {
+            // TODO: set result
+            fragmentManager?.popBackStack()
+        }
     }
 
     private fun resetMarkerSelected() {
@@ -159,6 +177,7 @@ class RemindFragment : DaggerFragment() {
 
     companion object {
         val TAG: String = RemindFragment::class.java.simpleName
+        private const val REQUEST_SHOW_TIME_PICKER = 1000
         private const val INITIAL_ZOOM_LEVEL = 16f
         fun newInstance() = RemindFragment()
     }

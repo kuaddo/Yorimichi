@@ -120,6 +120,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
 
+    // ThreeTenABP
+    implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
+
     // Rx
     implementation("io.reactivex.rxjava2:rxjava:2.1.14")
     implementation("io.reactivex.rxjava2:rxkotlin:2.2.0")

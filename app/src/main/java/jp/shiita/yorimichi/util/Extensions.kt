@@ -1,9 +1,6 @@
 package jp.shiita.yorimichi.util
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.*
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -29,6 +26,14 @@ fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (T) -> Unit) =
         observe(owner, Observer<T> { if (it != null) observer(it) })
 
 fun <X, Y> LiveData<X>.map(func: (X) -> Y) = Transformations.map(this, func)
+
+fun <T1, T2, S> LiveData<T1>.combineLatest(source: LiveData<T2>, func: (T1, T2) -> S): LiveData<S> {
+    val result = MediatorLiveData<S>()
+    fun setValue() = value?.let { v1 -> source.value?.let { v2 -> result.value = func(v1, v2) } }
+    result.addSource(this) { setValue() }
+    result.addSource(source) { setValue() }
+    return result
+}
 
 fun FragmentManager.addFragment(@IdRes containerViewId: Int, fragment: Fragment) {
     beginTransaction()
