@@ -5,6 +5,8 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
@@ -53,12 +55,15 @@ class RemindViewModel @Inject constructor(
     private val _finishEvent = SingleUnitLiveEvent()
 
     lateinit var startLatLng: LatLng
+    private val disposables = CompositeDisposable()
 
     init {
         val time = LocalDateTime.now().plusMinutes(30)
         _hour.value = time.hour
         _minute.value = time.minute
     }
+
+    override fun onCleared() = disposables.clear()
 
     fun select(latLng: LatLng?) = _selectedLatLng.postValue(latLng)
 
@@ -129,5 +134,6 @@ class RemindViewModel @Inject constructor(
                         },
                         onError = {}
                 )
+                .addTo(disposables)
     }
 }

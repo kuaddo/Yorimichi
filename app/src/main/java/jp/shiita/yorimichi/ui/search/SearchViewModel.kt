@@ -5,6 +5,8 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
@@ -36,6 +38,10 @@ class SearchViewModel @Inject constructor(
 
     private val _searchRadiusEvent = SingleLiveEvent<Int>()
     private val _directionsEvent = SingleLiveEvent<LatLng>()
+
+    private val disposables = CompositeDisposable()
+
+    override fun onCleared() = disposables.clear()
 
     fun search() {
         // 1分で歩ける距離は80mらしい
@@ -73,6 +79,7 @@ class SearchViewModel @Inject constructor(
                         },
                         onError = {}
                 )
+                .addTo(disposables)
     }
 
     private fun toTimeString(timeMinute: Int): String =
