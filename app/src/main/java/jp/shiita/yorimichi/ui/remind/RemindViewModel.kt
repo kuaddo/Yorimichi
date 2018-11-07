@@ -25,7 +25,7 @@ class RemindViewModel @Inject constructor(
 ) : ViewModel() {
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
-    val selected: LiveData<Boolean> get() = _latLng.map { it != null }
+    val selected: LiveData<Boolean> get() = _selectedLatLng.map { it != null }
     val timeString: LiveData<String> get() = _hour.combineLatest(_minute) { h, m -> "$h:$m" }
     val reachedVisible: LiveData<Boolean> get() = _reachedVisible
     val gotoVisible: LiveData<Boolean> get() = _gotoVisible
@@ -39,7 +39,7 @@ class RemindViewModel @Inject constructor(
 
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
     private val _zoomBounds = MutableLiveData<LatLngBounds>()
-    private val _latLng = MutableLiveData<LatLng>()
+    private val _selectedLatLng = MutableLiveData<LatLng>()
     private val _hour = MutableLiveData<Int>()
     private val _minute = MutableLiveData<Int>()
     private val _reachedVisible = MutableLiveData<Boolean>().apply { value = true }
@@ -52,13 +52,15 @@ class RemindViewModel @Inject constructor(
     private val _showTimePickerEvent = SingleLiveEvent<Pair<Int, Int>>()
     private val _finishEvent = SingleUnitLiveEvent()
 
+    lateinit var startLatLng: LatLng
+
     init {
         val time = LocalDateTime.now().plusMinutes(30)
         _hour.value = time.hour
         _minute.value = time.minute
     }
 
-    fun select(latLng: LatLng?) = _latLng.postValue(latLng)
+    fun select(latLng: LatLng?) = _selectedLatLng.postValue(latLng)
 
     fun setTime(hour: Int, minute: Int) {
         _hour.postValue(hour)
@@ -122,7 +124,7 @@ class RemindViewModel @Inject constructor(
                                 result.results.forEach { it.setDistance(latLng) }
                                 _zoomBounds.postValue(result.calcBounds(latLng.latitude, latLng.longitude))
                                 _places.postValue(result.results.sortedBy { it.getDistance() })
-                                _latLng.postValue(null)
+                                _selectedLatLng.postValue(null)
                             }
                         },
                         onError = {}

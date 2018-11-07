@@ -17,10 +17,7 @@ import android.view.ViewGroup
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
@@ -51,6 +48,7 @@ class RemindFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
+        viewModel.startLatLng = arguments!!.getParcelable(ARGS_START_LAT_LNG)!!
 
         binding.searchView.isSubmitButtonEnabled = true
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
@@ -178,7 +176,11 @@ class RemindFragment : DaggerFragment() {
     companion object {
         val TAG: String = RemindFragment::class.java.simpleName
         private const val REQUEST_SHOW_TIME_PICKER = 1000
+        private const val ARGS_START_LAT_LNG = "argsStartLatLng"
         private const val INITIAL_ZOOM_LEVEL = 16f
-        fun newInstance() = RemindFragment()
+
+        fun newInstance(startLatLng: LatLng) = RemindFragment().apply {
+            arguments = Bundle().apply { putParcelable(ARGS_START_LAT_LNG, startLatLng) }
+        }
     }
 }
