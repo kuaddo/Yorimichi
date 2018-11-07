@@ -1,19 +1,26 @@
 package jp.shiita.yorimichi.ui.remind
 
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragRemindBinding
+import jp.shiita.yorimichi.util.observe
+import javax.inject.Inject
 
-class RemindFragment : Fragment() {
+class RemindFragment : DaggerFragment() {
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: RemindViewModel
+            by lazy { ViewModelProviders.of(this, viewModelFactory).get(RemindViewModel::class.java) }
     private lateinit var binding: FragRemindBinding
     private var map: GoogleMap? = null
 
@@ -25,54 +32,24 @@ class RemindFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        // reached
-        binding.needButton.setOnClickListener {
-            binding.reachedLayout.visibility = View.GONE
-            binding.gotoLayout.visibility = View.VISIBLE
-        }
-        binding.noNeedButton.setOnClickListener {
-            binding.reachedLayout.visibility = View.GONE
-            binding.finishLayout.visibility = View.VISIBLE
-        }
-
-        // goto
-        binding.goBackButton.setOnClickListener {
-            binding.gotoLayout.visibility = View.GONE
-            binding.timeLayout.visibility = View.VISIBLE
-        }
-        binding.goOtherButton.setOnClickListener {
-            binding.gotoLayout.visibility = View.GONE
-            binding.placeLayout.visibility = View.VISIBLE
-        }
-
-        // place
-        binding.gotoPlaceButton.setOnClickListener {
-            binding.placeLayout.visibility = View.GONE
-            binding.timeLayout.visibility = View.VISIBLE
-        }
-
-        // time
-        binding.timeSelectedButton.setOnClickListener {
-            binding.timeLayout.visibility = View.GONE
-            binding.finishLayout.visibility = View.VISIBLE
-            binding.finishText.text = getText(R.string.remind_need_finish_message)
-            // TODO: set notification
-        }
-
-        // finish
-        binding.finishButton.setOnClickListener {
-            // TODO: set result
-            fragmentManager?.popBackStack()
-        }
+        binding.setLifecycleOwner(this)
+        binding.viewModel = viewModel
 
         initMap()
+        observe()
     }
 
     private fun initMap() {
         (childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
             map?.animateCamera(CameraUpdateFactory.newLatLngZoom(UserInfo.latLng, INITIAL_ZOOM_LEVEL))
+        }
+    }
+
+    private fun observe() {
+        viewModel.finishEvent.observe(this) {
+            // TODO: set result
+            fragmentManager?.popBackStack()
         }
     }
 

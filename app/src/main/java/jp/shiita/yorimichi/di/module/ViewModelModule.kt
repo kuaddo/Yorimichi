@@ -11,6 +11,7 @@ import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.map.MapViewModel
 import jp.shiita.yorimichi.ui.mypage.MyPageViewModel
 import jp.shiita.yorimichi.ui.note.NoteViewModel
+import jp.shiita.yorimichi.ui.remind.RemindViewModel
 import jp.shiita.yorimichi.ui.search.SearchViewModel
 import jp.shiita.yorimichi.ui.setting.SettingViewModel
 import jp.shiita.yorimichi.ui.shop.ShopViewModel
@@ -52,6 +53,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingViewModel::class)
     abstract fun bindSettingViewModel(viewModel: SettingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RemindViewModel::class)
+    abstract fun bindRemindViewModel(viewModel: RemindViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

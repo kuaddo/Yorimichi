@@ -189,6 +189,7 @@ class MapFragment : DaggerFragment() {
         viewModel.moveCameraZoomEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
         viewModel.pointsEvent.observe(this) { mainViewModel.updatePoints() }
         viewModel.reachedEvent.observe(this) {
+            resetMap()
             activity?.invalidateOptionsMenu()
             activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(), RemindFragment.TAG)
         }
