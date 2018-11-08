@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -26,6 +27,7 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragRemindBinding
+import jp.shiita.yorimichi.ui.main.MainActivity
 import jp.shiita.yorimichi.ui.search.SearchFragment
 import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.observe
@@ -149,7 +151,7 @@ class RemindFragment : DaggerFragment() {
             }.show(fragmentManager, TimePickerDialogFragment.TAG)
         }
         viewModel.notificationEvent.observe(this) {
-            notification(it)
+            notification(it.first, it.second)
         }
         viewModel.finishEvent.observe(this) {
             // TODO: set result
@@ -180,14 +182,20 @@ class RemindFragment : DaggerFragment() {
         markers.clear()
     }
 
-    private fun notification(minute: Int) {
+    private fun notification(minute: Int, routes: List<LatLng>) {
         val manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
         createChannel(manager)
+
+        val intent = PendingIntent.getActivity(context, REQUEST_SHOW_ROUTES, Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putParcelableArrayListExtra(ARGS_ROUTES, ArrayList(routes))
+        }, PendingIntent.FLAG_UPDATE_CURRENT)
         val notification = NotificationCompat.Builder(context!!, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("そろそろ出発した方がいいよ！")
                 .setContentText("予想移動時間${minute}分")
                 .setColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
+                .setContentIntent(intent)
                 .build()
         manager.notify(NOTIFICATION_ID, notification)
     }
@@ -210,6 +218,9 @@ class RemindFragment : DaggerFragment() {
         private const val ARGS_START_LAT_LNG = "argsStartLatLng"
         private const val INITIAL_ZOOM_LEVEL = 16f
         private const val CHANNEL_ID = "remind"
+
+        const val REQUEST_SHOW_ROUTES = 1001
+        const val ARGS_ROUTES = "argsRoutes"
 
         fun newInstance(startLatLng: LatLng) = RemindFragment().apply {
             arguments = Bundle().apply { putParcelable(ARGS_START_LAT_LNG, startLatLng) }

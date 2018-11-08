@@ -38,7 +38,7 @@ class RemindViewModel @Inject constructor(
     val finishWithNeed: LiveData<Boolean> get() = _finishWithNeed
 
     val showTimePickerEvent: LiveData<Pair<Int, Int>> get() = _showTimePickerEvent
-    val notificationEvent: LiveData<Int> get() = _notificationEvent
+    val notificationEvent: LiveData<Pair<Int, List<LatLng>>> get() = _notificationEvent
     val finishEvent: LiveData<Unit> get() = _finishEvent
 
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
@@ -54,7 +54,7 @@ class RemindViewModel @Inject constructor(
     private val _finishWithNeed = MutableLiveData<Boolean>()
 
     private val _showTimePickerEvent = SingleLiveEvent<Pair<Int, Int>>()
-    private val _notificationEvent = SingleLiveEvent<Int>()
+    private val _notificationEvent = SingleLiveEvent<Pair<Int, List<LatLng>>>()     // (minute, routes)
     private val _finishEvent = SingleUnitLiveEvent()
 
     lateinit var startLatLng: LatLng
@@ -120,8 +120,7 @@ class RemindViewModel @Inject constructor(
                             val routes = route.overviewPolyline.routes
                             val timeInMillis = dateTime.minusSeconds(route.totalDurationSecond.toLong())
                                     .toEpochSecond(ZoneOffset.ofHours(9)) * 1000L
-                            // TODO: append data
-                            _notificationEvent.postValue(route.totalDurationSecond / 60)    // 分
+                            _notificationEvent.postValue(route.totalDurationSecond / 60 to routes)    // 分
                         },
                         onError = {}
                 )

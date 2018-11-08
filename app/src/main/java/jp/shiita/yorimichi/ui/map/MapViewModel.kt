@@ -159,6 +159,14 @@ class MapViewModel @Inject constructor(
                 .addTo(disposables)
     }
 
+    fun setRoutesViaNotification(routes: List<LatLng>) {
+        clearPlaces()
+        isLocationObserved = true   // searchPlacesが呼ばれることを防止
+        _routes.postValue(routes)
+        _moveCameraZoomEvent.postValue(routes[0])
+        _showsChick.postValue(true)
+    }
+
     fun onScrolled(first: Int, last: Int) {
         this.first = first
         this.last = last

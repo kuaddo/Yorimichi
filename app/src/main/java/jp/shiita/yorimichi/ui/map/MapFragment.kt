@@ -163,11 +163,18 @@ class MapFragment : DaggerFragment() {
                 true        // cameraのアニメーションは自前でやる
             }
 
-            if (viewModel.places.value == null && viewModel.routes.value == null)
-                viewModel.searchPlacesDefault()
+            val routes = activity?.intent?.getParcelableArrayListExtra<LatLng>(RemindFragment.ARGS_ROUTES)
+            if (routes != null) {
+                resetMap()
+                viewModel.setRoutesViaNotification(routes.toList())
+            }
+            else {
+                if (viewModel.places.value == null && viewModel.routes.value == null)
+                    viewModel.searchPlacesDefault()
 
-            viewModel.places.value?.let { addPlaces(it) }
-            viewModel.routes.value?.let { addRoute(it) }
+                viewModel.places.value?.let { addPlaces(it) }
+                viewModel.routes.value?.let { addRoute(it) }
+            }
         }
     }
 
