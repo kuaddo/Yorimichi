@@ -2,13 +2,17 @@ package jp.shiita.yorimichi.ui.remind
 
 import android.Manifest
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
@@ -144,6 +148,9 @@ class RemindFragment : DaggerFragment() {
                 fragment.setTargetFragment(this, REQUEST_SHOW_TIME_PICKER)
             }.show(fragmentManager, TimePickerDialogFragment.TAG)
         }
+        viewModel.notificationEvent.observe(this) {
+            notification(it)
+        }
         viewModel.finishEvent.observe(this) {
             // TODO: set result
             fragmentManager?.popBackStack()
@@ -173,11 +180,36 @@ class RemindFragment : DaggerFragment() {
         markers.clear()
     }
 
+    private fun notification(minute: Int) {
+        val manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
+        createChannel(manager)
+        val notification = NotificationCompat.Builder(context!!, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("そろそろ出発した方がいいよ！")
+                .setContentText("予想移動時間${minute}分")
+                .setColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
+                .build()
+        manager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun createChannel(manager: NotificationManager) {
+        val name = "出発時間をお知らせ"
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if (manager.getNotificationChannel(CHANNEL_ID) == null) {
+                val channel = NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH)
+                channel.description = "出発時間の5分前に通知でお知らせします"
+                manager.createNotificationChannel(channel)
+            }
+        }
+    }
+
     companion object {
         val TAG: String = RemindFragment::class.java.simpleName
         private const val REQUEST_SHOW_TIME_PICKER = 1000
+        private const val NOTIFICATION_ID = 0
         private const val ARGS_START_LAT_LNG = "argsStartLatLng"
         private const val INITIAL_ZOOM_LEVEL = 16f
+        private const val CHANNEL_ID = "remind"
 
         fun newInstance(startLatLng: LatLng) = RemindFragment().apply {
             arguments = Bundle().apply { putParcelable(ARGS_START_LAT_LNG, startLatLng) }

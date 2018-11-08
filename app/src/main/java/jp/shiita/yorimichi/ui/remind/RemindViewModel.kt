@@ -18,6 +18,7 @@ import jp.shiita.yorimichi.util.combineLatest
 import jp.shiita.yorimichi.util.map
 import jp.shiita.yorimichi.util.toSimpleString
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
 import java.net.URLEncoder
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class RemindViewModel @Inject constructor(
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
     val selected: LiveData<Boolean> get() = _selectedLatLng.map { it != null }
-    val timeString: LiveData<String> get() = _hour.combineLatest(_minute) { h, m -> "$h:$m" }
+    val timeString: LiveData<String> get() = _hour.combineLatest(_minute) { h, m -> "%02d:%02d".format(h, m) }
     val reachedVisible: LiveData<Boolean> get() = _reachedVisible
     val gotoVisible: LiveData<Boolean> get() = _gotoVisible
     val placeVisible: LiveData<Boolean> get() = _placeVisible
@@ -37,6 +38,7 @@ class RemindViewModel @Inject constructor(
     val finishWithNeed: LiveData<Boolean> get() = _finishWithNeed
 
     val showTimePickerEvent: LiveData<Pair<Int, Int>> get() = _showTimePickerEvent
+    val notificationEvent: LiveData<Int> get() = _notificationEvent
     val finishEvent: LiveData<Unit> get() = _finishEvent
 
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
@@ -52,6 +54,7 @@ class RemindViewModel @Inject constructor(
     private val _finishWithNeed = MutableLiveData<Boolean>()
 
     private val _showTimePickerEvent = SingleLiveEvent<Pair<Int, Int>>()
+    private val _notificationEvent = SingleLiveEvent<Int>()
     private val _finishEvent = SingleUnitLiveEvent()
 
     lateinit var startLatLng: LatLng
@@ -101,10 +104,33 @@ class RemindViewModel @Inject constructor(
     }
 
     fun timeSelected() {
+        val origin = UserInfo.latLng?.toSimpleString() ?: return
+        val destination = if (_selectedLatLng.value == null) startLatLng.toSimpleString()
+                          else                               _selectedLatLng.value!!.toSimpleString()
+        val now = LocalDateTime.now()
+        val hour = _hour.value ?: now.hour
+        val minute = _minute.value ?: now.minute
+        val dateTime = LocalDateTime.of(now.hour, now.month, now.dayOfMonth, hour, minute).minusMinutes(5)  // 5分前
+        repository.getDirection(origin, destination)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            val route = it.routes[0]
+                            val routes = route.overviewPolyline.routes
+                            val timeInMillis = dateTime.minusSeconds(route.totalDurationSecond.toLong())
+                                    .toEpochSecond(ZoneOffset.ofHours(9)) * 1000L
+                            // TODO: append data
+                            _notificationEvent.postValue(route.totalDurationSecond / 60)    // 分
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+
         _timeVisible.value = false
         _finishVisible.value = true
         _finishWithNeed.value = true
-        // TODO: set notification, post null to _latLng
+        _selectedLatLng.postValue(null)
     }
 
     fun finish() {
