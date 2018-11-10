@@ -38,7 +38,7 @@ class RemindViewModel @Inject constructor(
     val finishWithNeed: LiveData<Boolean> get() = _finishWithNeed
 
     val showTimePickerEvent: LiveData<Pair<Int, Int>> get() = _showTimePickerEvent
-    val notificationEvent: LiveData<Pair<Int, List<LatLng>>> get() = _notificationEvent
+    val notificationEvent: LiveData<Triple<Int, List<LatLng>, Long>> get() = _notificationEvent
     val finishEvent: LiveData<Unit> get() = _finishEvent
 
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
@@ -54,7 +54,7 @@ class RemindViewModel @Inject constructor(
     private val _finishWithNeed = MutableLiveData<Boolean>()
 
     private val _showTimePickerEvent = SingleLiveEvent<Pair<Int, Int>>()
-    private val _notificationEvent = SingleLiveEvent<Pair<Int, List<LatLng>>>()     // (minute, routes)
+    private val _notificationEvent = SingleLiveEvent<Triple<Int, List<LatLng>, Long>>()     // (minute, routes, timeInMillis)
     private val _finishEvent = SingleUnitLiveEvent()
 
     lateinit var startLatLng: LatLng
@@ -110,7 +110,7 @@ class RemindViewModel @Inject constructor(
         val now = LocalDateTime.now()
         val hour = _hour.value ?: now.hour
         val minute = _minute.value ?: now.minute
-        val dateTime = LocalDateTime.of(now.hour, now.month, now.dayOfMonth, hour, minute).minusMinutes(5)  // 5分前
+        val dateTime = LocalDateTime.of(now.year, now.month, now.dayOfMonth, hour, minute).minusMinutes(5)  // 5分前
         repository.getDirection(origin, destination)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
@@ -120,7 +120,7 @@ class RemindViewModel @Inject constructor(
                             val routes = route.overviewPolyline.routes
                             val timeInMillis = dateTime.minusSeconds(route.totalDurationSecond.toLong())
                                     .toEpochSecond(ZoneOffset.ofHours(9)) * 1000L
-                            _notificationEvent.postValue(route.totalDurationSecond / 60 to routes)    // 分
+                            _notificationEvent.postValue(Triple(route.totalDurationSecond / 60, routes, timeInMillis))
                         },
                         onError = {}
                 )

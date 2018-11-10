@@ -34,8 +34,6 @@ import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver.Companion.REQU
 import jp.shiita.yorimichi.ui.search.SearchFragment
 import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.observe
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneOffset
 import javax.inject.Inject
 
 class RemindFragment : DaggerFragment() {
@@ -156,7 +154,7 @@ class RemindFragment : DaggerFragment() {
             }.show(fragmentManager, TimePickerDialogFragment.TAG)
         }
         viewModel.notificationEvent.observe(this) {
-            setNotification(it.first, it.second)
+            setNotification(it.first, it.second, it.third)
         }
         viewModel.finishEvent.observe(this) {
             // TODO: set result
@@ -187,11 +185,8 @@ class RemindFragment : DaggerFragment() {
         markers.clear()
     }
 
-    private fun setNotification(minute: Int, routes: List<LatLng>) {
+    private fun setNotification(minute: Int, routes: List<LatLng>, timeInMillis: Long) {
         val manager = context?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
-        val timeInMillis = LocalDateTime.now()
-                .plusSeconds(10)
-                .toEpochSecond(ZoneOffset.ofHours(9)) * 1000L
         val intent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
             action = NotificationBroadcastReceiver.ACTION_NOTIFICATION
             putExtra(ARGS_MINUTE, minute)
