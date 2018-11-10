@@ -24,6 +24,7 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragMapBinding
 import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.live.MagneticLiveData
+import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.remind.RemindFragment
 import jp.shiita.yorimichi.util.*
@@ -163,10 +164,14 @@ class MapFragment : DaggerFragment() {
                 true        // cameraのアニメーションは自前でやる
             }
 
-            val routes = activity?.intent?.getParcelableArrayListExtra<LatLng>(RemindFragment.ARGS_ROUTES)
+            val routes = activity?.intent?.let {
+                val lats = it.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LATS) ?: return@let null
+                val lngs = it.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LNGS) ?: return@let null
+                lats.zip(lngs).map { LatLng(it.first, it.second) }
+            }
             if (routes != null) {
                 resetMap()
-                viewModel.setRoutesViaNotification(routes.toList())
+                viewModel.setRoutesViaNotification(routes)
             }
             else {
                 if (viewModel.places.value == null && viewModel.routes.value == null)

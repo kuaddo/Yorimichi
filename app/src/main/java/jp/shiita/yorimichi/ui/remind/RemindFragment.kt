@@ -2,8 +2,7 @@ package jp.shiita.yorimichi.ui.remind
 
 import android.Manifest
 import android.app.Activity
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
@@ -11,9 +10,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.NotificationCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
@@ -27,10 +26,16 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragRemindBinding
-import jp.shiita.yorimichi.ui.main.MainActivity
+import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver
+import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver.Companion.ARGS_LATS
+import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver.Companion.ARGS_LNGS
+import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver.Companion.ARGS_MINUTE
+import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver.Companion.REQUEST_SHOW_ROUTES
 import jp.shiita.yorimichi.ui.search.SearchFragment
 import jp.shiita.yorimichi.util.getBitmap
 import jp.shiita.yorimichi.util.observe
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
 import javax.inject.Inject
 
 class RemindFragment : DaggerFragment() {
@@ -151,7 +156,7 @@ class RemindFragment : DaggerFragment() {
             }.show(fragmentManager, TimePickerDialogFragment.TAG)
         }
         viewModel.notificationEvent.observe(this) {
-            notification(it.first, it.second)
+            setNotification(it.first, it.second)
         }
         viewModel.finishEvent.observe(this) {
             // TODO: set result
@@ -182,45 +187,30 @@ class RemindFragment : DaggerFragment() {
         markers.clear()
     }
 
-    private fun notification(minute: Int, routes: List<LatLng>) {
-        val manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
-        createChannel(manager)
-
-        val intent = PendingIntent.getActivity(context, REQUEST_SHOW_ROUTES, Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putParcelableArrayListExtra(ARGS_ROUTES, ArrayList(routes))
-        }, PendingIntent.FLAG_UPDATE_CURRENT)
-        val notification = NotificationCompat.Builder(context!!, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("そろそろ出発した方がいいよ！")
-                .setContentText("予想移動時間${minute}分")
-                .setColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
-                .setContentIntent(intent)
-                .build()
-        manager.notify(NOTIFICATION_ID, notification)
-    }
-
-    private fun createChannel(manager: NotificationManager) {
-        val name = "出発時間をお知らせ"
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            if (manager.getNotificationChannel(CHANNEL_ID) == null) {
-                val channel = NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH)
-                channel.description = "出発時間の5分前に通知でお知らせします"
-                manager.createNotificationChannel(channel)
-            }
+    private fun setNotification(minute: Int, routes: List<LatLng>) {
+        val manager = context?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
+        val timeInMillis = LocalDateTime.now()
+                .plusSeconds(10)
+                .toEpochSecond(ZoneOffset.ofHours(9)) * 1000L
+        val intent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
+            action = NotificationBroadcastReceiver.ACTION_NOTIFICATION
+            putExtra(ARGS_MINUTE, minute)
+            putExtra(ARGS_LATS, routes.map { it.latitude }.toDoubleArray())
+            putExtra(ARGS_LNGS, routes.map { it.longitude }.toDoubleArray())
         }
+        val pendingIntent = PendingIntent.getBroadcast(context, REQUEST_SHOW_ROUTES, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+        else
+            manager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
     }
 
     companion object {
         val TAG: String = RemindFragment::class.java.simpleName
         private const val REQUEST_SHOW_TIME_PICKER = 1000
-        private const val NOTIFICATION_ID = 0
         private const val ARGS_START_LAT_LNG = "argsStartLatLng"
         private const val INITIAL_ZOOM_LEVEL = 16f
-        private const val CHANNEL_ID = "remind"
-
-        const val REQUEST_SHOW_ROUTES = 1001
-        const val ARGS_ROUTES = "argsRoutes"
 
         fun newInstance(startLatLng: LatLng) = RemindFragment().apply {
             arguments = Bundle().apply { putParcelable(ARGS_START_LAT_LNG, startLatLng) }
