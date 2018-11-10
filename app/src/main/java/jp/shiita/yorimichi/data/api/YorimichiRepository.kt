@@ -10,8 +10,7 @@ class YorimichiRepository(
         private val yorimichiService: YorimichiService,
         private val gson: Gson
 ) {
-    fun createUser(): Single<String> = yorimichiService.createUser()
-            .map { json -> json.getAsJsonPrimitive("uuid").asString }
+    fun createUser(): Single<User> = yorimichiService.createUser()
 
     fun getUser(uuid: String): Single<User> = yorimichiService.getUser(uuid)
             .map { response ->

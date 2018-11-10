@@ -76,7 +76,7 @@ class MainViewModel @Inject constructor(
             repository.createUser()
                     .subscribeOn(scheduler.io())
                     .subscribeBy(
-                            onSuccess = { UserInfo.userId = it },
+                            onSuccess = { reflectUserInfo(it) },
                             onError = { _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message) }
                     )
                     .addTo(disposables)
@@ -93,6 +93,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun reflectUserInfo(user: User) {
+        UserInfo.userId = user.uuid
         UserInfo.points = user.points
         updatePoints()
 

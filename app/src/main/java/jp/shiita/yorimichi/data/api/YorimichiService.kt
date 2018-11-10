@@ -12,7 +12,7 @@ import retrofit2.http.*
 
 interface YorimichiService {
     @POST("users/")
-    fun createUser(): Single<JsonObject>
+    fun createUser(): Single<User>
 
     @GET("users/{uuid}/")
     fun getUser(@Path("uuid") uuid: String): Single<Response<User>>
