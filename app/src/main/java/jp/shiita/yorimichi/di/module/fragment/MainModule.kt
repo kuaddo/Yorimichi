@@ -2,6 +2,7 @@ package jp.shiita.yorimichi.di.module.fragment
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
 import jp.shiita.yorimichi.ui.main.MainFragment
 import jp.shiita.yorimichi.ui.map.MapFragment
 import jp.shiita.yorimichi.ui.mypage.MyPageFragment
@@ -37,4 +38,7 @@ abstract class MainModule {
 
     @ContributesAndroidInjector
     abstract fun contributeRemindFragment(): RemindFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePointGetDialogFragment(): PointGetDialogFragment
 }
