@@ -101,7 +101,7 @@ class MapViewModel @Inject constructor(
 
     fun searchPlacesDefault() {
         // TODO: 初期検索キーワードを実装。とりあえずカフェにする
-        searchPlaces(listOf("カフェ"), radius = 2000)
+        searchPlaces(listOf("カフェ"), radius = 1000)
     }
 
     fun searchPlaces(keywords: List<String>, radius: Int) {

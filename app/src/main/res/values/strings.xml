@@ -38,7 +38,7 @@
     <string name="dialog_point_get_watch_button">動画を見る</string>
 
     <!-- search -->
-    <string name="search_time_required">所要時間</string>
+    <string name="search_radius">移動距離</string>
     <string name="search_category">カテゴリ</string>
     <string name="search_goto_other">目的地が決まっているなら…</string>
     <string name="search_query_hint">キーワード・住所で検索する</string>

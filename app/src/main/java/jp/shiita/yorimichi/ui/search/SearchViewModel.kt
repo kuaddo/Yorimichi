@@ -24,13 +24,13 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
     val places: LiveData<List<PlaceResult.Place>> get() = _places
     val zoomBounds: LiveData<LatLngBounds> get() = _zoomBounds
-    val requiredTimeString: LiveData<String> get() = requiredTimeMinute.map { toTimeString(it) }
+    val radiusString: LiveData<String> get() = seekBarRadius.map { "${(it + 1) * 100}m" }
     val selected          : LiveData<Boolean> get() = _latLng.map { it != null }
 
     val searchRadiusEvent : LiveData<Int> get() = _searchRadiusEvent
     val directionsEvent: LiveData<LatLng> get() = _directionsEvent
 
-    val requiredTimeMinute = MutableLiveData<Int>().apply { value = 80 }
+    val seekBarRadius = MutableLiveData<Int>().apply { value = 4 }
 
     private val _places = MutableLiveData<List<PlaceResult.Place>>()
     private val _zoomBounds = MutableLiveData<LatLngBounds>()
@@ -44,8 +44,7 @@ class SearchViewModel @Inject constructor(
     override fun onCleared() = disposables.clear()
 
     fun search() {
-        // 1分で歩ける距離は80mらしい
-        val radius = requiredTimeMinute.value!! * 80
+        val radius = (seekBarRadius.value!! + 1) * 100
         _searchRadiusEvent.postValue(radius)
     }
 
@@ -81,8 +80,4 @@ class SearchViewModel @Inject constructor(
                 )
                 .addTo(disposables)
     }
-
-    private fun toTimeString(timeMinute: Int): String =
-            if (timeMinute < 60) "%02d分".format(timeMinute)
-            else "%d時間%02d分".format(timeMinute / 60, timeMinute % 60)
 }
