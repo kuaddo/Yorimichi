@@ -24,6 +24,8 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.FragMapBinding
 import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.live.MagneticLiveData
+import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver
+import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.remind.RemindFragment
 import jp.shiita.yorimichi.util.*
@@ -163,11 +165,22 @@ class MapFragment : DaggerFragment() {
                 true        // cameraのアニメーションは自前でやる
             }
 
-            if (viewModel.places.value == null && viewModel.routes.value == null)
-                viewModel.searchPlacesDefault()
+            val routes = activity?.intent?.let {
+                val lats = it.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LATS) ?: return@let null
+                val lngs = it.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LNGS) ?: return@let null
+                lats.zip(lngs).map { LatLng(it.first, it.second) }
+            }
+            if (routes != null) {
+                resetMap()
+                viewModel.setRoutesViaNotification(routes)
+            }
+            else {
+                if (viewModel.places.value == null && viewModel.routes.value == null)
+                    viewModel.searchPlacesDefault()
 
-            viewModel.places.value?.let { addPlaces(it) }
-            viewModel.routes.value?.let { addRoute(it) }
+                viewModel.places.value?.let { addPlaces(it) }
+                viewModel.routes.value?.let { addRoute(it) }
+            }
         }
     }
 
@@ -187,10 +200,14 @@ class MapFragment : DaggerFragment() {
         viewModel.selectedLargePinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
         viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
         viewModel.moveCameraZoomEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
-        viewModel.pointsEvent.observe(this) { mainViewModel.updatePoints() }
-        viewModel.reachedEvent.observe(this) {
+        viewModel.pointsEvent.observe(this) {
+            PointGetDialogFragment.newInstance(it, it).show(activity?.supportFragmentManager, PointGetDialogFragment.TAG)
+            mainViewModel.updatePoints()
+        }
+        viewModel.reachedEvent.observe(this) { startLatLng ->
+            resetMap()
             activity?.invalidateOptionsMenu()
-            activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(), RemindFragment.TAG)
+            activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(startLatLng), RemindFragment.TAG)
         }
     }
 

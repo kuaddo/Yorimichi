@@ -15,7 +15,10 @@ data class DirectionResult(
             val overviewPolyline: Polyline,
             val warnings: List<String>,
             val waypointOrder: List<Int>
-    )
+    ) {
+        val totalDurationSecond: Int
+            get() = legs.sumBy { it.duration.value }
+    }
 
     data class Leg(
             val distance: Value,

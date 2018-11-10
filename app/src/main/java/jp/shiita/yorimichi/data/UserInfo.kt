@@ -5,10 +5,10 @@ import com.google.android.gms.maps.model.LatLng
 
 object UserInfo : KotprefModel() {
     var userId by stringPref()
-    var latitude by stringPref()
-    var longitude by stringPref()
+    var latitude by stringPref("35.681253")     // defaultは東京駅
+    var longitude by stringPref("139.766932")
     var points by intPref(0)
-    var iconBucket by stringPref("yorimichi_goods")
+    var iconBucket by stringPref("gs://yorimichi_goods")
     var iconFileName by stringPref("icon_normal.png")
 
     var latLng: LatLng?

@@ -6,12 +6,12 @@ import android.arch.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
-import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.util.distance
 import jp.shiita.yorimichi.util.toSimpleString
@@ -39,8 +39,8 @@ class MapViewModel @Inject constructor(
 
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
     val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
-    val pointsEvent: LiveData<Unit> get() = _pointsEvent
-    val reachedEvent: LiveData<Unit> get() = _reachedEvent
+    val pointsEvent: LiveData<Int> get() = _pointsEvent
+    val reachedEvent: LiveData<LatLng> get() = _reachedEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
@@ -59,14 +59,15 @@ class MapViewModel @Inject constructor(
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
     private val _moveCameraZoomEvent  = SingleLiveEvent<LatLng>()
-    private val _pointsEvent          = SingleUnitLiveEvent()
-    private val _reachedEvent         = SingleUnitLiveEvent()
+    private val _pointsEvent          = SingleLiveEvent<Int>()
+    private val _reachedEvent         = SingleLiveEvent<LatLng>()   // start地点のLatLng
 
     private var isLocationObserved = false
     private var placesSize = -1
     private var selectedPosition = -1
     private var first = -1
     private var last = -1
+    private var startLatLng: LatLng? = null
 
     private val disposables = CompositeDisposable()
 
@@ -134,12 +135,14 @@ class MapViewModel @Inject constructor(
                             _moveCameraZoomEvent.postValue(latLng)
                         }
                 )
+                .addTo(disposables)
     }
 
     fun searchDirection(destination: String) {
         clearPlaces()
 
         val latLng = this.latLng.value ?: return
+        startLatLng = latLng
         repository.getDirection(latLng.toSimpleString(), destination)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
@@ -152,6 +155,15 @@ class MapViewModel @Inject constructor(
                         },
                         onError = {}
                 )
+                .addTo(disposables)
+    }
+
+    fun setRoutesViaNotification(routes: List<LatLng>) {
+        clearPlaces()
+        isLocationObserved = true   // searchPlacesが呼ばれることを防止
+        _routes.postValue(routes)
+        _moveCameraZoomEvent.postValue(routes[0])
+        _showsChick.postValue(true)
     }
 
     fun onScrolled(first: Int, last: Int) {
@@ -168,17 +180,18 @@ class MapViewModel @Inject constructor(
 
     fun reached() {
         clearRoutes()
-        _reachedEvent.call()
         repository.addPoints(UserInfo.userId, 20)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
                         onSuccess = {
                             UserInfo.points = it.points
-                            _pointsEvent.call()
+                            _reachedEvent.value = startLatLng
+                            _pointsEvent.value = 20
                         },
                         onError = {}
                 )
+                .addTo(disposables)
     }
 
     private fun clearPlaces() {

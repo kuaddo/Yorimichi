@@ -24,6 +24,8 @@
 
     <color name="colorSelectedBackground">#EFE4B0</color>
 
+    <color name="colorWatchMovieButtonBackground">#4C4C4C</color>
+
     <array name="colorsPen">
         <item>#000000</item>
         <item>#7F7F7F</item>

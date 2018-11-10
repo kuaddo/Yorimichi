@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<data>
+    <import type="android.view.View"/>
+    <variable
+        name="viewModel"
+        type="jp.shiita.yorimichi.ui.remind.RemindViewModel"/>
+</data>
 
 <FrameLayout
     android:layout_width="match_parent"
@@ -15,7 +22,7 @@
         android:id="@+id/reachedLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="@{viewModel.reachedVisible ? View.VISIBLE : View.GONE}">
 
         <TextView
             android:layout_width="0dp"
@@ -53,6 +60,7 @@
             android:textSize="@dimen/text_large"
             android:textColor="@color/colorWhite"
             android:text="@string/remind_need"
+            android:onClick="@{() -> viewModel.need()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView3" />
@@ -68,6 +76,7 @@
             android:textSize="@dimen/text_large"
             android:textColor="@color/colorWhite"
             android:text="@string/remind_no_need"
+            android:onClick="@{() -> viewModel.noNeed()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/needButton" />
@@ -78,7 +87,8 @@
         android:id="@+id/gotoLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="@{viewModel.gotoVisible ? View.VISIBLE : View.GONE}"
+        tools:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
@@ -116,6 +126,7 @@
             android:textSize="@dimen/text_large"
             android:textColor="@color/colorWhite"
             android:text="@string/remind_go_back"
+            android:onClick="@{() -> viewModel.goBack()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView5" />
@@ -131,6 +142,7 @@
             android:textSize="@dimen/text_large"
             android:textColor="@color/colorWhite"
             android:text="@string/remind_go_other"
+            android:onClick="@{() -> viewModel.goOther()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/goBackButton" />
@@ -141,8 +153,8 @@
         android:id="@+id/placeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
-
+        android:visibility="@{viewModel.placeVisible ? View.VISIBLE : View.GONE}"
+        tools:visibility="gone">
         <TextView
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -205,6 +217,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
+            android:onClick="@{() -> viewModel.gotoPlace()}"
+            app:enabled="@{viewModel.selected}"
             app:src="@drawable/ic_pin"
             app:text="@string/search_button_goto"
             app:marginCenter="8dp"
@@ -218,7 +232,8 @@
         android:id="@+id/timeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="@{viewModel.timeVisible ? View.VISIBLE : View.GONE}"
+        tools:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
@@ -255,7 +270,9 @@
             android:background="@drawable/back_button"
             android:textSize="@dimen/text_large"
             android:textColor="@color/colorWhite"
-            android:text="11:25"
+            android:text="@{viewModel.timeString}"
+            android:onClick="@{() -> viewModel.showTimePicker()}"
+            tools:text="11:25"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView7" />
@@ -271,6 +288,7 @@
             android:textSize="@dimen/text_large"
             android:textColor="@color/colorWhite"
             android:text="@string/remind_time_selected"
+            android:onClick="@{() -> viewModel.timeSelected()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timeSelectButton" />
@@ -281,7 +299,8 @@
         android:id="@+id/finishLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="@{viewModel.finishVisible ? View.VISIBLE : View.GONE}"
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/finishText"
@@ -291,7 +310,7 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/balloon_large"
             android:gravity="center"
-            android:text="@string/remind_no_need_finish_message"
+            android:text="@{viewModel.finishWithNeed ? @string/remind_need_finish_message : @string/remind_no_need_finish_message}"
             android:textColor="@color/colorTextPrimary"
             android:textSize="@dimen/text_large"
             app:layout_constraintBottom_toTopOf="@+id/imageView4"
@@ -320,6 +339,7 @@
             android:textSize="@dimen/text_large"
             android:textColor="@color/colorWhite"
             android:text="@string/remind_finish"
+            android:onClick="@{() -> viewModel.finish()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView4" />

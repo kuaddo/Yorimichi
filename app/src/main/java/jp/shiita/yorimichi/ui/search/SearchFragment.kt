@@ -144,7 +144,7 @@ class SearchFragment : DaggerFragment() {
         viewModel.directionsEvent.observe(this) {
             clearMap()
             binding.searchView.setQuery("", false)
-            mainViewModel.setRoute(it)
+            mainViewModel.callDirectionsEvent(it)
         }
         viewModel.places.observe(this) { places ->
             clearMap()

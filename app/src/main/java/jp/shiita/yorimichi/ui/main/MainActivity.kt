@@ -14,6 +14,7 @@ import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.ActMainBinding
+import jp.shiita.yorimichi.ui.dialog.SimpleDialogFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.OPEN_DRAWER
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.POP_BACK_STACK
 import jp.shiita.yorimichi.ui.mypage.MyPageFragment

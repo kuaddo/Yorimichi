@@ -63,13 +63,9 @@ class MainViewModel @Inject constructor(
 
     fun finishAppLocationPermissionDenied() = _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message)
 
-    fun search(categories: List<String>, radius: Int) {
-        _searchEvent.postValue(categories to radius)
-    }
+    fun search(categories: List<String>, radius: Int) = _searchEvent.postValue(categories to radius)
 
-    fun setRoute(latLng: LatLng) {
-        _directionsEvent.postValue(latLng)
-    }
+    fun callDirectionsEvent(latLng: LatLng) = _directionsEvent.postValue(latLng)
 
     fun updatePoints() = _updatePointEvent.call()
 

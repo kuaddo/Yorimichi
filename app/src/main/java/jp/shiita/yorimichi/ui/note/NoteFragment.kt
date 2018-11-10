@@ -11,7 +11,7 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragNoteBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
-import jp.shiita.yorimichi.ui.main.SimpleDialogFragment
+import jp.shiita.yorimichi.ui.dialog.SimpleDialogFragment
 import jp.shiita.yorimichi.util.loadAd
 import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.toBytes
