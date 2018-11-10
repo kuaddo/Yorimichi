@@ -12,7 +12,6 @@ import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
-import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.util.distance
 import jp.shiita.yorimichi.util.toSimpleString
@@ -40,7 +39,7 @@ class MapViewModel @Inject constructor(
 
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
     val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
-    val pointsEvent: LiveData<Unit> get() = _pointsEvent
+    val pointsEvent: LiveData<Int> get() = _pointsEvent
     val reachedEvent: LiveData<LatLng> get() = _reachedEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
@@ -60,7 +59,7 @@ class MapViewModel @Inject constructor(
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
     private val _moveCameraZoomEvent  = SingleLiveEvent<LatLng>()
-    private val _pointsEvent          = SingleUnitLiveEvent()
+    private val _pointsEvent          = SingleLiveEvent<Int>()
     private val _reachedEvent         = SingleLiveEvent<LatLng>()   // start地点のLatLng
 
     private var isLocationObserved = false
@@ -181,14 +180,14 @@ class MapViewModel @Inject constructor(
 
     fun reached() {
         clearRoutes()
-        _reachedEvent.postValue(startLatLng)
         repository.addPoints(UserInfo.userId, 20)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
                         onSuccess = {
                             UserInfo.points = it.points
-                            _pointsEvent.call()
+                            _reachedEvent.value = startLatLng
+                            _pointsEvent.value = 20
                         },
                         onError = {}
                 )
