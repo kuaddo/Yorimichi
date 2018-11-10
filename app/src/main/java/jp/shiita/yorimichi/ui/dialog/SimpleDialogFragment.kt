@@ -1,4 +1,4 @@
-package jp.shiita.yorimichi.ui.main
+package jp.shiita.yorimichi.ui.dialog
 
 import android.app.Activity
 import android.app.Dialog
