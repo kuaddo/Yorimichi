@@ -28,6 +28,9 @@ class YorimichiRepository(
     fun addPoints(uuid: String, additionalPoints: Int): Single<User> =
             yorimichiService.addPoints(uuid, mapOf("point" to additionalPoints.toString()))
 
+    fun purchaseGoods(uuid: String, goodsId: Int): Single<GoodResult> =
+            yorimichiService.purchaseGoods(uuid, goodsId)
+
     fun getGoods(uuid: String): Single<GoodResult> =
             yorimichiService.getGoods(uuid)
 
