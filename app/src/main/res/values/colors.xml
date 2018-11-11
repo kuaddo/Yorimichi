@@ -14,6 +14,7 @@
     <color name="colorTextSecondary">#949494</color>
     
     <color name="colorDrawerSelectedBackground">#DCDCDC</color>
+    <color name="colorDrawerSecretGrey">#737373</color>
 
     <color name="colorDefaultBackground">#F0F0F0</color>
 

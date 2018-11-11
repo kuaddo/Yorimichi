@@ -17,6 +17,13 @@ fun ImageView.bindImageCloudStrage(bucket: String, image: String) = FirebaseStor
         .downloadUrl
         .addOnSuccessListener { uri -> GlideApp.with(this.context).load(uri).into(this) }
 
+@BindingAdapter("app:bucket", "app:image", "app:tint", requireAll = true)
+fun ImageView.bindImageCloudStrageTint(bucket: String, image: String, color: Int) = FirebaseStorage
+        .getInstance(bucket)
+        .getReference(image)
+        .downloadUrl
+        .addOnSuccessListener { uri -> GlideApp.with(this.context).load(uri).into(this) }
+
 @BindingAdapter("app:tint")
 fun ImageView.bindTint(color: Int) = setImageDrawable(drawable.setTintCompat(color))
 
