@@ -64,6 +64,16 @@ class PlaceAdapter(
         notifyDataSetChanged()
     }
 
+    fun sortByRateAsc() {
+        places.sortBy { it.rating }
+        notifyDataSetChanged()
+    }
+
+    fun sortByRateDesc() {
+        places.sortByDescending { it.rating }
+        notifyDataSetChanged()
+    }
+
     class PlaceViewHolder(private val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(place: PlaceResult.Place,
                  goto: (place: PlaceResult.Place) -> Unit) {

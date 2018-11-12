@@ -42,7 +42,7 @@ class MapFragment : DaggerFragment() {
     private lateinit var binding: FragMapBinding
     private lateinit var searchResultAdapter: PlaceAdapter
     private var map: GoogleMap? = null
-    private var markers: MutableList<Pair<Marker?, Int>> = mutableListOf()
+    private var markers: MutableList<Triple<Marker?, Int, Float>> = mutableListOf()
     private lateinit var smallDescriptor: BitmapDescriptor
     private lateinit var largeDescriptor: BitmapDescriptor
     private lateinit var selectedSmallDescriptor: BitmapDescriptor
@@ -121,6 +121,16 @@ class MapFragment : DaggerFragment() {
             R.id.menu_frag_map_search_result_sort_dist_desc -> {
                 sortMarkerByDistDesc()
                 searchResultAdapter.sortByDistDesc()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
+            }
+            R.id.menu_frag_map_search_result_sort_rate_asc -> {
+                sortMarkerByRateAsc()
+                searchResultAdapter.sortByRateAsc()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
+            }
+            R.id.menu_frag_map_search_result_sort_rate_desc -> {
+                sortMarkerByRateDesc()
+                searchResultAdapter.sortByRateDesc()
                 viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
             }
             R.id.menu_frag_map_finish_guide -> {
@@ -226,7 +236,7 @@ class MapFragment : DaggerFragment() {
             val marker = MarkerOptions()
                     .position(it.latLng)
                     .icon(smallDescriptor)
-            map?.addMarker(marker) to it.getDistance()
+            Triple(map?.addMarker(marker), it.getDistance(), it.rating)
         })
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
@@ -252,6 +262,16 @@ class MapFragment : DaggerFragment() {
 
     private fun sortMarkerByDistDesc() {
         markers.sortByDescending { it.second }
+        markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
+    }
+
+    private fun sortMarkerByRateAsc() {
+        markers.sortBy { it.third }
+        markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
+    }
+
+    private fun sortMarkerByRateDesc() {
+        markers.sortByDescending { it.third }
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
 

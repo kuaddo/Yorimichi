@@ -24,6 +24,8 @@
     <!-- menu -->
     <string name="menu_sort_dist_asc">近い順</string>
     <string name="menu_sort_dist_desc">遠い順</string>
+    <string name="menu_sort_rate_asc">評価が低い順</string>
+    <string name="menu_sort_rate_desc">評価が高い順</string>
     <string name="menu_finish_guide">案内終了</string>
     <string name="menu_upload_note">アップロード</string>
 
