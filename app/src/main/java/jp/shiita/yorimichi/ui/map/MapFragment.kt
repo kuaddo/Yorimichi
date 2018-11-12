@@ -156,6 +156,7 @@ class MapFragment : DaggerFragment() {
 
         (childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
+            map?.moveCamera(CameraUpdateFactory.newLatLng(UserInfo.latLng))
             map?.isMyLocationEnabled = true
 
             map?.setOnMarkerClickListener { marker ->
