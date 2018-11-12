@@ -86,6 +86,7 @@ class MapFragment : DaggerFragment() {
             initMap()
             observe()
         }
+        viewModel.setChickMessage(getString(R.string.chick_test))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

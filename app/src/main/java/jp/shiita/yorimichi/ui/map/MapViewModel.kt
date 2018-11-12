@@ -36,6 +36,7 @@ class MapViewModel @Inject constructor(
     val showsSearchResult: LiveData<Boolean> get() = _showsSearchResult
     val showsChick: LiveData<Boolean> get() = _showsChick
     val isNear: LiveData<Boolean> get() = _isNear
+    val chickMessage: LiveData<String> get() = _chickMessage
 
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
     val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
@@ -57,6 +58,7 @@ class MapViewModel @Inject constructor(
     private val _showsSearchResult         = MutableLiveData<Boolean>()
     private val _showsChick                = MutableLiveData<Boolean>()
     private val _isNear                    = MutableLiveData<Boolean>()
+    private val _chickMessage              = MutableLiveData<String>()
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
     private val _moveCameraZoomEvent  = SingleLiveEvent<LatLng>()
@@ -101,6 +103,8 @@ class MapViewModel @Inject constructor(
         _targetPlace.postValue(place)
         searchDirection("place_id:${place.placeId}")
     }
+
+    fun setChickMessage(message: String) = _chickMessage.postValue(message)
 
     fun searchPlacesDefault() {
         // TODO: 初期検索キーワードを実装。とりあえずカフェにする

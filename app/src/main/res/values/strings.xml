@@ -51,6 +51,10 @@
     <!-- map -->
     <string name="map_reached">ついた！</string>
 
+    <!-- chick message -->
+    <string name="chick_test">テストテキスト</string>
+    <string name="chick_reached_message">ついた？</string>
+
     <!-- remind -->
     <string name="remind_reached_message">お疲れ様！\n帰りの案内は必要？\n\n時間の五分前になると、\n通知が来るよ！</string>
     <string name="remind_goto_message">どこに帰りたい？</string>

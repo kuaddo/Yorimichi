@@ -42,16 +42,20 @@
         app:layout_constraintTop_toTopOf="@+id/googleMap" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="20dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/balloon_small"
         android:gravity="center"
-        android:text="いつもより多めに回ってやんよ"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="@{viewModel.isNear ? @string/chick_reached_message : viewModel.chickMessage}"
         android:visibility="@{viewModel.showsChick ? View.VISIBLE : View.GONE}"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iconImage"
         app:layout_constraintTop_toTopOf="@+id/googleMap" />
 
