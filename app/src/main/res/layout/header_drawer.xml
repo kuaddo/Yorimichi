@@ -119,10 +119,27 @@
             tools:text="30p"/>
     </LinearLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:background="@color/colorDrawerSelectedBackground"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:listitem="@layout/item_icon"
+        app:spanCount="3"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/iconImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginTop="24dp"
         android:background="@color/colorDarkGrey"
-        app:layout_constraintTop_toBottomOf="@+id/iconImage"/>
+        app:layout_goneMarginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView"/>
 </android.support.constraint.ConstraintLayout>

@@ -77,6 +77,32 @@ class ShopViewModel @Inject constructor(
                 .addTo(disposables)
     }
 
+    fun purchaseAllIcon() {
+        repository.getGoods(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            it.icons.forEach { icon ->
+                                if (!icon.isPurchased) purchaseIcon(icon.id)
+                            }
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+    }
+
+    private fun purchaseIcon(goodsId: Int) {
+        repository.purchaseGoods(UserInfo.userId, goodsId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = { Log.d(TAG, "purchase $goodsId") },
+                        onError = {}
+                )
+                .addTo(disposables)
+    }
+
     companion object {
         val TAG: String = ShopViewModel::class.java.simpleName
     }

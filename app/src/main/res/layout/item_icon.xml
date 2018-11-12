@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<data>
+    <variable
+        name="icon"
+        type="jp.shiita.yorimichi.data.GoodResult.Icon"/>
+</data>
+
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    app:bucket="@{icon.bucket}"
+    app:image="@{icon.filename}"
+    app:tint="@{icon.isPurchased ? @color/colorTransparent : @color/colorDrawerSecretGrey}"
+    tools:src="@drawable/ic_launcher_round"/>
+</layout>
