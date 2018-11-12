@@ -197,7 +197,7 @@ class MapFragment : DaggerFragment() {
 
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
-        magneticLiveData.observe(this) { binding.iconImage.rotation = it }
+        magneticLiveData.observe(this) { binding.iconImage.rotation = -it }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         mainViewModel.directionsEvent.observe(this) { viewModel.searchDirection(it.toSimpleString()) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
