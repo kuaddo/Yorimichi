@@ -168,6 +168,7 @@ class MapFragment : DaggerFragment() {
             map = googleMap
             map?.moveCamera(CameraUpdateFactory.newLatLng(UserInfo.latLng))
             map?.isMyLocationEnabled = true
+            map?.uiSettings?.isCompassEnabled = false
 
             map?.setOnMarkerClickListener { marker ->
                 val position = marker?.tag as? Int ?: 0
@@ -197,7 +198,16 @@ class MapFragment : DaggerFragment() {
 
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
-        magneticLiveData.observe(this) { binding.iconImage.rotation = -it }
+        magneticLiveData.observe(this) {
+            binding.iconImage.rotation = -it
+            if (viewModel.rotationEnabled) map?.let { m ->
+                val position = CameraPosition.Builder(m.cameraPosition)
+                        .target(UserInfo.latLng)
+                        .bearing(it)
+                        .build()
+                m.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+            }
+        }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         mainViewModel.directionsEvent.observe(this) { viewModel.searchDirection(it.toSimpleString()) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
@@ -225,6 +235,10 @@ class MapFragment : DaggerFragment() {
     private fun resetMap() {
         markers.clear()
         map?.clear()
+        map?.uiSettings?.let { ui ->
+            ui.setAllGesturesEnabled(true)
+            ui.isMyLocationButtonEnabled = true
+        }
     }
 
     private fun addPlaces(places: List<PlaceResult.Place>) {
@@ -248,6 +262,11 @@ class MapFragment : DaggerFragment() {
         map?.addPolyline(PolylineOptions()
                 .color(Color.BLUE)
                 .addAll(routes))
+        map?.uiSettings?.let { ui ->
+            ui.setAllGesturesEnabled(false)
+            ui.isZoomGesturesEnabled = true
+            ui.isMyLocationButtonEnabled = false
+        }
     }
 
     private fun selectPlace(position: Int) {

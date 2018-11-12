@@ -70,6 +70,7 @@ class MapViewModel @Inject constructor(
     private var startLatLng: LatLng? = null
 
     private val disposables = CompositeDisposable()
+    var rotationEnabled = false
 
     override fun onCleared() = disposables.clear()
 
@@ -152,6 +153,7 @@ class MapViewModel @Inject constructor(
                             _routes.postValue(routes)
                             _moveCameraZoomEvent.postValue(latLng)
                             _showsChick.postValue(true)
+                            rotationEnabled = true
                         },
                         onError = {}
                 )
@@ -164,6 +166,7 @@ class MapViewModel @Inject constructor(
         _routes.postValue(routes)
         _moveCameraZoomEvent.postValue(routes[0])
         _showsChick.postValue(true)
+        rotationEnabled = true
     }
 
     fun onScrolled(first: Int, last: Int) {
@@ -209,6 +212,7 @@ class MapViewModel @Inject constructor(
         _targetPlace.postValue(null)
         _showsChick.postValue(false)
         _isNear.postValue(false)
+        rotationEnabled = false
     }
 
     private fun updatePinPositions() {
