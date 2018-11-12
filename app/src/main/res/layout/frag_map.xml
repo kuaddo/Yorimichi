@@ -53,7 +53,7 @@
         android:paddingStart="8dp"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="@{viewModel.isNear ? @string/chick_reached_message : viewModel.chickMessage}"
+        android:text="@{viewModel.isNear ? @string/map_chick_reached_message : viewModel.chickMessage}"
         android:visibility="@{viewModel.showsChick ? View.VISIBLE : View.GONE}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iconImage"

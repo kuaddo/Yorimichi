@@ -50,10 +50,19 @@
 
     <!-- map -->
     <string name="map_reached">ついた！</string>
-
-    <!-- chick message -->
-    <string name="chick_test">テストテキスト</string>
-    <string name="chick_reached_message">ついた？</string>
+    <string name="map_chick_reached_message">ついた？</string>
+    <string-array name="map_chick_messages">
+        <item>ガチャピンとムックは師弟関係なんだって</item>
+        <item>天ぷらは実はポルトガル語なんだって</item>
+        <item>牛乳ときゅうりだときゅうりの方が水分量が多いんだって</item>
+        <item>ガリガリ君のあたりの割合は100本に2本なんだって</item>
+        <item>カピバラは時速50kmではしるんだって</item>
+        <item>1円を作るには3円かかるんだって</item>
+        <item>人間の体内時計は25時間なんだって</item>
+        <item>｢〆｣は漢字なんだって</item>
+        <item>品川駅は品川区じゃなくて港区にあるんだって</item>
+        <item>マク〇ナルドのカウンターは全店72cmの高さなんだって</item>
+    </string-array>
 
     <!-- remind -->
     <string name="remind_reached_message">お疲れ様！\n帰りの案内は必要？\n\n時間の五分前になると、\n通知が来るよ！</string>

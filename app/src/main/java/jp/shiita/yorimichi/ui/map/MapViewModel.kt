@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -12,10 +13,12 @@ import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
+import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.util.distance
 import jp.shiita.yorimichi.util.toSimpleString
 import java.net.URLEncoder
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MapViewModel @Inject constructor(
@@ -43,6 +46,7 @@ class MapViewModel @Inject constructor(
     val pointsEvent: LiveData<Int> get() = _pointsEvent
     val reachedEvent: LiveData<LatLng> get() = _reachedEvent
     val switchRotateEvent: LiveData<Boolean> get() = _switchRotateEvent
+    val chickMessageChangeEvent: LiveData<Unit> get() = _chickMessageChangeEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
@@ -65,6 +69,7 @@ class MapViewModel @Inject constructor(
     private val _pointsEvent          = SingleLiveEvent<Int>()
     private val _reachedEvent         = SingleLiveEvent<LatLng>()   // start地点のLatLng
     private val _switchRotateEvent    = SingleLiveEvent<Boolean>()
+    private val _chickMessageChangeEvent = SingleUnitLiveEvent()
 
     private var isLocationObserved = false
     private var placesSize = -1
@@ -77,6 +82,12 @@ class MapViewModel @Inject constructor(
     var rotationEnabled = false
 
     override fun onCleared() = disposables.clear()
+
+    init {
+        Observable.interval(1, TimeUnit.MINUTES)
+                .subscribeBy { _chickMessageChangeEvent.call() }
+                .addTo(disposables)
+    }
 
     fun setLatLng(latLng: LatLng) {
         _latLng.value = latLng
