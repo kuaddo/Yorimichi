@@ -29,6 +29,7 @@ import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.remind.RemindFragment
 import jp.shiita.yorimichi.util.*
+import java.util.*
 import javax.inject.Inject
 
 class MapFragment : DaggerFragment() {
@@ -73,6 +74,7 @@ class MapFragment : DaggerFragment() {
                 }
             })
         }
+        changeChickMessage()
 
         if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -236,6 +238,7 @@ class MapFragment : DaggerFragment() {
             if (it) setRotateEnable()
             else    setRotateDisable()
         }
+        viewModel.chickMessageChangeEvent.observe(this) { changeChickMessage() }
     }
 
     private fun resetMap() {
@@ -313,6 +316,12 @@ class MapFragment : DaggerFragment() {
     private fun sortMarkerByRateDesc() {
         markers.sortByDescending { it.third }
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
+    }
+
+    private fun changeChickMessage() {
+        val messages = resources.getStringArray(R.array.map_chick_messages)
+        val message = messages[Random().nextInt(messages.size)]
+        viewModel.setChickMessage(message)
     }
 
     companion object {
