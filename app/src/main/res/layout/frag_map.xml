@@ -35,6 +35,7 @@
         android:layout_marginTop="16dp"
         android:scaleType="fitXY"
         android:visibility="@{viewModel.showsChick ? View.VISIBLE : View.GONE}"
+        android:onClick="@{() -> viewModel.switchRotate()}"
         app:bucket="@{viewModel.bucket}"
         app:image="@{viewModel.fileName}"
         app:layout_constraintStart_toStartOf="@+id/googleMap"

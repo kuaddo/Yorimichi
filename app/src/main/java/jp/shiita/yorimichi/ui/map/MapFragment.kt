@@ -135,8 +135,8 @@ class MapFragment : DaggerFragment() {
             }
             R.id.menu_frag_map_finish_guide -> {
                 resetMap()
-                activity?.invalidateOptionsMenu()
                 viewModel.clearRoutes()
+                activity?.invalidateOptionsMenu()
             }
             else -> return false
         }
@@ -199,13 +199,15 @@ class MapFragment : DaggerFragment() {
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
         magneticLiveData.observe(this) {
-            binding.iconImage.rotation = -it
-            if (viewModel.rotationEnabled) map?.let { m ->
-                val position = CameraPosition.Builder(m.cameraPosition)
-                        .target(UserInfo.latLng)
-                        .bearing(it)
-                        .build()
-                m.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+            if (viewModel.rotationEnabled) {
+                binding.iconImage.rotation = -it
+                map?.let { m ->
+                    val position = CameraPosition.Builder(m.cameraPosition)
+                            .target(UserInfo.latLng)
+                            .bearing(it)
+                            .build()
+                    m.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+                }
             }
         }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
@@ -230,15 +232,16 @@ class MapFragment : DaggerFragment() {
             activity?.invalidateOptionsMenu()
             activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(startLatLng), RemindFragment.TAG)
         }
+        viewModel.switchRotateEvent.observe(this) {
+            if (it) setRotateEnable()
+            else    setRotateDisable()
+        }
     }
 
     private fun resetMap() {
         markers.clear()
         map?.clear()
-        map?.uiSettings?.let { ui ->
-            ui.setAllGesturesEnabled(true)
-            ui.isMyLocationButtonEnabled = true
-        }
+        setRotateDisable()
     }
 
     private fun addPlaces(places: List<PlaceResult.Place>) {
@@ -262,10 +265,28 @@ class MapFragment : DaggerFragment() {
         map?.addPolyline(PolylineOptions()
                 .color(Color.BLUE)
                 .addAll(routes))
+        setRotateEnable()
+    }
+
+    private fun setRotateEnable() {
         map?.uiSettings?.let { ui ->
             ui.setAllGesturesEnabled(false)
             ui.isZoomGesturesEnabled = true
             ui.isMyLocationButtonEnabled = false
+        }
+    }
+
+    private fun setRotateDisable() {
+        map?.uiSettings?.let { ui ->
+            ui.setAllGesturesEnabled(true)
+            ui.isMyLocationButtonEnabled = true
+        }
+        binding.iconImage.rotation = 0f
+        map?.let { m ->
+            val position = CameraPosition.Builder(m.cameraPosition)
+                    .bearing(0f)
+                    .build()
+            m.moveCamera(CameraUpdateFactory.newCameraPosition(position))
         }
     }
 
