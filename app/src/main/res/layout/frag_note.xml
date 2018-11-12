@@ -44,7 +44,7 @@
         android:layout_margin="8dp"
         android:background="@drawable/back_width_selector"
         app:color="@{viewModel.penColor}"
-        app:penWidth="@={viewModel.penWidth}"
+        app:widthRatio="@={viewModel.penWidthRatio}"
         app:layout_constraintBottom_toBottomOf="@+id/paintView"
         app:layout_constraintStart_toStartOf="@id/paintView" />
 

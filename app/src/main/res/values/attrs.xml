@@ -19,7 +19,7 @@
     </declare-styleable>
 
     <declare-styleable name="WidthSelector">
-        <attr name="penWidth" format="float"/>
+        <attr name="widthRatio" format="float"/>
         <attr name="color" format="color"/>
     </declare-styleable>
 </resources>

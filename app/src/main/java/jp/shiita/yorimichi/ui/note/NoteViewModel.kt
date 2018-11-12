@@ -21,7 +21,7 @@ class NoteViewModel @Inject constructor(
     val penColor: LiveData<Int> get() = _penColor
     val canErase: LiveData<Boolean> get() = _canErase
 
-    val penWidth = MutableLiveData<Float>().apply { value = 20f }
+    val penWidthRatio = MutableLiveData<Float>().apply { value = 1f }
 
     private val _pen = MutableLiveData<PaintView.Pen>()
     private val _penColor = MutableLiveData<Int>()

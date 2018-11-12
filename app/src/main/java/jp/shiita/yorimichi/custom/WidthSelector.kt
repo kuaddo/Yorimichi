@@ -16,15 +16,15 @@ class WidthSelector(context: Context, attrs: AttributeSet? = null) : LinearLayou
     private val bottom: Guideline
     private val left: Guideline
     private val right: Guideline
-    private val maxWidth = 100f
-    private val minWidth = 1f
+    private val maxRatio = 3f
+    private val minRatio = 0.1f
     private var beforeY = 0f
     var penWidthChangedListener: (() -> Unit)? = null
 
-    var penWidth = 20f
+    var widthRatio = 1f
         set(value) {
-            field = maxOf(minWidth, minOf(maxWidth, value))
-            val ratio = 0.5f - penWidth / (2 * maxWidth)       // 0 ~ 0.5
+            field = maxOf(minRatio, minOf(maxRatio, value))
+            val ratio = 0.5f - widthRatio / (2 * maxRatio)       // 0 ~ 0.5
             top.setGuidelinePercent(ratio)
             bottom.setGuidelinePercent(1 - ratio)
             left.setGuidelinePercent(ratio)
@@ -41,7 +41,7 @@ class WidthSelector(context: Context, attrs: AttributeSet? = null) : LinearLayou
 
         if (attrs != null) {
             context.theme.obtainStyledAttributes(attrs, R.styleable.WidthSelector, 0, 0).run {
-                if (hasValue(R.styleable.WidthSelector_penWidth)) penWidth = getFloat(R.styleable.WidthSelector_penWidth, 0f)
+                if (hasValue(R.styleable.WidthSelector_widthRatio)) widthRatio = getFloat(R.styleable.WidthSelector_widthRatio, 0f)
                 if (hasValue(R.styleable.WidthSelector_color)) setColor(getColor(R.styleable.WidthSelector_color, 0))
                 recycle()
             }
@@ -55,12 +55,12 @@ class WidthSelector(context: Context, attrs: AttributeSet? = null) : LinearLayou
                 beforeY = event.y
             }
             MotionEvent.ACTION_MOVE -> {
-                penWidth += (beforeY - event.y) / 3
+                widthRatio += (beforeY - event.y) / 100
                 penWidthChangedListener?.invoke()
                 beforeY = event.y
             }
             MotionEvent.ACTION_UP -> {
-                penWidth += (beforeY - event.y) / 3
+                widthRatio += (beforeY - event.y) / 100
                 penWidthChangedListener?.invoke()
             }
         }

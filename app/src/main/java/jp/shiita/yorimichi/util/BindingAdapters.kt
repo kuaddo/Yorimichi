@@ -23,15 +23,15 @@ fun ImageView.bindTint(color: Int) = setImageDrawable(drawable.setTintCompat(col
 @BindingAdapter("app:color")
 fun WidthSelector.bindColor(color: Int) = setColor(color)
 
-@BindingAdapter("app:penWidth")
-fun WidthSelector.bindPenWidth(width: Float) {
-    if (penWidth != width) penWidth = width
+@BindingAdapter("app:widthRatio")
+fun WidthSelector.bindWidthRatio(ratio: Float) {
+    if (widthRatio != ratio) widthRatio = ratio
 }
 
-@InverseBindingAdapter(attribute = "app:penWidth")
-fun WidthSelector.inverseBindPenWidth(): Float = penWidth
+@InverseBindingAdapter(attribute = "app:widthRatio")
+fun WidthSelector.inverseBindWidthRatio(): Float = widthRatio
 
-@BindingAdapter("penWidthAttrChanged")
+@BindingAdapter("widthRatioAttrChanged")
 fun WidthSelector.bindListener(listener: InverseBindingListener) {
     penWidthChangedListener = listener::onChange
 }

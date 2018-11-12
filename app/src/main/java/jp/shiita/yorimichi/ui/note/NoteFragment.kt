@@ -10,8 +10,8 @@ import android.view.*
 import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragNoteBinding
-import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.dialog.SimpleDialogFragment
+import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.util.loadAd
 import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.toBytes
@@ -79,7 +79,7 @@ class NoteFragment : DaggerFragment() {
         // TODO: paintViewでもbindingする
         viewModel.pen.observe(this) { binding.paintView.setPen(it) }
         viewModel.penColor.observe(this) { binding.paintView.changePenColor(it) }
-        viewModel.penWidth.observe(this) { binding.paintView.changePenWidth(it) }
+        viewModel.penWidthRatio.observe(this) { binding.paintView.changePenWidth(it) }
         viewModel.canErase.observe(this) {
             if (it) {
                 penAdapter.resetSelected()
