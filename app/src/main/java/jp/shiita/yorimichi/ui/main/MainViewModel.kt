@@ -98,33 +98,43 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun reflectUserInfo(user: User) {
-        UserInfo.userId = user.uuid
-        UserInfo.points = user.points
-        updatePoints()
-
-        repository.getIcon(user.iconId)
+    fun changeIcon(iconId: Int) {
+        repository.changeIcon(UserInfo.userId, iconId)
                 .subscribeOn(scheduler.io())
                 .subscribeBy(
-                        onSuccess = {
-                            UserInfo.iconBucket = it.first
-                            UserInfo.iconFileName = it.second
-                            updateIcon()
-                        },
-                        onError = {}
-                )
-                .addTo(disposables)
-
-        repository.getGoods(user.uuid)
-                .subscribeOn(scheduler.io())
-                .subscribeBy(
-                        onSuccess = {
-                            _icons.postValue(it.icons)
-                        },
+                        onSuccess = { getIcon(it.iconId) },
                         onError = {}
                 )
                 .addTo(disposables)
     }
+
+    private fun reflectUserInfo(user: User) {
+        UserInfo.userId = user.uuid
+        UserInfo.points = user.points
+        updatePoints()
+        getIcon(user.iconId)
+        getGoods(user.uuid)
+    }
+
+    private fun getIcon(iconId: Int) = repository.getIcon(iconId)
+            .subscribeOn(scheduler.io())
+            .subscribeBy(
+                    onSuccess = {
+                        UserInfo.iconBucket = it.first
+                        UserInfo.iconFileName = it.second
+                        updateIcon()
+                    },
+                    onError = {}
+            )
+            .addTo(disposables)
+
+    private fun getGoods(uuid: String) = repository.getGoods(uuid)
+            .subscribeOn(scheduler.io())
+            .subscribeBy(
+                    onSuccess = { _icons.postValue(it.icons) },
+                    onError = {}
+            )
+            .addTo(disposables)
 
     enum class HomeAsUpType { OPEN_DRAWER, POP_BACK_STACK }
 }

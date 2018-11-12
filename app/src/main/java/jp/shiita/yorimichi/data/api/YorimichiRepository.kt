@@ -31,6 +31,9 @@ class YorimichiRepository(
     fun purchaseGoods(uuid: String, goodsId: Int): Single<GoodResult> =
             yorimichiService.purchaseGoods(uuid, goodsId)
 
+    fun changeIcon(uuid: String, iconId: Int): Single<User> =
+            yorimichiService.changeIcon(uuid, iconId)
+
     fun getGoods(uuid: String): Single<GoodResult> =
             yorimichiService.getGoods(uuid)
 

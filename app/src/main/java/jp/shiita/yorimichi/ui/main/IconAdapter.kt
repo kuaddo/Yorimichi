@@ -9,7 +9,11 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.GoodResult
 import jp.shiita.yorimichi.databinding.ItemIconBinding
 
-class IconAdapter(context: Context, private val icons: MutableList<GoodResult.Icon>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class IconAdapter(
+        context: Context,
+        private val icons: MutableList<GoodResult.Icon>,
+        private val changeIcon: (iconId: Int) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -21,7 +25,7 @@ class IconAdapter(context: Context, private val icons: MutableList<GoodResult.Ic
         if (holder is IconViewHolder) {
             val icon = icons[position]
             holder.bind(icon)
-            // TODO: set my icon
+            if (icon.isPurchased) holder.itemView.setOnClickListener { changeIcon(icon.id) }
         }
     }
 

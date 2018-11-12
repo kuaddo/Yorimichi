@@ -26,6 +26,9 @@ interface YorimichiService {
     @POST("users/{uuid}/purchase/goods/{goods_id}/")
     fun purchaseGoods(@Path("uuid") uuid: String, @Path("goods_id") goodsId: Int): Single<GoodResult>
 
+    @PATCH("users/{uuid}/icon/{icon_id}/")
+    fun changeIcon(@Path("uuid") uuid: String, @Path("icon_id") iconId: Int): Single<User>
+
     @GET("users/{uuid}/goods")
     fun getGoods(@Path("uuid") uuid: String): Single<GoodResult>
 

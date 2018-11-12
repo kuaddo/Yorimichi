@@ -45,7 +45,7 @@ class MainActivity : DaggerAppCompatActivity() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
-        adapter = IconAdapter(this, mutableListOf())
+        adapter = IconAdapter(this, mutableListOf(), viewModel::changeIcon)
         binding.navView
                 .getHeaderView(0).also { header ->
                     val recyclerView = header.findViewById<RecyclerView>(R.id.recyclerView)
