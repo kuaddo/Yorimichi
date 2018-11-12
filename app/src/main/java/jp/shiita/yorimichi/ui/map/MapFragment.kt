@@ -42,7 +42,7 @@ class MapFragment : DaggerFragment() {
     private lateinit var binding: FragMapBinding
     private lateinit var searchResultAdapter: PlaceAdapter
     private var map: GoogleMap? = null
-    private var markers: MutableList<Pair<Marker?, Int>> = mutableListOf()
+    private var markers: MutableList<Triple<Marker?, Int, Float>> = mutableListOf()
     private lateinit var smallDescriptor: BitmapDescriptor
     private lateinit var largeDescriptor: BitmapDescriptor
     private lateinit var selectedSmallDescriptor: BitmapDescriptor
@@ -123,10 +123,20 @@ class MapFragment : DaggerFragment() {
                 searchResultAdapter.sortByDistDesc()
                 viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
             }
+            R.id.menu_frag_map_search_result_sort_rate_asc -> {
+                sortMarkerByRateAsc()
+                searchResultAdapter.sortByRateAsc()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
+            }
+            R.id.menu_frag_map_search_result_sort_rate_desc -> {
+                sortMarkerByRateDesc()
+                searchResultAdapter.sortByRateDesc()
+                viewModel.onSelected(searchResultAdapter.getSelectedPosition(), null)
+            }
             R.id.menu_frag_map_finish_guide -> {
                 resetMap()
-                activity?.invalidateOptionsMenu()
                 viewModel.clearRoutes()
+                activity?.invalidateOptionsMenu()
             }
             else -> return false
         }
@@ -156,7 +166,9 @@ class MapFragment : DaggerFragment() {
 
         (childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
+            map?.moveCamera(CameraUpdateFactory.newLatLng(UserInfo.latLng))
             map?.isMyLocationEnabled = true
+            map?.uiSettings?.isCompassEnabled = false
 
             map?.setOnMarkerClickListener { marker ->
                 val position = marker?.tag as? Int ?: 0
@@ -186,7 +198,18 @@ class MapFragment : DaggerFragment() {
 
     private fun observe() {
         locationLiveData.observe(this) { viewModel.setLatLng(it.latLng) }
-        magneticLiveData.observe(this) { binding.iconImage.rotation = it }
+        magneticLiveData.observe(this) {
+            if (viewModel.rotationEnabled) {
+                binding.iconImage.rotation = -it
+                map?.let { m ->
+                    val position = CameraPosition.Builder(m.cameraPosition)
+                            .target(UserInfo.latLng)
+                            .bearing(it)
+                            .build()
+                    m.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+                }
+            }
+        }
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         mainViewModel.directionsEvent.observe(this) { viewModel.searchDirection(it.toSimpleString()) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
@@ -209,11 +232,16 @@ class MapFragment : DaggerFragment() {
             activity?.invalidateOptionsMenu()
             activity?.supportFragmentManager?.addFragmentBS(R.id.container, RemindFragment.newInstance(startLatLng), RemindFragment.TAG)
         }
+        viewModel.switchRotateEvent.observe(this) {
+            if (it) setRotateEnable()
+            else    setRotateDisable()
+        }
     }
 
     private fun resetMap() {
         markers.clear()
         map?.clear()
+        setRotateDisable()
     }
 
     private fun addPlaces(places: List<PlaceResult.Place>) {
@@ -225,7 +253,7 @@ class MapFragment : DaggerFragment() {
             val marker = MarkerOptions()
                     .position(it.latLng)
                     .icon(smallDescriptor)
-            map?.addMarker(marker) to it.getDistance()
+            Triple(map?.addMarker(marker), it.getDistance(), it.rating)
         })
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
@@ -237,6 +265,29 @@ class MapFragment : DaggerFragment() {
         map?.addPolyline(PolylineOptions()
                 .color(Color.BLUE)
                 .addAll(routes))
+        setRotateEnable()
+    }
+
+    private fun setRotateEnable() {
+        map?.uiSettings?.let { ui ->
+            ui.setAllGesturesEnabled(false)
+            ui.isZoomGesturesEnabled = true
+            ui.isMyLocationButtonEnabled = false
+        }
+    }
+
+    private fun setRotateDisable() {
+        map?.uiSettings?.let { ui ->
+            ui.setAllGesturesEnabled(true)
+            ui.isMyLocationButtonEnabled = true
+        }
+        binding.iconImage.rotation = 0f
+        map?.let { m ->
+            val position = CameraPosition.Builder(m.cameraPosition)
+                    .bearing(0f)
+                    .build()
+            m.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+        }
     }
 
     private fun selectPlace(position: Int) {
@@ -251,6 +302,16 @@ class MapFragment : DaggerFragment() {
 
     private fun sortMarkerByDistDesc() {
         markers.sortByDescending { it.second }
+        markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
+    }
+
+    private fun sortMarkerByRateAsc() {
+        markers.sortBy { it.third }
+        markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
+    }
+
+    private fun sortMarkerByRateDesc() {
+        markers.sortByDescending { it.third }
         markers.forEachIndexed { i, (marker, _) -> marker?.tag = i }
     }
 

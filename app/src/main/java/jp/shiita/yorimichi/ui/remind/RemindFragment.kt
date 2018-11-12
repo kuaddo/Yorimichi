@@ -105,6 +105,7 @@ class RemindFragment : DaggerFragment() {
 
         (childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
+            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(UserInfo.latLng, INITIAL_ZOOM_LEVEL))
             map?.isMyLocationEnabled = true
 
             map?.setOnMapLongClickListener { latLng ->
@@ -133,7 +134,6 @@ class RemindFragment : DaggerFragment() {
                 marker?.setIcon(selectedDescriptor)
                 false
             }
-            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(UserInfo.latLng, INITIAL_ZOOM_LEVEL))
         }
     }
 

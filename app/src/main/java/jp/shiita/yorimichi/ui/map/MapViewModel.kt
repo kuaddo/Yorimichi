@@ -41,6 +41,7 @@ class MapViewModel @Inject constructor(
     val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
     val pointsEvent: LiveData<Int> get() = _pointsEvent
     val reachedEvent: LiveData<LatLng> get() = _reachedEvent
+    val switchRotateEvent: LiveData<Boolean> get() = _switchRotateEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
@@ -61,6 +62,7 @@ class MapViewModel @Inject constructor(
     private val _moveCameraZoomEvent  = SingleLiveEvent<LatLng>()
     private val _pointsEvent          = SingleLiveEvent<Int>()
     private val _reachedEvent         = SingleLiveEvent<LatLng>()   // start地点のLatLng
+    private val _switchRotateEvent    = SingleLiveEvent<Boolean>()
 
     private var isLocationObserved = false
     private var placesSize = -1
@@ -70,6 +72,7 @@ class MapViewModel @Inject constructor(
     private var startLatLng: LatLng? = null
 
     private val disposables = CompositeDisposable()
+    var rotationEnabled = false
 
     override fun onCleared() = disposables.clear()
 
@@ -152,6 +155,7 @@ class MapViewModel @Inject constructor(
                             _routes.postValue(routes)
                             _moveCameraZoomEvent.postValue(latLng)
                             _showsChick.postValue(true)
+                            rotationEnabled = true
                         },
                         onError = {}
                 )
@@ -164,6 +168,12 @@ class MapViewModel @Inject constructor(
         _routes.postValue(routes)
         _moveCameraZoomEvent.postValue(routes[0])
         _showsChick.postValue(true)
+        rotationEnabled = true
+    }
+
+    fun switchRotate() {
+        rotationEnabled = !rotationEnabled
+        _switchRotateEvent.postValue(rotationEnabled)
     }
 
     fun onScrolled(first: Int, last: Int) {
@@ -209,6 +219,7 @@ class MapViewModel @Inject constructor(
         _targetPlace.postValue(null)
         _showsChick.postValue(false)
         _isNear.postValue(false)
+        rotationEnabled = false
     }
 
     private fun updatePinPositions() {

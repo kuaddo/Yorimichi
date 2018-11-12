@@ -107,6 +107,7 @@ class SearchFragment : DaggerFragment() {
 
         (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
             map = googleMap
+            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(UserInfo.latLng, INITIAL_ZOOM_LEVEL))
             map?.isMyLocationEnabled = true
 
             map?.setOnMapLongClickListener { latLng ->
@@ -135,7 +136,6 @@ class SearchFragment : DaggerFragment() {
                 marker?.setIcon(selectedDescriptor)
                 false
             }
-            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(UserInfo.latLng, INITIAL_ZOOM_LEVEL))
         }
     }
 
