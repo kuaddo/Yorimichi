@@ -27,6 +27,8 @@ import jp.shiita.yorimichi.live.MagneticLiveData
 import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver
 import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.ui.note.NoteFragment
+import jp.shiita.yorimichi.ui.notes.NotesFragment
 import jp.shiita.yorimichi.ui.remind.RemindFragment
 import jp.shiita.yorimichi.util.*
 import java.util.*
@@ -239,6 +241,13 @@ class MapFragment : DaggerFragment() {
             else    setRotateDisable()
         }
         viewModel.chickMessageChangeEvent.observe(this) { changeChickMessage() }
+        viewModel.showWriteNoteEvent.observe(this) {
+            // TODO: onActivityResult
+            activity?.supportFragmentManager?.replaceFragment(R.id.container, NoteFragment.newInstance(), NoteFragment.TAG)
+        }
+        viewModel.showReadNoteEvent.observe(this) {
+            activity?.supportFragmentManager?.replaceFragment(R.id.container, NotesFragment.newInstance(), NotesFragment.TAG)
+        }
     }
 
     private fun resetMap() {

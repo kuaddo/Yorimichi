@@ -39,6 +39,8 @@ class MapViewModel @Inject constructor(
     val showsSearchResult: LiveData<Boolean> get() = _showsSearchResult
     val showsChick: LiveData<Boolean> get() = _showsChick
     val isNear: LiveData<Boolean> get() = _isNear
+    val isNearByLatestVisitLatLng: LiveData<Boolean> get() = _isNearByLatestVisitLatLng
+    val canWriteNote: LiveData<Boolean> get() = _canWriteNote
     val chickMessage: LiveData<String> get() = _chickMessage
 
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
@@ -47,8 +49,11 @@ class MapViewModel @Inject constructor(
     val reachedEvent: LiveData<LatLng> get() = _reachedEvent
     val switchRotateEvent: LiveData<Boolean> get() = _switchRotateEvent
     val chickMessageChangeEvent: LiveData<Unit> get() = _chickMessageChangeEvent
+    val showWriteNoteEvent: LiveData<Unit> get() = _showWriteNoteEvent
+    val showReadNoteEvent: LiveData<Unit> get() = _showReadNoteEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
+    private val _latestVisitLatLng         = MutableLiveData<LatLng>().apply { value = UserInfo.latestVisitLatLng }
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
     private val _routes                    = MutableLiveData<List<LatLng>>()
     private val _targetPlace               = MutableLiveData<PlaceResult.Place>()
@@ -62,6 +67,8 @@ class MapViewModel @Inject constructor(
     private val _showsSearchResult         = MutableLiveData<Boolean>()
     private val _showsChick                = MutableLiveData<Boolean>()
     private val _isNear                    = MutableLiveData<Boolean>()
+    private val _isNearByLatestVisitLatLng = MutableLiveData<Boolean>()
+    private val _canWriteNote              = MutableLiveData<Boolean>().apply { value = UserInfo.canWriteNote }
     private val _chickMessage              = MutableLiveData<String>()
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
@@ -70,6 +77,8 @@ class MapViewModel @Inject constructor(
     private val _reachedEvent         = SingleLiveEvent<LatLng>()   // start地点のLatLng
     private val _switchRotateEvent    = SingleLiveEvent<Boolean>()
     private val _chickMessageChangeEvent = SingleUnitLiveEvent()
+    private val _showWriteNoteEvent = SingleUnitLiveEvent()
+    private val _showReadNoteEvent = SingleUnitLiveEvent()
 
     private var isLocationObserved = false
     private var placesSize = -1
@@ -92,11 +101,19 @@ class MapViewModel @Inject constructor(
     fun setLatLng(latLng: LatLng) {
         _latLng.value = latLng
         _targetPlace.value?.let { place ->
-            if (place.latLng.distance(latLng) < 50) {
+            if (place.latLng.distance(latLng) < NEAR_DISTANCE) {
                 _isNear.postValue(true)
             }
             else {
                 _isNear.postValue(false)
+            }
+        }
+        _latestVisitLatLng.value?.let { latestVisitLatLng ->
+            if (latestVisitLatLng.distance(latLng) < NEAR_DISTANCE) {
+                _isNearByLatestVisitLatLng.postValue(true)
+            }
+            else {
+                _isNearByLatestVisitLatLng.postValue(false)
             }
         }
         if (!isLocationObserved) {
@@ -116,6 +133,22 @@ class MapViewModel @Inject constructor(
     }
 
     fun setChickMessage(message: String) = _chickMessage.postValue(message)
+
+    fun resetCanWriteNote() {
+        UserInfo.canWriteNote = false
+        _canWriteNote.postValue(false)
+    }
+
+    fun resetLatestVisitLatLng() {
+        UserInfo.latestVisitLatLng = null
+        _latestVisitLatLng.postValue(null)
+        _isNearByLatestVisitLatLng.postValue(false)
+        resetCanWriteNote()
+    }
+
+    fun showReadNote() = _showReadNoteEvent.call()
+
+    fun showWriteNote() = _showWriteNoteEvent.call()
 
     fun searchPlacesDefault() {
         // TODO: 初期検索キーワードを実装。とりあえずカフェにする
@@ -211,8 +244,12 @@ class MapViewModel @Inject constructor(
                 .subscribeBy(
                         onSuccess = {
                             UserInfo.points = it.points
+                            UserInfo.latestVisitLatLng = UserInfo.latLng
+                            UserInfo.canWriteNote = true
                             _reachedEvent.value = startLatLng
                             _pointsEvent.value = 20
+                            _latestVisitLatLng.value = UserInfo.latestVisitLatLng
+                            _canWriteNote.value = true
                         },
                         onError = {}
                 )
@@ -246,5 +283,9 @@ class MapViewModel @Inject constructor(
         _largePinPositions.value = (first..last).toMutableList().apply { remove(selectedPosition) }
         if      (selectedPosition in first..last)        _selectedLargePinPositions.value = listOf(selectedPosition)
         else if (selectedPosition in 0 until placesSize) _selectedSmallPinPositions.value = listOf(selectedPosition)
+    }
+
+    companion object {
+        const val NEAR_DISTANCE = 50
     }
 }

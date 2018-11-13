@@ -6,6 +6,7 @@
     <string name="title_note">ノート</string>
     <string name="title_shop">ショップ</string>
     <string name="title_setting">設定</string>
+    <string name="title_read_notes">ノートを見る</string>
 
     <!-- tab -->
     <string name="tab_map">地図</string>
@@ -63,6 +64,10 @@
         <item>品川駅は品川区じゃなくて港区にあるんだって</item>
         <item>マク〇ナルドのカウンターは全店72cmの高さなんだって</item>
     </string-array>
+    <string name="map_can_write_note_message">よりみちしたお店のノートを書いてくれたらポイントがもらえるよ♪</string>
+    <string name="map_can_not_write_note_message">他の人が書いたノートを見てみよう！</string>
+    <string name="map_write_note">ノートを書く</string>
+    <string name="map_read_note">ノートを見る</string>
 
     <!-- remind -->
     <string name="remind_reached_message">お疲れ様！\n帰りの案内は必要？\n\n時間の五分前になると、\n通知が来るよ！</string>
