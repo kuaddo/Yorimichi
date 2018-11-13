@@ -83,6 +83,9 @@
     <string name="remind_time_selected">決定！</string>
     <string name="remind_finish">案内を終了する</string>
 
+    <!-- notes -->
+    <string name="notes_no_content">この場所のノートはありません\n最初のノートを書きましょう！</string>
+
     <!-- place types -->
     <string-array name="place_types">
         <item>カフェ</item>

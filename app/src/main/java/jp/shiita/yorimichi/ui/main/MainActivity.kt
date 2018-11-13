@@ -137,7 +137,7 @@ class MainActivity : DaggerAppCompatActivity() {
             lockDrawer()
             when (item.itemId) {
                 R.id.menu_drawer_my_page -> supportFragmentManager.replaceFragment(R.id.container, MyPageFragment.newInstance(), MyPageFragment.TAG)
-                R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, NoteFragment.newInstance(), NoteFragment.TAG)
+                R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, NoteFragment.newInstance("testPlaceId"), NoteFragment.TAG)
                 R.id.menu_drawer_shop    -> supportFragmentManager.replaceFragment(R.id.container, ShopFragment.newInstance(), ShopFragment.TAG)
                 R.id.menu_drawer_setting -> supportFragmentManager.replaceFragment(R.id.container, SettingFragment.newInstance(), SettingFragment.TAG)
             }

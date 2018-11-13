@@ -23,6 +23,7 @@ class NoteFragment : DaggerFragment() {
             by lazy { ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)}
     private val viewModel: NoteViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(NoteViewModel::class.java) }
+    private val placeId: String by lazy { arguments!!.getString(ARGS_PLACE_ID) }
     private lateinit var binding: FragNoteBinding
     private lateinit var penAdapter: PenAdapter
     private lateinit var colorAdapter: ColorAdapter
@@ -71,7 +72,7 @@ class NoteFragment : DaggerFragment() {
 
         when (requestCode) {
             REQUEST_UPLOAD_NOTE -> when (resultCode) {
-                Activity.RESULT_OK -> viewModel.uploadNote(binding.paintView.getMainBitmap().toBytes())
+                Activity.RESULT_OK -> viewModel.uploadNote(binding.paintView.getMainBitmap().toBytes(), placeId)
             }
         }
     }
@@ -96,6 +97,9 @@ class NoteFragment : DaggerFragment() {
     companion object {
         val TAG: String = NoteFragment::class.java.simpleName
         private const val REQUEST_UPLOAD_NOTE = 1000
-        fun newInstance() = NoteFragment()
+        private const val ARGS_PLACE_ID = "argsPlaceId"
+        fun newInstance(placeId: String) = NoteFragment().apply {
+            arguments = Bundle().apply { putString(ARGS_PLACE_ID, placeId) }
+        }
     }
 }

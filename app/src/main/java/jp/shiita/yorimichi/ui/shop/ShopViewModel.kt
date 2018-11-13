@@ -12,7 +12,6 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
-import jp.shiita.yorimichi.ui.note.NoteViewModel.Companion.TEST_PLACE_UID
 import javax.inject.Inject
 
 class ShopViewModel @Inject constructor(
@@ -47,7 +46,7 @@ class ShopViewModel @Inject constructor(
     }
 
     fun getPlacePosts() {
-        repository.getPlacePosts(TEST_PLACE_UID)
+        repository.getPlacePosts("testPlaceId")
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(

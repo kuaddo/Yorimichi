@@ -141,6 +141,7 @@ class MapViewModel @Inject constructor(
 
     fun resetLatestVisitLatLng() {
         UserInfo.latestVisitLatLng = null
+        UserInfo.latestPlaceId = ""
         _latestVisitLatLng.postValue(null)
         _isNearByLatestVisitLatLng.postValue(false)
         resetCanWriteNote()
@@ -237,6 +238,7 @@ class MapViewModel @Inject constructor(
     }
 
     fun reached() {
+        val placeId = _targetPlace.value?.placeId ?: ""
         clearRoutes()
         repository.addPoints(UserInfo.userId, 20)
                 .subscribeOn(scheduler.io())
@@ -245,6 +247,7 @@ class MapViewModel @Inject constructor(
                         onSuccess = {
                             UserInfo.points = it.points
                             UserInfo.latestVisitLatLng = UserInfo.latLng
+                            UserInfo.latestPlaceId = placeId
                             UserInfo.canWriteNote = true
                             _reachedEvent.value = startLatLng
                             _pointsEvent.value = 20

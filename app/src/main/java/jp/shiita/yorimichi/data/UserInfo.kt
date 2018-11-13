@@ -9,6 +9,7 @@ object UserInfo : KotprefModel() {
     var longitude by stringPref("139.766932")
     var latestVisitLatitude by stringPref("")
     var latestVisitLongitude by stringPref("")
+    var latestPlaceId by stringPref("")
     var canWriteNote by booleanPref(false)
     var points by intPref(0)
     var iconBucket by stringPref("gs://yorimichi_goods")

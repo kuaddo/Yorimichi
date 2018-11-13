@@ -72,8 +72,8 @@ class NoteViewModel @Inject constructor(
                 .addTo(disposables)
     }
 
-    fun uploadNote(bytes: ByteArray) {
-        repository.postPost(UserInfo.userId, TEST_PLACE_UID, bytes)
+    fun uploadNote(bytes: ByteArray, placeId: String) {
+        repository.postPost(UserInfo.userId, placeId, bytes)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
@@ -87,6 +87,5 @@ class NoteViewModel @Inject constructor(
 
     companion object {
         val TAG: String = NoteViewModel::class.java.simpleName
-        const val TEST_PLACE_UID = "testPlaceUid"
     }
 }

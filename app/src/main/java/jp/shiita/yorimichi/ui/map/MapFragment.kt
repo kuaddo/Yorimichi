@@ -245,12 +245,16 @@ class MapFragment : DaggerFragment() {
         viewModel.chickMessageChangeEvent.observe(this) { changeChickMessage() }
         viewModel.showWriteNoteEvent.observe(this) {
             activity?.supportFragmentManager?.also { manager ->
-                val fragment = NoteFragment.newInstance().also { it.setTargetFragment(manager.fragments.last(), MainFragment.REQUEST_WRITE_NOTE) }
+                val fragment = NoteFragment.newInstance(UserInfo.latestPlaceId).also {
+                    it.setTargetFragment(manager.fragments.last(), MainFragment.REQUEST_WRITE_NOTE)
+                }
                 manager.replaceFragment(R.id.container, fragment, NoteFragment.TAG)
             }
         }
         viewModel.showReadNoteEvent.observe(this) {
-            activity?.supportFragmentManager?.replaceFragment(R.id.container, NotesFragment.newInstance(), NotesFragment.TAG)
+            if (UserInfo.latestPlaceId.isNotBlank())
+                activity?.supportFragmentManager
+                        ?.replaceFragment(R.id.container, NotesFragment.newInstance(UserInfo.latestPlaceId), NotesFragment.TAG)
         }
     }
 
