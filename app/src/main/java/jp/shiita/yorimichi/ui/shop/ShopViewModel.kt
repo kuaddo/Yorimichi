@@ -63,6 +63,29 @@ class ShopViewModel @Inject constructor(
                 .addTo(disposables)
     }
 
+    fun visitPlace() {
+        val placeId = "testPlaceId"
+        repository.visitPlace(UserInfo.userId, placeId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onComplete = { Log.d(TAG, "onComplete:visitPlace") },
+                        onError = { Log.e(TAG, "onError:visitPlace", it) }
+                )
+                .addTo(disposables)
+    }
+
+    fun getVisitHistory() {
+        repository.getVisitHistory(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = { Log.e(TAG, "onSuccess:getVisitHistory $it")},
+                        onError = { Log.e(TAG, "onError:getVisitHistory", it) }
+                )
+                .addTo(disposables)
+    }
+
     fun addTenPoints() {
         repository.addPoints(UserInfo.userId, 10)
                 .subscribeOn(scheduler.io())

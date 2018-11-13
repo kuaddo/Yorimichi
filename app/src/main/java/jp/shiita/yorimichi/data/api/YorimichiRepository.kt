@@ -34,6 +34,11 @@ class YorimichiRepository(
     fun changeIcon(uuid: String, iconId: Int): Single<User> =
             yorimichiService.changeIcon(uuid, iconId)
 
+    fun visitPlace(uuid: String, placeUid: String) = yorimichiService.visitPlace(uuid, placeUid)
+
+    fun getVisitHistory(uuid: String): Single<List<History>> =
+            yorimichiService.getVisitHistory(uuid)
+
     fun getGoods(uuid: String): Single<GoodResult> =
             yorimichiService.getGoods(uuid)
 

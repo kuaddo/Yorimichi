@@ -3,10 +3,7 @@ package jp.shiita.yorimichi.data.api
 import com.google.gson.JsonObject
 import io.reactivex.Completable
 import io.reactivex.Single
-import jp.shiita.yorimichi.data.DirectionResult
-import jp.shiita.yorimichi.data.GoodResult
-import jp.shiita.yorimichi.data.PlaceResult
-import jp.shiita.yorimichi.data.User
+import jp.shiita.yorimichi.data.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -28,6 +25,12 @@ interface YorimichiService {
 
     @PATCH("users/{uuid}/icon/{icon_id}/")
     fun changeIcon(@Path("uuid") uuid: String, @Path("icon_id") iconId: Int): Single<User>
+
+    @POST("users/{uuid}/visit/{place_uid}/")
+    fun visitPlace(@Path("uuid") uuid: String, @Path("place_uid") placeUid: String): Completable
+
+    @GET("users/{uuid}/visit-history/")
+    fun getVisitHistory(@Path("uuid") uuid: String): Single<List<History>>
 
     @GET("users/{uuid}/goods")
     fun getGoods(@Path("uuid") uuid: String): Single<GoodResult>
