@@ -26,6 +26,7 @@ import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.live.MagneticLiveData
 import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver
 import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
+import jp.shiita.yorimichi.ui.main.MainFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.note.NoteFragment
 import jp.shiita.yorimichi.ui.notes.NotesFragment
@@ -217,6 +218,7 @@ class MapFragment : DaggerFragment() {
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         mainViewModel.directionsEvent.observe(this) { viewModel.searchDirection(it.toSimpleString()) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
+        mainViewModel.resetCanWriteNoteEvent.observe(this) { viewModel.resetCanWriteNote() }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { addPlaces(it) }
         viewModel.routes.observe(this) { addRoute(it) }
@@ -242,8 +244,10 @@ class MapFragment : DaggerFragment() {
         }
         viewModel.chickMessageChangeEvent.observe(this) { changeChickMessage() }
         viewModel.showWriteNoteEvent.observe(this) {
-            // TODO: onActivityResult
-            activity?.supportFragmentManager?.replaceFragment(R.id.container, NoteFragment.newInstance(), NoteFragment.TAG)
+            activity?.supportFragmentManager?.also { manager ->
+                val fragment = NoteFragment.newInstance().also { it.setTargetFragment(manager.fragments.last(), MainFragment.REQUEST_WRITE_NOTE) }
+                manager.replaceFragment(R.id.container, fragment, NoteFragment.TAG)
+            }
         }
         viewModel.showReadNoteEvent.observe(this) {
             activity?.supportFragmentManager?.replaceFragment(R.id.container, NotesFragment.newInstance(), NotesFragment.TAG)

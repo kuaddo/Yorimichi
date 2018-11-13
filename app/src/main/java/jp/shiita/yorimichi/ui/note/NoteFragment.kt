@@ -87,6 +87,10 @@ class NoteFragment : DaggerFragment() {
                 penAdapter.resetSelected()
             }
         }
+        viewModel.uploadSuccessEvent.observe(this) {
+            targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, null)
+            fragmentManager?.popBackStack()
+        }
     }
 
     companion object {

@@ -36,6 +36,7 @@ class MainViewModel @Inject constructor(
     val updateIconEvent: LiveData<Unit> get() = _updateIconEvent
     val searchEvent: LiveData<Pair<List<String>, Int>> get() = _searchEvent
     val directionsEvent: LiveData<LatLng> get() = _directionsEvent
+    val resetCanWriteNoteEvent: LiveData<Unit> get() = _resetCanWriteNoteEvent
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
@@ -50,6 +51,7 @@ class MainViewModel @Inject constructor(
     private val _updateIconEvent = UnitLiveEvent()
     private val _searchEvent = LiveEvent<Pair<List<String>, Int>>()
     private val _directionsEvent = LiveEvent<LatLng>()
+    private val _resetCanWriteNoteEvent = UnitLiveEvent()
 
     private val disposables = CompositeDisposable()
 
@@ -76,6 +78,8 @@ class MainViewModel @Inject constructor(
     fun updatePoints() = _updatePointEvent.call()
 
     fun updateIcon() = _updateIconEvent.call()
+
+    fun resetCanWriteNote() = _resetCanWriteNoteEvent.call()
 
     fun createOrUpdateUser() {
         if (UserInfo.userId.isEmpty()) {

@@ -11,6 +11,7 @@ import jp.shiita.yorimichi.custom.PaintView
 import jp.shiita.yorimichi.data.GoodResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
+import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
@@ -23,12 +24,16 @@ class NoteViewModel @Inject constructor(
     val penColors: LiveData<List<GoodResult.Color>> get() = _penColors
     val canErase: LiveData<Boolean> get() = _canErase
 
+    val uploadSuccessEvent: LiveData<Unit> get() = _uploadSuccessEvent
+
     val penWidth = MutableLiveData<Float>().apply { value = 20f }
 
     private val _pen = MutableLiveData<PaintView.Pen>()
     private val _penColor = MutableLiveData<Int>()
     private val _penColors = MutableLiveData<List<GoodResult.Color>>()
     private val _canErase = MutableLiveData<Boolean>().apply { value = false }
+
+    private val _uploadSuccessEvent = SingleUnitLiveEvent()
 
     private val disposables = CompositeDisposable()
 
@@ -72,9 +77,7 @@ class NoteViewModel @Inject constructor(
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
-                        onComplete = {
-                            Log.d(TAG, "onComplete:postPost")
-                        },
+                        onComplete = { _uploadSuccessEvent.call() },
                         onError = {
                             Log.e(TAG, "onError:postPost", it)
                         }
