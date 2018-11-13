@@ -84,7 +84,7 @@ class ShopViewModel @Inject constructor(
                 .subscribeBy(
                         onSuccess = {
                             it.icons.forEach { icon ->
-                                if (!icon.isPurchased) purchaseIcon(icon.id)
+                                if (!icon.isPurchased) purchaseGoods(icon.id)
                             }
                         },
                         onError = {}
@@ -92,7 +92,22 @@ class ShopViewModel @Inject constructor(
                 .addTo(disposables)
     }
 
-    private fun purchaseIcon(goodsId: Int) {
+    fun purchaseAllPenColor() {
+        repository.getGoods(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            it.colors.forEach { color ->
+                                if (!color.isPurchased) purchaseGoods(color.id)
+                            }
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+    }
+
+    private fun purchaseGoods(goodsId: Int) {
         repository.purchaseGoods(UserInfo.userId, goodsId)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
