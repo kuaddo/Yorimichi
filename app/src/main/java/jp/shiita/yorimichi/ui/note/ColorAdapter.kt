@@ -6,44 +6,36 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import jp.shiita.yorimichi.R
-import jp.shiita.yorimichi.data.PenColor
+import jp.shiita.yorimichi.data.GoodResult
 import jp.shiita.yorimichi.databinding.ItemColorBinding
 
 class ColorAdapter(
         context: Context,
+        private val colors: MutableList<GoodResult.Color>,
         private val onClickColor: (color: Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
-    private val penColors: List<PenColor>
-
-    init {
-        val ta = context.resources.obtainTypedArray(R.array.colorsPen)
-        penColors = (0 until ta.length()).map { PenColor(ta.getColor(it, 0), it % 2 != 0, false) }
-        penColors[0].selected = true
-        onClickColor(penColors[0].color)
-        ta.recycle()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): RecyclerView.ViewHolder =
             ColorViewHolder(DataBindingUtil.inflate(inflater, R.layout.item_color, parent, false))
 
-    override fun getItemCount(): Int = penColors.size
+    override fun getItemCount(): Int = colors.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ColorViewHolder) {
-            val penColor = penColors[position]
-            holder.bind(penColor)
-            if (!penColor.locked) {
+            val color = colors[position]
+            holder.bind(color)
+            if (color.isPurchased) {
                 holder.itemView.setOnClickListener {
-                    onClickColor(penColor.color)
-                    val index = penColors.indexOfFirst { it.selected }
+                    onClickColor(color.color)
+                    val index = colors.indexOfFirst { it.selected }
                     if (index == position) return@setOnClickListener
 
                     if (index != -1) {
-                        penColors[index].selected = false
+                        colors[index].selected = false
                         notifyItemChanged(index)
                     }
-                    penColors[position].selected = true
+                    colors[position].selected = true
                     notifyItemChanged(position)
                 }
             }
@@ -53,16 +45,22 @@ class ColorAdapter(
         }
     }
 
+    fun reset(colors: List<GoodResult.Color>) {
+        this.colors.clear()
+        this.colors.addAll(colors)
+        notifyDataSetChanged()
+    }
+
     fun resetSelected() {
-        val index = penColors.indexOfFirst { it.selected }
+        val index = colors.indexOfFirst { it.selected }
         if (index == -1) return
-        penColors[index].selected = false
+        colors[index].selected = false
         notifyItemChanged(index)
     }
 
     class ColorViewHolder(private val binding: ItemColorBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(penColor: PenColor) {
-            binding.penColor = penColor
+        fun bind(color: GoodResult.Color) {
+            binding.color = color
             binding.executePendingBindings()
         }
     }

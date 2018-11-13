@@ -12,6 +12,7 @@ data class GoodResult(
             val isPurchased: Boolean
     ) {
         val color: Int get() = android.graphics.Color.parseColor(argbCode)
+        var selected: Boolean = false       // RecyclerViewで選択されているかどうか
     }
 
     data class Icon(

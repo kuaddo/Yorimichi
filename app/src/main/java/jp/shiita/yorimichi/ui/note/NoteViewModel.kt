@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.custom.PaintView
+import jp.shiita.yorimichi.data.GoodResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
@@ -19,12 +20,14 @@ class NoteViewModel @Inject constructor(
 ) : ViewModel() {
     val pen: LiveData<PaintView.Pen> get() = _pen
     val penColor: LiveData<Int> get() = _penColor
+    val penColors: LiveData<List<GoodResult.Color>> get() = _penColors
     val canErase: LiveData<Boolean> get() = _canErase
 
     val penWidth = MutableLiveData<Float>().apply { value = 20f }
 
     private val _pen = MutableLiveData<PaintView.Pen>()
     private val _penColor = MutableLiveData<Int>()
+    private val _penColors = MutableLiveData<List<GoodResult.Color>>()
     private val _canErase = MutableLiveData<Boolean>().apply { value = false }
 
     private val disposables = CompositeDisposable()
@@ -43,6 +46,25 @@ class NoteViewModel @Inject constructor(
     fun setErase() {
         _pen.postValue(PaintView.Pen.ERASER)
         _canErase.postValue(true)
+    }
+
+    fun getGoods() {
+        repository.getGoods(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            val colors = it.colors.apply {
+                                // 最初の色を選択済みにする
+                                val color = get(0)
+                                color.selected
+                                _penColor.postValue(color.color)
+                            }
+                            _penColors.postValue(colors)
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
     }
 
     fun uploadNote(bytes: ByteArray) {
