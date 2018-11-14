@@ -33,7 +33,7 @@ class PenAdapter(
             holder.bind(pen.second, pen.third)
             holder.itemView.setOnClickListener {
                 onClickPen(pen.first)
-                val index = pens.indexOfFirst { it.third }
+                val index = pens.indexOfFirst { pen -> pen.third }
                 if (index == position) return@setOnClickListener
 
                 if (index != -1) {

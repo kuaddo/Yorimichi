@@ -28,7 +28,7 @@ class ColorAdapter(
             if (color.isPurchased) {
                 holder.itemView.setOnClickListener {
                     onClickColor(color.color)
-                    val index = colors.indexOfFirst { it.selected }
+                    val index = colors.indexOfFirst(GoodsResult.Color::selected)
                     if (index == position) return@setOnClickListener
 
                     if (index != -1) {

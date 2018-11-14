@@ -182,9 +182,9 @@ class MapFragment : DaggerFragment() {
                 true        // cameraのアニメーションは自前でやる
             }
 
-            val routes = activity?.intent?.let {
-                val lats = it.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LATS) ?: return@let null
-                val lngs = it.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LNGS) ?: return@let null
+            val routes = activity?.intent?.let { intent ->
+                val lats = intent.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LATS) ?: return@let null
+                val lngs = intent.getDoubleArrayExtra(NotificationBroadcastReceiver.ARGS_LNGS) ?: return@let null
                 lats.zip(lngs).map { LatLng(it.first, it.second) }
             }
             if (routes != null) {
@@ -245,9 +245,8 @@ class MapFragment : DaggerFragment() {
         viewModel.chickMessageChangeEvent.observe(this) { changeChickMessage() }
         viewModel.showWriteNoteEvent.observe(this) {
             activity?.supportFragmentManager?.also { manager ->
-                val fragment = NoteFragment.newInstance(UserInfo.latestPlaceId).also {
-                    it.setTargetFragment(manager.fragments.last(), MainFragment.REQUEST_WRITE_NOTE)
-                }
+                val fragment = NoteFragment.newInstance(UserInfo.latestPlaceId)
+                fragment.setTargetFragment(manager.fragments.last(), MainFragment.REQUEST_WRITE_NOTE)
                 manager.replaceFragment(R.id.container, fragment, NoteFragment.TAG)
             }
         }

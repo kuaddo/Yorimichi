@@ -165,7 +165,7 @@ class MapViewModel @Inject constructor(
         val latLng = this.latLng.value ?: return
 
         // "+"がエンコードされないように自前でエンコード処理を行う
-        val keyword = keywords.map { URLEncoder.encode(it, "UTF-8") }.joinToString(separator = "+OR+")
+        val keyword = keywords.joinToString(separator = "+OR+") { URLEncoder.encode(it, "UTF-8") }
         repository.getPlacesWithKeyword(latLng.toSimpleString(), radius, keyword)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
