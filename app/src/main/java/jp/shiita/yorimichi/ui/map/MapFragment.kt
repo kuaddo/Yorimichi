@@ -252,9 +252,10 @@ class MapFragment : DaggerFragment() {
             }
         }
         viewModel.showReadNoteEvent.observe(this) {
-            if (UserInfo.latestPlaceId.isNotBlank())
-                activity?.supportFragmentManager
-                        ?.replaceFragment(R.id.container, NotesFragment.newInstance(UserInfo.latestPlaceId), NotesFragment.TAG)
+            if (UserInfo.latestPlaceId.isNotBlank()) {
+                val fragment = NotesFragment.newInstance(UserInfo.latestPlaceId, UserInfo.latestPlaceText)
+                activity?.supportFragmentManager?.replaceFragment(R.id.container, fragment, NotesFragment.TAG)
+            }
         }
     }
 
