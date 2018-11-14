@@ -12,14 +12,14 @@ import jp.shiita.yorimichi.custom.WidthSelector
 fun ImageView.bindImageUrl(url: String) = GlideApp.with(context).load(url).into(this)
 
 @BindingAdapter("app:bucket", "app:image", requireAll = true)
-fun ImageView.bindImageCloudStrage(bucket: String, image: String) = FirebaseStorage
+fun ImageView.bindImageCloudStorage(bucket: String, image: String) = FirebaseStorage
         .getInstance(bucket)
         .getReference(image)
         .downloadUrl
         .addOnSuccessListener { uri -> GlideApp.with(context).load(uri).into(this) }
 
 @BindingAdapter("app:bucket", "app:image", "app:tint", requireAll = true)
-fun ImageView.bindImageCloudStrageTint(bucket: String, image: String, @ColorInt tintColor: Int) = FirebaseStorage
+fun ImageView.bindImageCloudStorageTint(bucket: String, image: String, @ColorInt tintColor: Int) = FirebaseStorage
         .getInstance(bucket)
         .getReference(image)
         .downloadUrl

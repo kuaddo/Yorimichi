@@ -23,7 +23,7 @@ import jp.shiita.yorimichi.ui.note.NoteFragment
 import jp.shiita.yorimichi.ui.setting.SettingFragment
 import jp.shiita.yorimichi.ui.shop.ShopFragment
 import jp.shiita.yorimichi.util.addFragment
-import jp.shiita.yorimichi.util.bindImageCloudStrage
+import jp.shiita.yorimichi.util.bindImageCloudStorage
 import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
@@ -102,7 +102,7 @@ class MainActivity : DaggerAppCompatActivity() {
                 binding.navView
                         .getHeaderView(0)
                         .findViewById<ImageView>(R.id.iconImage)
-                        .bindImageCloudStrage(UserInfo.iconBucket, UserInfo.iconFileName)
+                        .bindImageCloudStorage(UserInfo.iconBucket, UserInfo.iconFileName)
             }
         }
     }
