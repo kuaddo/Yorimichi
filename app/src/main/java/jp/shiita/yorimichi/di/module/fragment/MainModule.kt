@@ -5,7 +5,6 @@ import dagger.android.ContributesAndroidInjector
 import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
 import jp.shiita.yorimichi.ui.main.MainFragment
 import jp.shiita.yorimichi.ui.map.MapFragment
-import jp.shiita.yorimichi.ui.mypage.MyPageFragment
 import jp.shiita.yorimichi.ui.note.NoteFragment
 import jp.shiita.yorimichi.ui.notes.NotesFragment
 import jp.shiita.yorimichi.ui.remind.RemindFragment
@@ -24,9 +23,6 @@ abstract class MainModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSearchFragment(): SearchFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeMyPageFragment(): MyPageFragment
 
     @ContributesAndroidInjector
     abstract fun contributeNoteFragment(): NoteFragment

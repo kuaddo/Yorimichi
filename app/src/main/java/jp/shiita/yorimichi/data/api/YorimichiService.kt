@@ -21,7 +21,7 @@ interface YorimichiService {
     fun addPoints(@Path("uuid") uuid: String, @Body body: Map<String, String>): Single<User>
 
     @POST("users/{uuid}/purchase/goods/{goods_id}/")
-    fun purchaseGoods(@Path("uuid") uuid: String, @Path("goods_id") goodsId: Int): Single<GoodResult>
+    fun purchaseGoods(@Path("uuid") uuid: String, @Path("goods_id") goodsId: Int): Single<GoodsResult>
 
     @PATCH("users/{uuid}/icon/{icon_id}/")
     fun changeIcon(@Path("uuid") uuid: String, @Path("icon_id") iconId: Int): Single<User>
@@ -33,7 +33,7 @@ interface YorimichiService {
     fun getVisitHistory(@Path("uuid") uuid: String): Single<List<History>>
 
     @GET("users/{uuid}/goods")
-    fun getGoods(@Path("uuid") uuid: String): Single<GoodResult>
+    fun getGoods(@Path("uuid") uuid: String): Single<GoodsResult>
 
     @POST("posts/")
     fun postPost(@Body body: Map<String, String>): Completable

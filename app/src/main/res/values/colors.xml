@@ -26,27 +26,4 @@
     <color name="colorSelectedBackground">#EFE4B0</color>
 
     <color name="colorWatchMovieButtonBackground">#4C4C4C</color>
-
-    <array name="colorsPen">
-        <item>#000000</item>
-        <item>#7F7F7F</item>
-        <item>#880015</item>
-        <item>#ED1C24</item>
-        <item>#FF7F27</item>
-        <item>#FDFDFE</item>
-        <item>#22B14C</item>
-        <item>#00A2E8</item>
-        <item>#3F48CC</item>
-        <item>#A349A4</item>
-        <item>#FFFFFF</item>
-        <item>#C3C3C3</item>
-        <item>#B97A57</item>
-        <item>#FFAEC9</item>
-        <item>#FFC90E</item>
-        <item>#EFE4B0</item>
-        <item>#B5E61D</item>
-        <item>#99D9EA</item>
-        <item>#7092BE</item>
-        <item>#C8BFE7</item>
-    </array>
 </resources>

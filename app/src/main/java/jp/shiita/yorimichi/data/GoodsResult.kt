@@ -1,6 +1,6 @@
 package jp.shiita.yorimichi.data
 
-data class GoodResult(
+data class GoodsResult(
         val colors: List<Color>,
         val icons: List<Icon>,
         val pens: List<Pen>

@@ -35,9 +35,6 @@ data class PlaceResult(
         fun setDistance(targetLatLng: LatLng) {
             _distance = latLng.distance(targetLatLng)
         }
-
-        fun setDistance(targetLat: Double, targetLng: Double) =
-                setDistance(LatLng(targetLat, targetLng))
     }
 
     data class Geometry(

@@ -8,7 +8,7 @@
     <import type="android.view.View"/>
     <variable
         name="color"
-        type="jp.shiita.yorimichi.data.GoodResult.Color"/>
+        type="jp.shiita.yorimichi.data.GoodsResult.Color"/>
 </data>
 
 <android.support.constraint.ConstraintLayout

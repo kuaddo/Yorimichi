@@ -8,7 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.custom.PaintView
-import jp.shiita.yorimichi.data.GoodResult
+import jp.shiita.yorimichi.data.GoodsResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
@@ -21,7 +21,7 @@ class NoteViewModel @Inject constructor(
 ) : ViewModel() {
     val pen: LiveData<PaintView.Pen> get() = _pen
     val penColor: LiveData<Int> get() = _penColor
-    val penColors: LiveData<List<GoodResult.Color>> get() = _penColors
+    val penColors: LiveData<List<GoodsResult.Color>> get() = _penColors
     val canErase: LiveData<Boolean> get() = _canErase
 
     val uploadSuccessEvent: LiveData<Unit> get() = _uploadSuccessEvent
@@ -30,7 +30,7 @@ class NoteViewModel @Inject constructor(
 
     private val _pen = MutableLiveData<PaintView.Pen>()
     private val _penColor = MutableLiveData<Int>()
-    private val _penColors = MutableLiveData<List<GoodResult.Color>>()
+    private val _penColors = MutableLiveData<List<GoodsResult.Color>>()
     private val _canErase = MutableLiveData<Boolean>().apply { value = false }
 
     private val _uploadSuccessEvent = SingleUnitLiveEvent()

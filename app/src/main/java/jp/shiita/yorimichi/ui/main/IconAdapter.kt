@@ -6,12 +6,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import jp.shiita.yorimichi.R
-import jp.shiita.yorimichi.data.GoodResult
+import jp.shiita.yorimichi.data.GoodsResult
 import jp.shiita.yorimichi.databinding.ItemIconBinding
 
 class IconAdapter(
         context: Context,
-        private val icons: MutableList<GoodResult.Icon>,
+        private val icons: MutableList<GoodsResult.Icon>,
         private val changeIcon: (iconId: Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
@@ -29,14 +29,14 @@ class IconAdapter(
         }
     }
 
-    fun reset(icons: List<GoodResult.Icon>) {
+    fun reset(icons: List<GoodsResult.Icon>) {
         this.icons.clear()
         this.icons.addAll(icons)
         notifyDataSetChanged()
     }
 
     class IconViewHolder(private val binding: ItemIconBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(icon: GoodResult.Icon) {
+        fun bind(icon: GoodsResult.Icon) {
             binding.icon = icon
             binding.executePendingBindings()
         }
