@@ -27,6 +27,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     val icons: LiveData<List<GoodsResult.Icon>> get() = _icons
 
+    val canWriteNote: LiveData<Boolean> get() = _canWriteNote
     val titleEvent: LiveData<Int> get() = _titleEvent
     val homeAsUpIndicator: LiveData<Int> get() = _homeAsUpIndicator
     val displayHomeAsUpEnabled: LiveData<Boolean> get() = _displayHomeAsUpEnabled
@@ -36,12 +37,12 @@ class MainViewModel @Inject constructor(
     val updateIconEvent: LiveData<Unit> get() = _updateIconEvent
     val searchEvent: LiveData<Pair<List<String>, Int>> get() = _searchEvent
     val directionsEvent: LiveData<LatLng> get() = _directionsEvent
-    val resetCanWriteNoteEvent: LiveData<Unit> get() = _resetCanWriteNoteEvent
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
     private val _icons = MutableLiveData<List<GoodsResult.Icon>>()
 
+    private val _canWriteNote = MutableLiveData<Boolean>().apply { value = UserInfo.canWriteNote }
     private val _titleEvent = SingleLiveEvent<Int>()
     private val _homeAsUpIndicator = SingleLiveEvent<Int>()
     private val _displayHomeAsUpEnabled = SingleLiveEvent<Boolean>()
@@ -51,7 +52,6 @@ class MainViewModel @Inject constructor(
     private val _updateIconEvent = UnitLiveEvent()
     private val _searchEvent = LiveEvent<Pair<List<String>, Int>>()
     private val _directionsEvent = LiveEvent<LatLng>()
-    private val _resetCanWriteNoteEvent = UnitLiveEvent()
 
     private val disposables = CompositeDisposable()
 
@@ -79,7 +79,12 @@ class MainViewModel @Inject constructor(
 
     fun updateIcon() = _updateIconEvent.call()
 
-    fun resetCanWriteNote() = _resetCanWriteNoteEvent.call()
+    fun setCanWriteNote(canWriteNote: Boolean) {
+        if (canWriteNote != _canWriteNote.value) {
+            UserInfo.canWriteNote = canWriteNote
+            _canWriteNote.postValue(canWriteNote)
+        }
+    }
 
     fun createOrUpdateUser() {
         if (UserInfo.userId.isEmpty()) {

@@ -62,6 +62,7 @@ class MapFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
+        binding.mainViewModel = mainViewModel
 
         searchResultAdapter = PlaceAdapter(context!!, mutableListOf(), ::selectPlace, viewModel::setTarget)
         binding.recyclerView.also { rv ->
@@ -218,7 +219,6 @@ class MapFragment : DaggerFragment() {
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         mainViewModel.directionsEvent.observe(this) { viewModel.searchDirection(it.toSimpleString()) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
-        mainViewModel.resetCanWriteNoteEvent.observe(this) { viewModel.resetCanWriteNote() }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { addPlaces(it) }
         viewModel.routes.observe(this) { addRoute(it) }
@@ -256,6 +256,7 @@ class MapFragment : DaggerFragment() {
                 activity?.supportFragmentManager?.replaceFragment(R.id.container, fragment, NotesFragment.TAG)
             }
         }
+        viewModel.canWriteNoteChangeEvent.observe(this) { mainViewModel.setCanWriteNote(it) }
     }
 
     private fun resetMap() {

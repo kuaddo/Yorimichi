@@ -83,6 +83,16 @@ class NoteViewModel @Inject constructor(
                         }
                 )
                 .addTo(disposables)
+
+        // ノートを書いてもらえるポイント
+        repository.addPoints(UserInfo.userId, 20)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = { UserInfo.points = it.points },
+                        onError = {}
+                )
+                .addTo(disposables)
     }
 
     companion object {
