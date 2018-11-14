@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.LayerDrawable
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
-import android.widget.ImageView
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.util.getBitmap
 
-class StarView(context: Context, attrs: AttributeSet? = null) : ImageView(context, attrs) {
+class StarView(context: Context, attrs: AttributeSet? = null) : AppCompatImageView(context, attrs) {
     private val star = ResourcesCompat.getDrawable(resources, R.drawable.ic_star, null)!!.getBitmap()
     private val bitmapWidth = star.width
     private val bitmapHeight = star.height

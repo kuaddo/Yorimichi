@@ -27,7 +27,7 @@ val Location.latLng
 fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (T) -> Unit) =
         observe(owner, Observer<T> { if (it != null) observer(it) })
 
-fun <X, Y> LiveData<X>.map(func: (X) -> Y) = Transformations.map(this, func)
+fun <X, Y> LiveData<X>.map(func: (X) -> Y): LiveData<Y> = Transformations.map(this, func)
 
 fun <T1, T2, S> LiveData<T1>.combineLatest(source: LiveData<T2>, func: (T1, T2) -> S): LiveData<S> {
     val result = MediatorLiveData<S>()
@@ -119,7 +119,7 @@ fun LatLng.distance(latLng: LatLng): Int {
             + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin((radLng1 - radLng2) / 2), 2.0)))).toInt()
 }
 
-fun LocalDateTime.toSimpleString() = format(simpleDateTimeFormatter)
+fun LocalDateTime.toSimpleString(): String = format(simpleDateTimeFormatter)
 
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat

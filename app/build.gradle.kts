@@ -87,12 +87,12 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:16.0.0")
     implementation("com.google.android.gms:play-services-location:16.0.0")
     implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
-    implementation("com.google.firebase:firebase-ads:17.0.0")
+    implementation("com.google.firebase:firebase-ads:17.1.0")
 
     // Firebase
-    implementation("com.google.firebase:firebase-core:16.0.4")
+    implementation("com.google.firebase:firebase-core:16.0.5")
     implementation("com.google.firebase:firebase-auth:16.0.5")
-    implementation("com.google.firebase:firebase-storage:16.0.3")
+    implementation("com.google.firebase:firebase-storage:16.0.5")
 
     // Dagger
     val daggerVersion = "2.17"

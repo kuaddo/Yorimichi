@@ -28,7 +28,7 @@ class YorimichiRepository(
     fun addPoints(uuid: String, additionalPoints: Int): Single<User> =
             yorimichiService.addPoints(uuid, mapOf("point" to additionalPoints.toString()))
 
-    fun purchaseGoods(uuid: String, goodsId: Int): Single<GoodResult> =
+    fun purchaseGoods(uuid: String, goodsId: Int): Single<GoodsResult> =
             yorimichiService.purchaseGoods(uuid, goodsId)
 
     fun changeIcon(uuid: String, iconId: Int): Single<User> =
@@ -39,7 +39,7 @@ class YorimichiRepository(
     fun getVisitHistory(uuid: String): Single<List<History>> =
             yorimichiService.getVisitHistory(uuid)
 
-    fun getGoods(uuid: String): Single<GoodResult> =
+    fun getGoods(uuid: String): Single<GoodsResult> =
             yorimichiService.getGoods(uuid)
 
     fun postPost(uuid: String, placeUid: String, bytes: ByteArray): Completable =
