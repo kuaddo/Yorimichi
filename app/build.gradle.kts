@@ -87,7 +87,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:16.0.0")
     implementation("com.google.android.gms:play-services-location:16.0.0")
     implementation("com.google.android.gms:play-services-oss-licenses:16.0.1")
-    implementation("com.google.firebase:firebase-ads:17.1.0")
+    implementation("com.google.firebase:firebase-ads:17.1.1")
 
     // Firebase
     implementation("com.google.firebase:firebase-core:16.0.5")
