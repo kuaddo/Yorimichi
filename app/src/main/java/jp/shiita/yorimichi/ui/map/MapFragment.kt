@@ -26,7 +26,10 @@ import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.live.MagneticLiveData
 import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver
 import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
+import jp.shiita.yorimichi.ui.main.MainFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel
+import jp.shiita.yorimichi.ui.note.NoteFragment
+import jp.shiita.yorimichi.ui.notes.NotesFragment
 import jp.shiita.yorimichi.ui.remind.RemindFragment
 import jp.shiita.yorimichi.util.*
 import java.util.*
@@ -215,6 +218,7 @@ class MapFragment : DaggerFragment() {
         mainViewModel.searchEvent.observe(this) { (categories, radius) -> viewModel.searchPlaces(categories, radius) }
         mainViewModel.directionsEvent.observe(this) { viewModel.searchDirection(it.toSimpleString()) }
         mainViewModel.updateIconEvent.observe(this) { viewModel.setIcon(UserInfo.iconBucket, UserInfo.iconFileName) }
+        mainViewModel.resetCanWriteNoteEvent.observe(this) { viewModel.resetCanWriteNote() }
         viewModel.latLng.observe(this) { UserInfo.latLng = it }
         viewModel.places.observe(this) { addPlaces(it) }
         viewModel.routes.observe(this) { addRoute(it) }
@@ -239,6 +243,20 @@ class MapFragment : DaggerFragment() {
             else    setRotateDisable()
         }
         viewModel.chickMessageChangeEvent.observe(this) { changeChickMessage() }
+        viewModel.showWriteNoteEvent.observe(this) {
+            activity?.supportFragmentManager?.also { manager ->
+                val fragment = NoteFragment.newInstance(UserInfo.latestPlaceId).also {
+                    it.setTargetFragment(manager.fragments.last(), MainFragment.REQUEST_WRITE_NOTE)
+                }
+                manager.replaceFragment(R.id.container, fragment, NoteFragment.TAG)
+            }
+        }
+        viewModel.showReadNoteEvent.observe(this) {
+            if (UserInfo.latestPlaceId.isNotBlank()) {
+                val fragment = NotesFragment.newInstance(UserInfo.latestPlaceId, UserInfo.latestPlaceText)
+                activity?.supportFragmentManager?.replaceFragment(R.id.container, fragment, NotesFragment.TAG)
+            }
+        }
     }
 
     private fun resetMap() {

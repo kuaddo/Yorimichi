@@ -16,6 +16,8 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.model.LatLng
 import jp.shiita.yorimichi.BuildConfig
 import jp.shiita.yorimichi.data.UserInfo
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.io.ByteArrayOutputStream
 
 
@@ -117,7 +119,11 @@ fun LatLng.distance(latLng: LatLng): Int {
             + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin((radLng1 - radLng2) / 2), 2.0)))).toInt()
 }
 
+fun LocalDateTime.toSimpleString() = format(simpleDateTimeFormatter)
+
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat
     longitude = lng
 }
+
+private val simpleDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")

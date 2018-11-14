@@ -12,7 +12,6 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
-import jp.shiita.yorimichi.ui.note.NoteViewModel.Companion.TEST_PLACE_UID
 import javax.inject.Inject
 
 class ShopViewModel @Inject constructor(
@@ -47,7 +46,7 @@ class ShopViewModel @Inject constructor(
     }
 
     fun getPlacePosts() {
-        repository.getPlacePosts(TEST_PLACE_UID)
+        repository.getPlacePosts("testPlaceId")
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
@@ -59,6 +58,29 @@ class ShopViewModel @Inject constructor(
                         onError = {
                             Log.e(TAG, "onError:getPlacePosts", it)
                         }
+                )
+                .addTo(disposables)
+    }
+
+    fun visitPlace() {
+        val placeId = "testPlaceId"
+        repository.visitPlace(UserInfo.userId, placeId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onComplete = { Log.d(TAG, "onComplete:visitPlace") },
+                        onError = { Log.e(TAG, "onError:visitPlace", it) }
+                )
+                .addTo(disposables)
+    }
+
+    fun getVisitHistory() {
+        repository.getVisitHistory(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = { Log.e(TAG, "onSuccess:getVisitHistory $it")},
+                        onError = { Log.e(TAG, "onError:getVisitHistory", it) }
                 )
                 .addTo(disposables)
     }
@@ -84,7 +106,7 @@ class ShopViewModel @Inject constructor(
                 .subscribeBy(
                         onSuccess = {
                             it.icons.forEach { icon ->
-                                if (!icon.isPurchased) purchaseIcon(icon.id)
+                                if (!icon.isPurchased) purchaseGoods(icon.id)
                             }
                         },
                         onError = {}
@@ -92,7 +114,22 @@ class ShopViewModel @Inject constructor(
                 .addTo(disposables)
     }
 
-    private fun purchaseIcon(goodsId: Int) {
+    fun purchaseAllPenColor() {
+        repository.getGoods(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            it.colors.forEach { color ->
+                                if (!color.isPurchased) purchaseGoods(color.id)
+                            }
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+    }
+
+    private fun purchaseGoods(goodsId: Int) {
         repository.purchaseGoods(UserInfo.userId, goodsId)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())

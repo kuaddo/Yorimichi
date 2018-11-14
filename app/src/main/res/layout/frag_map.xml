@@ -66,19 +66,20 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:visibility="@{viewModel.isNear ? View.VISIBLE : View.GONE}"
+        tools:visibility="gone"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="@+id/googleMap"
         app:layout_constraintEnd_toEndOf="@+id/googleMap"
         app:layout_constraintBottom_toBottomOf="@+id/googleMap">
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp"
             android:gravity="center_vertical"
             android:orientation="vertical">
-            
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,6 +104,85 @@
                 android:text="@string/map_reached"
                 android:background="@drawable/back_button"
                 android:onClick="@{() -> viewModel.reached()}"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="@{!safeUnbox(viewModel.isNear) &amp;&amp; safeUnbox(viewModel.isNearByLatestVisitLatLng) ? View.VISIBLE : View.GONE}"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintStart_toStartOf="@+id/googleMap"
+        app:layout_constraintEnd_toEndOf="@+id/googleMap"
+        app:layout_constraintBottom_toBottomOf="@+id/googleMap">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="16dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="16dp"
+                    android:textSize="@dimen/text_large"
+                    android:textColor="@color/colorTextPrimary"
+                    android:text="@{viewModel.canWriteNote ? @string/map_can_write_note_message : @string/map_can_not_write_note_message}"
+                    tools:text="@string/map_can_write_note_message"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close"
+                    android:onClick="@{() -> viewModel.resetLatestVisitLatLng()}"
+                    app:tint="@color/colorBlack"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <jp.shiita.yorimichi.custom.IconButton
+                    style="@style/IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.showWriteNote()}"
+                    android:visibility="@{viewModel.canWriteNote ? View.VISIBLE : View.GONE}"
+                    app:marginCenter="4dp"
+                    app:src="@drawable/ic_pen"
+                    app:iconSize="18dp"
+                    app:text="@string/map_write_note"
+                    app:textSize="@dimen/text_small"/>
+
+                <jp.shiita.yorimichi.custom.IconButton
+                    style="@style/IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:onClick="@{() -> viewModel.showReadNote()}"
+                    app:marginCenter="4dp"
+                    app:src="@drawable/ic_note"
+                    app:iconSize="18dp"
+                    app:text="@string/map_read_note"
+                    app:textSize="@dimen/text_small"/>
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
