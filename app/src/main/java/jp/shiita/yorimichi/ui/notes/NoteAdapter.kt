@@ -29,6 +29,7 @@ class NoteAdapter(context: Context, private val posts: MutableList<Post>) : Recy
 
     class NotesViewHolder(private val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
+            binding.imageView.setImageDrawable(null)    // 以前の画像が残る現象の対応
             binding.post = post
             binding.executePendingBindings()
         }
