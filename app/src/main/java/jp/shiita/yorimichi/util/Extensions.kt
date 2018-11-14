@@ -121,9 +121,13 @@ fun LatLng.distance(latLng: LatLng): Int {
 
 fun LocalDateTime.toSimpleString(): String = format(simpleDateTimeFormatter)
 
+fun LocalDateTime.toSimpleDateString(): String = format(simpleDateFormatter)
+
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat
     longitude = lng
 }
 
 private val simpleDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+
+private val simpleDateFormatter = DateTimeFormatter.ofPattern("MM月dd日")

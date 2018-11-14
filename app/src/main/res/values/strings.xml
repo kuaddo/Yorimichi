@@ -81,6 +81,9 @@
     <!-- notes -->
     <string name="notes_no_content">この場所のノートはありません\n最初のノートを書きましょう！</string>
 
+    <!-- history -->
+    <string name="history_no_content">まだよりみちをしていません\nアプリを使ってよりみちをしよう！</string>
+
     <!-- place types -->
     <string-array name="place_types">
         <item>カフェ</item>

@@ -77,7 +77,10 @@ class MainFragment : DaggerFragment() {
         if (resultCode != Activity.RESULT_OK) return
 
         when (requestCode) {
-            REQUEST_WRITE_NOTE -> viewModel.resetCanWriteNote()
+            REQUEST_WRITE_NOTE -> {
+                viewModel.setCanWriteNote(false)
+                viewModel.updatePoints()
+            }
         }
     }
 

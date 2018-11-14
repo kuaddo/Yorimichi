@@ -25,5 +25,7 @@
 
     <color name="colorSelectedBackground">#EFE4B0</color>
 
+    <color name="colorHistoryTagBackground">#CCCCCC</color>
+
     <color name="colorWatchMovieButtonBackground">#4C4C4C</color>
 </resources>

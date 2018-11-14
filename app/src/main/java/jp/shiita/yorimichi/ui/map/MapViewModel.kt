@@ -40,7 +40,6 @@ class MapViewModel @Inject constructor(
     val showsChick: LiveData<Boolean> get() = _showsChick
     val isNear: LiveData<Boolean> get() = _isNear
     val isNearByLatestVisitLatLng: LiveData<Boolean> get() = _isNearByLatestVisitLatLng
-    val canWriteNote: LiveData<Boolean> get() = _canWriteNote
     val chickMessage: LiveData<String> get() = _chickMessage
 
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
@@ -51,6 +50,7 @@ class MapViewModel @Inject constructor(
     val chickMessageChangeEvent: LiveData<Unit> get() = _chickMessageChangeEvent
     val showWriteNoteEvent: LiveData<Unit> get() = _showWriteNoteEvent
     val showReadNoteEvent: LiveData<Unit> get() = _showReadNoteEvent
+    val canWriteNoteChangeEvent: LiveData<Boolean> get() = _canWriteNoteChangeEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _latestVisitLatLng         = MutableLiveData<LatLng>().apply { value = UserInfo.latestVisitLatLng }
@@ -68,7 +68,6 @@ class MapViewModel @Inject constructor(
     private val _showsChick                = MutableLiveData<Boolean>()
     private val _isNear                    = MutableLiveData<Boolean>()
     private val _isNearByLatestVisitLatLng = MutableLiveData<Boolean>()
-    private val _canWriteNote              = MutableLiveData<Boolean>().apply { value = UserInfo.canWriteNote }
     private val _chickMessage              = MutableLiveData<String>()
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
@@ -79,6 +78,7 @@ class MapViewModel @Inject constructor(
     private val _chickMessageChangeEvent = SingleUnitLiveEvent()
     private val _showWriteNoteEvent = SingleUnitLiveEvent()
     private val _showReadNoteEvent = SingleUnitLiveEvent()
+    private val _canWriteNoteChangeEvent = SingleLiveEvent<Boolean>()
 
     private var isLocationObserved = false
     private var placesSize = -1
@@ -134,18 +134,13 @@ class MapViewModel @Inject constructor(
 
     fun setChickMessage(message: String) = _chickMessage.postValue(message)
 
-    fun resetCanWriteNote() {
-        UserInfo.canWriteNote = false
-        _canWriteNote.postValue(false)
-    }
-
     fun resetLatestVisitLatLng() {
         UserInfo.latestVisitLatLng = null
         UserInfo.latestPlaceId = ""
         UserInfo.latestPlaceText = ""
         _latestVisitLatLng.postValue(null)
         _isNearByLatestVisitLatLng.postValue(false)
-        resetCanWriteNote()
+        _canWriteNoteChangeEvent.postValue(false)
     }
 
     fun showReadNote() = _showReadNoteEvent.call()
@@ -242,20 +237,31 @@ class MapViewModel @Inject constructor(
         val placeId = _targetPlace.value?.placeId ?: ""
         val placeText = _targetPlace.value?.name ?: ""
         clearRoutes()
+
         repository.addPoints(UserInfo.userId, 20)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
                         onSuccess = {
                             UserInfo.points = it.points
+                            UserInfo.canWriteNote = true
+                            _pointsEvent.value = 20
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+
+        repository.visitPlace(UserInfo.userId, placeId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onComplete = {
                             UserInfo.latestVisitLatLng = UserInfo.latLng
                             UserInfo.latestPlaceId = placeId
                             UserInfo.latestPlaceText = placeText
-                            UserInfo.canWriteNote = true
-                            _reachedEvent.value = startLatLng
-                            _pointsEvent.value = 20
                             _latestVisitLatLng.value = UserInfo.latestVisitLatLng
-                            _canWriteNote.value = true
+                            _reachedEvent.value = startLatLng
+                            _canWriteNoteChangeEvent.value = true
                         },
                         onError = {}
                 )

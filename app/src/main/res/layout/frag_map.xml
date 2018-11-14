@@ -7,6 +7,9 @@
 <data>
     <import type="android.view.View"/>
     <variable
+        name="mainViewModel"
+        type="jp.shiita.yorimichi.ui.main.MainViewModel"/>
+    <variable
         name="viewModel"
         type="jp.shiita.yorimichi.ui.map.MapViewModel"/>
 </data>
@@ -140,7 +143,7 @@
                     android:layout_marginTop="16dp"
                     android:textSize="@dimen/text_large"
                     android:textColor="@color/colorTextPrimary"
-                    android:text="@{viewModel.canWriteNote ? @string/map_can_write_note_message : @string/map_can_not_write_note_message}"
+                    android:text="@{mainViewModel.canWriteNote ? @string/map_can_write_note_message : @string/map_can_not_write_note_message}"
                     tools:text="@string/map_can_write_note_message"/>
 
                 <android.support.v7.widget.AppCompatImageView
@@ -164,7 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="@{() -> viewModel.showWriteNote()}"
-                    android:visibility="@{viewModel.canWriteNote ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{mainViewModel.canWriteNote ? View.VISIBLE : View.GONE}"
                     app:marginCenter="4dp"
                     app:src="@drawable/ic_pen"
                     app:iconSize="18dp"

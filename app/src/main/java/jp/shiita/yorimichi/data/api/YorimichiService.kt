@@ -30,7 +30,7 @@ interface YorimichiService {
     fun visitPlace(@Path("uuid") uuid: String, @Path("place_uid") placeUid: String): Completable
 
     @GET("users/{uuid}/visit-history/")
-    fun getVisitHistory(@Path("uuid") uuid: String): Single<List<History>>
+    fun getVisitHistory(@Path("uuid") uuid: String): Single<Response<List<History>>>
 
     @GET("users/{uuid}/goods")
     fun getGoods(@Path("uuid") uuid: String): Single<GoodsResult>
@@ -58,6 +58,9 @@ interface YorimichiService {
     @GET("places/direction/")
     fun getDirection(@Query("origin") origin: String,
                      @Query("destination") destination: String): Single<DirectionResult>
+
+    @GET("places/{place_uid}/")
+    fun getPlaceDetail(@Path("place_uid") placeUid: String): Single<PlaceDetailResult>
 
     @GET("goods/icons/{icon_id}/")
     fun getIcon(@Path("icon_id") iconId: Int): Single<JsonObject>
