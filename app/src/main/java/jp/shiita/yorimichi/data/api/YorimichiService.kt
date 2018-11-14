@@ -30,7 +30,7 @@ interface YorimichiService {
     fun visitPlace(@Path("uuid") uuid: String, @Path("place_uid") placeUid: String): Completable
 
     @GET("users/{uuid}/visit-history/")
-    fun getVisitHistory(@Path("uuid") uuid: String): Single<List<History>>
+    fun getVisitHistory(@Path("uuid") uuid: String): Single<Response<List<History>>>
 
     @GET("users/{uuid}/goods")
     fun getGoods(@Path("uuid") uuid: String): Single<GoodsResult>

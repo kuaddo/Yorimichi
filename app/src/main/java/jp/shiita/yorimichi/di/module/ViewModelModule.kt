@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import jp.shiita.yorimichi.di.ViewModelFactory
 import jp.shiita.yorimichi.di.ViewModelKey
+import jp.shiita.yorimichi.ui.history.HistoryViewModel
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.map.MapViewModel
 import jp.shiita.yorimichi.ui.note.NoteViewModel
@@ -58,6 +59,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NotesViewModel::class)
     abstract fun bindNotesViewModel(viewModel: NotesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HistoryViewModel::class)
+    abstract fun bindHistoryViewModel(viewModel: HistoryViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

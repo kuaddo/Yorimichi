@@ -36,8 +36,12 @@ class YorimichiRepository(
 
     fun visitPlace(uuid: String, placeUid: String) = yorimichiService.visitPlace(uuid, placeUid)
 
-    fun getVisitHistory(uuid: String): Single<List<History>> =
-            yorimichiService.getVisitHistory(uuid)
+    fun getVisitHistory(uuid: String): Single<List<History>> = yorimichiService.getVisitHistory(uuid)
+            .map { response ->
+                val body = response.body()
+                if (response.code() == 204 || body == null) emptyList()
+                else body
+            }
 
     fun getGoods(uuid: String): Single<GoodsResult> =
             yorimichiService.getGoods(uuid)

@@ -10,11 +10,11 @@ data class PlaceDetailResult(
             val name: String,
             val geometry: Geometry,
             val icon: String,
-            val photos: List<Photo>,
+            val photos: List<Photo> = emptyList(),
             val placeId: String,
             val rating: Float,
             val reference: String,
-            val types: List<String>,
+            val types: List<String> = emptyList(),
             val vicinity: String,
 
             // PlaceDetailResult.PlaceDetail特有(一部)

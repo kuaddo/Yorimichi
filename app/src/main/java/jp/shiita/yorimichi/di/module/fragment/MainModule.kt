@@ -3,6 +3,7 @@ package jp.shiita.yorimichi.di.module.fragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
+import jp.shiita.yorimichi.ui.history.HistoryFragment
 import jp.shiita.yorimichi.ui.main.MainFragment
 import jp.shiita.yorimichi.ui.map.MapFragment
 import jp.shiita.yorimichi.ui.note.NoteFragment
@@ -38,6 +39,9 @@ abstract class MainModule {
 
     @ContributesAndroidInjector
     abstract fun contributeNotesFragment(): NotesFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeHistoryFragment(): HistoryFragment
 
     @ContributesAndroidInjector
     abstract fun contributePointGetDialogFragment(): PointGetDialogFragment
