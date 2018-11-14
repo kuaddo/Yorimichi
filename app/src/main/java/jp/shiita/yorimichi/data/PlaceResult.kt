@@ -37,17 +37,6 @@ data class PlaceResult(
         }
     }
 
-    data class Geometry(
-            val location: Location,
-            val viewport: Viewport
-    )
-
-    data class Photo(
-            val width: Int,
-            val height: Int,
-            val photoReference: String
-    )
-
     fun calcBounds(currentLat: Double, currentLng: Double): LatLngBounds {
         var minLat = currentLat
         var minLng = currentLng

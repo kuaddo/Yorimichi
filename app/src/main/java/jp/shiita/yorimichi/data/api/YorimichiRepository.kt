@@ -66,6 +66,9 @@ class YorimichiRepository(
     fun getDirection(origin: String, destination: String): Single<DirectionResult> =
             yorimichiService.getDirection(origin, destination)
 
+    fun getPlaceDetail(placeUid: String): Single<PlaceDetailResult> =
+            yorimichiService.getPlaceDetail(placeUid)
+
     fun getIcon(iconId: Int): Single<Pair<String, String>> = yorimichiService.getIcon(iconId)
             .map { json -> json.getAsJsonPrimitive("bucket").asString to json.getAsJsonPrimitive("filename").asString }
 }

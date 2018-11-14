@@ -242,19 +242,30 @@ class MapViewModel @Inject constructor(
         val placeId = _targetPlace.value?.placeId ?: ""
         val placeText = _targetPlace.value?.name ?: ""
         clearRoutes()
+
         repository.addPoints(UserInfo.userId, 20)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
                         onSuccess = {
                             UserInfo.points = it.points
+                            UserInfo.canWriteNote = true
+                            _pointsEvent.value = 20
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+
+        repository.visitPlace(UserInfo.userId, placeId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onComplete = {
                             UserInfo.latestVisitLatLng = UserInfo.latLng
                             UserInfo.latestPlaceId = placeId
                             UserInfo.latestPlaceText = placeText
-                            UserInfo.canWriteNote = true
-                            _reachedEvent.value = startLatLng
-                            _pointsEvent.value = 20
                             _latestVisitLatLng.value = UserInfo.latestVisitLatLng
+                            _reachedEvent.value = startLatLng
                             _canWriteNote.value = true
                         },
                         onError = {}
