@@ -19,7 +19,6 @@ import jp.shiita.yorimichi.databinding.ActMainBinding
 import jp.shiita.yorimichi.ui.dialog.SimpleDialogFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.OPEN_DRAWER
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.POP_BACK_STACK
-import jp.shiita.yorimichi.ui.mypage.MyPageFragment
 import jp.shiita.yorimichi.ui.note.NoteFragment
 import jp.shiita.yorimichi.ui.setting.SettingFragment
 import jp.shiita.yorimichi.ui.shop.ShopFragment
@@ -136,7 +135,6 @@ class MainActivity : DaggerAppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener { item ->
             lockDrawer()
             when (item.itemId) {
-                R.id.menu_drawer_my_page -> supportFragmentManager.replaceFragment(R.id.container, MyPageFragment.newInstance(), MyPageFragment.TAG)
                 R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, NoteFragment.newInstance("testPlaceId"), NoteFragment.TAG)
                 R.id.menu_drawer_shop    -> supportFragmentManager.replaceFragment(R.id.container, ShopFragment.newInstance(), ShopFragment.TAG)
                 R.id.menu_drawer_setting -> supportFragmentManager.replaceFragment(R.id.container, SettingFragment.newInstance(), SettingFragment.TAG)
