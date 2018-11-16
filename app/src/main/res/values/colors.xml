@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#D05301</color>
     <color name="colorPrimaryDark">#D05301</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#DD2C00</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorHalfTransparent">#55AAAAAA</color>
     <color name="colorWhite">#FFFFFF</color>
@@ -28,4 +28,10 @@
     <color name="colorHistoryTagBackground">#CCCCCC</color>
 
     <color name="colorWatchMovieButtonBackground">#4C4C4C</color>
+
+    <!-- tutorial -->
+    <color name="colorTutorial1">#FFAB00</color>
+    <color name="colorTutorial2">#FF9100</color>
+    <color name="colorTutorial3">#FF6D00</color>
+    <color name="colorTutorial4">#D05301</color>
 </resources>

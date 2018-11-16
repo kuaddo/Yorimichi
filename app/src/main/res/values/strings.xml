@@ -6,6 +6,15 @@
     <string name="title_setting">設定</string>
     <string name="title_read_notes">ノートを見る</string>
 
+    <!-- tutorial -->
+    <string name="tutorial_title1">こんにちは！</string>
+    <string name="tutorial_title2">案内機能</string>
+    <string name="tutorial_title3">検索機能</string>
+    <string name="tutorial_title4">さあ、よりみちを\nはじめましょう！！</string>
+    <string name="tutorial_description1">「よりみち」はよりみちで\nあなたの日常を変えるアプリです</string>
+    <string name="tutorial_description2">よりみちのはじめからおわりまで\n完全サポートをします</string>
+    <string name="tutorial_description3">あなたにピッタリのよりみちが\n簡単に見つかります</string>
+
     <!-- tab -->
     <string name="tab_map">地図</string>
     <string name="tab_search">よりみちを探す</string>

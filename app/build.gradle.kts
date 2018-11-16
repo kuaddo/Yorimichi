@@ -130,6 +130,7 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxandroid:2.0.2")
 
     implementation("com.chibatching.kotpref:kotpref:2.6.0")
+    implementation("com.stephentuso:welcome:1.4.1")
 
     // Test
     testImplementation("junit:junit:4.12")
