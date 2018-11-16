@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class SettingFragment : DaggerFragment() {
     private val viewModel: SettingViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(SettingViewModel::class.java) }
     private lateinit var binding: FragSettingBinding
+    private lateinit var adapter: CategorySettingAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -36,7 +38,18 @@ class SettingFragment : DaggerFragment() {
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_setting)
 
+        adapter = CategorySettingAdapter(context!!)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+
+        viewModel.setOriginalCategories()
         observe()
+    }
+
+    override fun onPause() {
+        adapter.reflectCategories()
+        viewModel.saveOriginalCategories()
+        super.onPause()
     }
 
     private fun observe() {

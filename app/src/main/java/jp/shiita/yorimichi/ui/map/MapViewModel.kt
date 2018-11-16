@@ -148,8 +148,7 @@ class MapViewModel @Inject constructor(
     fun showWriteNote() = _showWriteNoteEvent.call()
 
     fun searchPlacesDefault() {
-        // TODO: 初期検索キーワードを実装。とりあえずカフェにする
-        searchPlaces(listOf("カフェ"), radius = 1000)
+        searchPlaces(UserInfo.autoSearchCategory.toList(), radius = 500)
     }
 
     fun searchPlaces(keywords: List<String>, radius: Int) {

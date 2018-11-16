@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<data>
+    <variable
+        name="category"
+        type="jp.shiita.yorimichi.data.Category"/>
+</data>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="@dimen/text_large"
+        android:textColor="@color/colorTextPrimary"
+        android:text="@{category.name}"
+        tools:text="カフェ" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="@{category.selected}"
+        android:onCheckedChanged="@{(_, isChecked) -> category.setSelected(isChecked)}"/>
+</LinearLayout>
+</layout>

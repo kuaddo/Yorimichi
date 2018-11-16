@@ -53,6 +53,7 @@ class SearchFragment : DaggerFragment() {
 
         val categories = resources.getStringArray(R.array.place_types).map { it to false }.toMutableList()
         categories[0] = categories[0].copy(second = true)
+        categories.addAll(0, UserInfo.originalCategories.map { it to false })
         categoryAdapter = CategoryAdapter(context!!, categories)
         binding.categoryRecyclerView.adapter = categoryAdapter
 
