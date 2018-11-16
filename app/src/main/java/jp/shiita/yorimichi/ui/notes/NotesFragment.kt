@@ -40,6 +40,7 @@ class NotesFragment : DaggerFragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_read_notes)
+        mainViewModel.setDrawerLock(true)
 
         binding.adView.loadAd()
         noteAdapter = NoteAdapter(context!!, mutableListOf())
