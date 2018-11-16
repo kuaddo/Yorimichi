@@ -36,7 +36,7 @@ class HistoryFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
-        mainViewModel.setupActionBar(R.string.title_read_notes)
+        mainViewModel.setupActionBar(R.string.title_history)
 
         adapter = HistoryAdapter(context!!, mutableListOf(), mutableListOf(), ::showNotesFragment)
         binding.historyRecyclerView.adapter = adapter
