@@ -16,6 +16,8 @@ import jp.shiita.yorimichi.databinding.FragNotesBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.util.loadAd
 import jp.shiita.yorimichi.util.observe
+import jp.shiita.yorimichi.util.toUploadDateString
+import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 class NotesFragment : DaggerFragment() {
@@ -25,6 +27,7 @@ class NotesFragment : DaggerFragment() {
     private val viewModel: NotesViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(NotesViewModel::class.java) }
     private val placeId: String by lazy { arguments!!.getString(ARGS_PLACE_ID) }
+    private val dateTime: String by lazy { arguments!!.getString(ARGS_DATE_TIME) }
     private val placeText: String by lazy { arguments!!.getString(ARGS_PLACE_TEXT) }
     private lateinit var binding: FragNotesBinding
     private lateinit var noteAdapter: NoteAdapter
@@ -40,6 +43,7 @@ class NotesFragment : DaggerFragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_read_notes)
+        mainViewModel.setDrawerLock(true)
 
         binding.adView.loadAd()
         noteAdapter = NoteAdapter(context!!, mutableListOf())
@@ -63,7 +67,7 @@ class NotesFragment : DaggerFragment() {
             PagerSnapHelper().attachToRecyclerView(rv)
         }
 
-        viewModel.getPlacePosts(placeId)
+        viewModel.getPlacePosts(placeId, dateTime)
         viewModel.setPlaceText(placeText)
         observe()
     }
@@ -77,12 +81,16 @@ class NotesFragment : DaggerFragment() {
     companion object {
         val TAG: String = NotesFragment::class.java.simpleName
         private const val ARGS_PLACE_ID = "argsPlaceId"
+        private const val ARGS_DATE_TIME = "argsDateTime"
         private const val ARGS_PLACE_TEXT = "argsPlaceText"
-        fun newInstance(placeId: String, placeText: String) = NotesFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARGS_PLACE_ID, placeId)
-                putString(ARGS_PLACE_TEXT, placeText)
-            }
-        }
+
+        fun newInstance(placeId: String, placeText: String, dateTime: LocalDateTime = LocalDateTime.now()) =
+                NotesFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARGS_PLACE_ID, placeId)
+                        putString(ARGS_DATE_TIME, dateTime.toUploadDateString())
+                        putString(ARGS_PLACE_TEXT, placeText)
+                    }
+                }
     }
 }

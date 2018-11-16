@@ -12,6 +12,8 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
+import jp.shiita.yorimichi.util.toUploadDateString
+import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 class ShopViewModel @Inject constructor(
@@ -46,7 +48,7 @@ class ShopViewModel @Inject constructor(
     }
 
     fun getPlacePosts() {
-        repository.getPlacePosts("testPlaceId")
+        repository.getPlacePosts("testPlaceId", LocalDateTime.now().toUploadDateString())
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(

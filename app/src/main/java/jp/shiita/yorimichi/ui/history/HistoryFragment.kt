@@ -15,6 +15,7 @@ import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.notes.NotesFragment
 import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.replaceFragment
+import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 class HistoryFragment : DaggerFragment() {
@@ -36,7 +37,7 @@ class HistoryFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
-        mainViewModel.setupActionBar(R.string.title_read_notes)
+        mainViewModel.setupActionBar(R.string.title_history)
 
         adapter = HistoryAdapter(context!!, mutableListOf(), mutableListOf(), ::showNotesFragment)
         binding.historyRecyclerView.adapter = adapter
@@ -46,11 +47,12 @@ class HistoryFragment : DaggerFragment() {
     }
 
     private fun observe() {
-        viewModel.placesAndDates.observe(this) { adapter.reset(it.first, it.second) }
+        viewModel.placesAndDateTimes.observe(this) { adapter.reset(it.first, it.second) }
     }
 
-    private fun showNotesFragment(place: PlaceResult.Place) {
-        fragmentManager?.replaceFragment(R.id.container, NotesFragment.newInstance(place.placeId, place.name), NotesFragment.TAG)
+    private fun showNotesFragment(place: PlaceResult.Place, dateTime: LocalDateTime) {
+        val fragment = NotesFragment.newInstance(place.placeId, place.name, dateTime)
+        fragmentManager?.replaceFragment(R.id.container, fragment, NotesFragment.TAG)
     }
 
     companion object {

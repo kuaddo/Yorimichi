@@ -55,8 +55,8 @@ class NotesViewModel @Inject constructor(
 
     fun scrollForward() = _scrollForwardEvent.postValue(minOf(postsSize, _currentPage.value?.plus(1) ?: 0))
 
-    fun getPlacePosts(placeId: String) {
-        repository.getPlacePosts(placeId)
+    fun getPlacePosts(placeId: String, dateTime: String) {
+        repository.getPlacePosts(placeId, dateTime)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(

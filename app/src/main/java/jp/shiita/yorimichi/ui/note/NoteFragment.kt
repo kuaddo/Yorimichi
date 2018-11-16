@@ -39,6 +39,7 @@ class NoteFragment : DaggerFragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_note)
+        mainViewModel.setDrawerLock(true)
 
         binding.adView.loadAd()
         penAdapter = PenAdapter(context!!, viewModel::setPen)

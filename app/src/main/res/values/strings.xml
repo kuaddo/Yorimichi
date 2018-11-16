@@ -1,6 +1,7 @@
 <resources>
     <!-- title -->
     <string name="title_note">ノート</string>
+    <string name="title_history">よりみち履歴</string>
     <string name="title_shop">ショップ</string>
     <string name="title_setting">設定</string>
     <string name="title_read_notes">ノートを見る</string>
@@ -14,9 +15,6 @@
     <string name="drawer_badge">称号：</string>
     <string name="drawer_point">ポイント：</string>
     <string name="drawer_point_value">%1$dp</string>
-    <string name="drawer_note">ノートを見る</string>
-    <string name="drawer_shop">ショップ</string>
-    <string name="drawer_setting">設定</string>
 
     <!-- menu -->
     <string name="menu_sort_dist_asc">近い順</string>

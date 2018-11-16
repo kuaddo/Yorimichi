@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.databinding.ItemHistoryBinding
+import jp.shiita.yorimichi.util.toSimpleDateString
+import org.threeten.bp.LocalDateTime
 
 class HistoryAdapter(
         context: Context,
         private val places: MutableList<PlaceResult.Place>,
-        private val dateStrings: MutableList<String>,
-        private val selectPlace: (place: PlaceResult.Place) -> Unit
+        private val dateTimes: MutableList<LocalDateTime>,
+        private val selectPlace: (place: PlaceResult.Place, dateTime: LocalDateTime) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
@@ -25,16 +27,17 @@ class HistoryAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is HistoryViewHolder) {
             val place = places[position]
-            holder.bind(place, dateStrings[position])
-            holder.itemView.setOnClickListener { selectPlace(place) }
+            val dateTime = dateTimes[position]
+            holder.bind(place, dateTime.toSimpleDateString())
+            holder.itemView.setOnClickListener { selectPlace(place, dateTime) }
         }
     }
 
-    fun reset(places: List<PlaceResult.Place>, dateStrings: List<String>) {
+    fun reset(places: List<PlaceResult.Place>, dateTimes: List<LocalDateTime>) {
         this.places.clear()
         this.places.addAll(places)
-        this.dateStrings.clear()
-        this.dateStrings.addAll(dateStrings)
+        this.dateTimes.clear()
+        this.dateTimes.addAll(dateTimes)
         notifyDataSetChanged()
     }
 

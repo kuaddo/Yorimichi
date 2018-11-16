@@ -167,7 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="@{() -> viewModel.showWriteNote()}"
-                    android:visibility="@{mainViewModel.canWriteNote ? View.VISIBLE : View.GONE}"
+                    app:enabled="@{mainViewModel.canWriteNote}"
                     app:marginCenter="4dp"
                     app:src="@drawable/ic_pen"
                     app:iconSize="18dp"

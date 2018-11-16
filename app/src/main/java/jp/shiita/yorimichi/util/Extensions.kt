@@ -123,6 +123,16 @@ fun LocalDateTime.toSimpleString(): String = format(simpleDateTimeFormatter)
 
 fun LocalDateTime.toSimpleDateString(): String = format(simpleDateFormatter)
 
+/**
+ * 時刻の次の日の00:00:00をyyyy-MM-dd HH:mm:ss形式で文字列化
+ * 到着時刻とノート記述時刻の差に対応するために利用
+ */
+fun LocalDateTime.toUploadDateString(): String = plusDays(1)
+        .minusHours(hour.toLong())
+        .minusMinutes(minute.toLong())
+        .minusSeconds(second.toLong())
+        .format(uploadDateFormatter)
+
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat
     longitude = lng
@@ -131,3 +141,5 @@ private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").a
 private val simpleDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
 
 private val simpleDateFormatter = DateTimeFormatter.ofPattern("MM月dd日")
+
+private val uploadDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
