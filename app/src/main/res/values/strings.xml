@@ -62,6 +62,13 @@
     <string name="remind_time_selected">決定！</string>
     <string name="remind_finish">案内を終了する</string>
 
+    <!-- setting -->
+    <string name="setting_select_category">自動検索カテゴリ</string>
+    <string name="setting_original_category">オリジナルカテゴリ設定</string>
+    <string name="setting_original_category_hint1">オリジナルカテゴリ1</string>
+    <string name="setting_original_category_hint2">オリジナルカテゴリ2</string>
+    <string name="setting_original_category_hint3">オリジナルカテゴリ3</string>
+
     <!-- place types -->
     <string-array name="place_types">
         <item>カフェ</item>
