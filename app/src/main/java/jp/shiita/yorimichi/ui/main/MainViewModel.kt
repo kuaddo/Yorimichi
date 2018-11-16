@@ -1,6 +1,7 @@
 package jp.shiita.yorimichi.ui.main
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
@@ -9,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import jp.shiita.yorimichi.R
+import jp.shiita.yorimichi.data.GoodsResult
 import jp.shiita.yorimichi.data.User
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
@@ -23,6 +25,9 @@ class MainViewModel @Inject constructor(
         private val repository: YorimichiRepository,
         private val scheduler: BaseSchedulerProvider
 ) : ViewModel() {
+    val icons: LiveData<List<GoodsResult.Icon>> get() = _icons
+
+    val canWriteNote: LiveData<Boolean> get() = _canWriteNote
     val titleEvent: LiveData<Int> get() = _titleEvent
     val homeAsUpIndicator: LiveData<Int> get() = _homeAsUpIndicator
     val displayHomeAsUpEnabled: LiveData<Boolean> get() = _displayHomeAsUpEnabled
@@ -35,6 +40,9 @@ class MainViewModel @Inject constructor(
     var homeAsUpType: HomeAsUpType = HomeAsUpType.POP_BACK_STACK
         private set
 
+    private val _icons = MutableLiveData<List<GoodsResult.Icon>>()
+
+    private val _canWriteNote = MutableLiveData<Boolean>().apply { value = UserInfo.canWriteNote }
     private val _titleEvent = SingleLiveEvent<Int>()
     private val _homeAsUpIndicator = SingleLiveEvent<Int>()
     private val _displayHomeAsUpEnabled = SingleLiveEvent<Boolean>()
@@ -71,12 +79,19 @@ class MainViewModel @Inject constructor(
 
     fun updateIcon() = _updateIconEvent.call()
 
+    fun setCanWriteNote(canWriteNote: Boolean) {
+        if (canWriteNote != _canWriteNote.value) {
+            UserInfo.canWriteNote = canWriteNote
+            _canWriteNote.value = canWriteNote      // 即反映しないとif文で弾かれる
+        }
+    }
+
     fun createOrUpdateUser() {
         if (UserInfo.userId.isEmpty()) {
             repository.createUser()
                     .subscribeOn(scheduler.io())
                     .subscribeBy(
-                            onSuccess = { UserInfo.userId = it },
+                            onSuccess = { reflectUserInfo(it) },
                             onError = { _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message) }
                     )
                     .addTo(disposables)
@@ -92,22 +107,43 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun reflectUserInfo(user: User) {
-        UserInfo.points = user.points
-        updatePoints()
-
-        repository.getIcon(user.iconId)
+    fun changeIcon(iconId: Int) {
+        repository.changeIcon(UserInfo.userId, iconId)
                 .subscribeOn(scheduler.io())
                 .subscribeBy(
-                        onSuccess = {
-                            UserInfo.iconBucket = it.first
-                            UserInfo.iconFileName = it.second
-                            updateIcon()
-                        },
+                        onSuccess = { getIcon(it.iconId) },
                         onError = {}
                 )
                 .addTo(disposables)
     }
+
+    private fun reflectUserInfo(user: User) {
+        UserInfo.userId = user.uuid
+        UserInfo.points = user.points
+        updatePoints()
+        getIcon(user.iconId)
+        getGoods(user.uuid)
+    }
+
+    private fun getIcon(iconId: Int) = repository.getIcon(iconId)
+            .subscribeOn(scheduler.io())
+            .subscribeBy(
+                    onSuccess = {
+                        UserInfo.iconBucket = it.first
+                        UserInfo.iconFileName = it.second
+                        updateIcon()
+                    },
+                    onError = {}
+            )
+            .addTo(disposables)
+
+    private fun getGoods(uuid: String) = repository.getGoods(uuid)
+            .subscribeOn(scheduler.io())
+            .subscribeBy(
+                    onSuccess = { _icons.postValue(it.icons) },
+                    onError = {}
+            )
+            .addTo(disposables)
 
     enum class HomeAsUpType { OPEN_DRAWER, POP_BACK_STACK }
 }

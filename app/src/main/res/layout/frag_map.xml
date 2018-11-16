@@ -7,6 +7,9 @@
 <data>
     <import type="android.view.View"/>
     <variable
+        name="mainViewModel"
+        type="jp.shiita.yorimichi.ui.main.MainViewModel"/>
+    <variable
         name="viewModel"
         type="jp.shiita.yorimichi.ui.map.MapViewModel"/>
 </data>
@@ -35,22 +38,27 @@
         android:layout_marginTop="16dp"
         android:scaleType="fitXY"
         android:visibility="@{viewModel.showsChick ? View.VISIBLE : View.GONE}"
+        android:onClick="@{() -> viewModel.switchRotate()}"
         app:bucket="@{viewModel.bucket}"
         app:image="@{viewModel.fileName}"
         app:layout_constraintStart_toStartOf="@+id/googleMap"
         app:layout_constraintTop_toTopOf="@+id/googleMap" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="20dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/balloon_small"
         android:gravity="center"
-        android:text="いつもより多めに回ってやんよ"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="@{viewModel.isNear ? @string/map_chick_reached_message : viewModel.chickMessage}"
         android:visibility="@{viewModel.showsChick ? View.VISIBLE : View.GONE}"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iconImage"
         app:layout_constraintTop_toTopOf="@+id/googleMap" />
 
@@ -61,19 +69,20 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:visibility="@{viewModel.isNear ? View.VISIBLE : View.GONE}"
+        tools:visibility="gone"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="@+id/googleMap"
         app:layout_constraintEnd_toEndOf="@+id/googleMap"
         app:layout_constraintBottom_toBottomOf="@+id/googleMap">
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp"
             android:gravity="center_vertical"
             android:orientation="vertical">
-            
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,6 +107,85 @@
                 android:text="@string/map_reached"
                 android:background="@drawable/back_button"
                 android:onClick="@{() -> viewModel.reached()}"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="@{!safeUnbox(viewModel.isNear) &amp;&amp; safeUnbox(viewModel.isNearByLatestVisitLatLng) ? View.VISIBLE : View.GONE}"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintStart_toStartOf="@+id/googleMap"
+        app:layout_constraintEnd_toEndOf="@+id/googleMap"
+        app:layout_constraintBottom_toBottomOf="@+id/googleMap">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="16dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="16dp"
+                    android:textSize="@dimen/text_large"
+                    android:textColor="@color/colorTextPrimary"
+                    android:text="@{mainViewModel.canWriteNote ? @string/map_can_write_note_message : @string/map_can_not_write_note_message}"
+                    tools:text="@string/map_can_write_note_message"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close"
+                    android:onClick="@{() -> viewModel.resetLatestVisitLatLng()}"
+                    app:tint="@color/colorBlack"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <jp.shiita.yorimichi.custom.IconButton
+                    style="@style/IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.showWriteNote()}"
+                    app:enabled="@{mainViewModel.canWriteNote}"
+                    app:marginCenter="4dp"
+                    app:src="@drawable/ic_pen"
+                    app:iconSize="18dp"
+                    app:text="@string/map_write_note"
+                    app:textSize="@dimen/text_small"/>
+
+                <jp.shiita.yorimichi.custom.IconButton
+                    style="@style/IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:onClick="@{() -> viewModel.showReadNote()}"
+                    app:marginCenter="4dp"
+                    app:src="@drawable/ic_note"
+                    app:iconSize="18dp"
+                    app:text="@string/map_read_note"
+                    app:textSize="@dimen/text_small"/>
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

@@ -16,6 +16,8 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.model.LatLng
 import jp.shiita.yorimichi.BuildConfig
 import jp.shiita.yorimichi.data.UserInfo
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.io.ByteArrayOutputStream
 
 
@@ -25,7 +27,7 @@ val Location.latLng
 fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (T) -> Unit) =
         observe(owner, Observer<T> { if (it != null) observer(it) })
 
-fun <X, Y> LiveData<X>.map(func: (X) -> Y) = Transformations.map(this, func)
+fun <X, Y> LiveData<X>.map(func: (X) -> Y): LiveData<Y> = Transformations.map(this, func)
 
 fun <T1, T2, S> LiveData<T1>.combineLatest(source: LiveData<T2>, func: (T1, T2) -> S): LiveData<S> {
     val result = MediatorLiveData<S>()
@@ -117,7 +119,27 @@ fun LatLng.distance(latLng: LatLng): Int {
             + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin((radLng1 - radLng2) / 2), 2.0)))).toInt()
 }
 
+fun LocalDateTime.toSimpleString(): String = format(simpleDateTimeFormatter)
+
+fun LocalDateTime.toSimpleDateString(): String = format(simpleDateFormatter)
+
+/**
+ * 時刻の次の日の00:00:00をyyyy-MM-dd HH:mm:ss形式で文字列化
+ * 到着時刻とノート記述時刻の差に対応するために利用
+ */
+fun LocalDateTime.toUploadDateString(): String = plusDays(1)
+        .minusHours(hour.toLong())
+        .minusMinutes(minute.toLong())
+        .minusSeconds(second.toLong())
+        .format(uploadDateFormatter)
+
 private fun getLocation(lat: Double, lng: Double) = Location("dummy provider").apply {
     latitude = lat
     longitude = lng
 }
+
+private val simpleDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+
+private val simpleDateFormatter = DateTimeFormatter.ofPattern("MM月dd日")
+
+private val uploadDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

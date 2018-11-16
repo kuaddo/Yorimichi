@@ -2,18 +2,18 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@android:id/background">
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
-            <corners android:radius="@dimen/seekbar_progress_radius"/>
+            <corners android:radius="@dimen/seek_bar_progress_radius"/>
             <solid android:color="@color/colorDarkGrey"/>
-            <stroke android:color="@color/colorTransparent" android:width="@dimen/seekbar_progress_margin"/>
+            <stroke android:color="@color/colorTransparent" android:width="@dimen/seek_bar_progress_margin"/>
         </shape>
     </item>
 
     <item android:id="@android:id/progress">
         <clip>
             <shape xmlns:android="http://schemas.android.com/apk/res/android">
-                <corners android:radius="@dimen/seekbar_progress_radius"/>
+                <corners android:radius="@dimen/seek_bar_progress_radius"/>
                 <solid android:color="@color/colorPrimary"/>
-                <stroke android:color="@color/colorTransparent" android:width="@dimen/seekbar_progress_margin"/>
+                <stroke android:color="@color/colorTransparent" android:width="@dimen/seek_bar_progress_margin"/>
             </shape>
         </clip>
     </item>

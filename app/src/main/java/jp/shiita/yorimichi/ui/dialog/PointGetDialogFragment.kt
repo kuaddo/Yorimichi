@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.TextView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -34,9 +35,15 @@ class PointGetDialogFragment : DaggerAppCompatDialogFragment() {
     private val additionalPoints by lazy { arguments!!.getInt(ARGS_ADDITIONAL_POINTS) }
     private lateinit var rewardedVideoAd: RewardedVideoAd
     private val disposables = CompositeDisposable()
+    private var buttonIsVisible = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            buttonIsVisible = savedInstanceState.getBoolean(BUTTON_IS_VISIBLE)
+        }
+
         rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context)
         rewardedVideoAd.rewardedVideoAdListener = object : RewardedVideoAdListener{
 
@@ -54,12 +61,21 @@ class PointGetDialogFragment : DaggerAppCompatDialogFragment() {
                         .addTo(disposables)
             }
 
+            override fun onRewardedVideoStarted() {
+                buttonIsVisible = false
+                dialog?.let { d ->
+                    d.findViewById<Button>(R.id.watchMovieButton).let { button ->
+                        button.text = getString(R.string.dialog_point_get_movie_done_message)
+                        button.isEnabled = false
+                    }
+                }
+            }
+
             override fun onRewardedVideoAdLoaded() {}
             override fun onRewardedVideoAdClosed() {}
             override fun onRewardedVideoAdLeftApplication() {}
             override fun onRewardedVideoAdOpened() {}
             override fun onRewardedVideoCompleted() {}
-            override fun onRewardedVideoStarted() {}
             override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {}
         }
         rewardedVideoAd.loadAd(getString(R.string.admob_reward_ad_unit_id), AdRequest.Builder().build())
@@ -76,9 +92,15 @@ class PointGetDialogFragment : DaggerAppCompatDialogFragment() {
             d.findViewById<TextView>(R.id.mainTextView).text = getString(R.string.dialog_point_get_main_message, gotPoints)
             d.findViewById<TextView>(R.id.movieTextView).text = getString(R.string.dialog_point_get_movie_message, additionalPoints)
             d.findViewById<View>(R.id.closeButton).setOnClickListener { dismiss() }
-            d.findViewById<View>(R.id.watchMovieButton).setOnClickListener {
-                if (rewardedVideoAd.isLoaded) {
-                    rewardedVideoAd.show()
+            d.findViewById<Button>(R.id.watchMovieButton).let { button ->
+                if (!buttonIsVisible) {
+                    button.text = getString(R.string.dialog_point_get_movie_done_message)
+                    button.isEnabled = false
+                }
+                button.setOnClickListener {
+                    if (rewardedVideoAd.isLoaded) {
+                        rewardedVideoAd.show()
+                    }
                 }
             }
         }
@@ -100,10 +122,16 @@ class PointGetDialogFragment : DaggerAppCompatDialogFragment() {
         super.onDestroy()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(BUTTON_IS_VISIBLE, buttonIsVisible)
+    }
+
     companion object {
         val TAG: String = PointGetDialogFragment::class.java.simpleName
         private const val ARGS_GOT_POINTS = "argsGotPoints"
         private const val ARGS_ADDITIONAL_POINTS = "argsAdditionalPoints"
+        private const val BUTTON_IS_VISIBLE = "buttonIsVisible"
 
         fun newInstance(gotPoints: Int, additionalPoints: Int) = PointGetDialogFragment().apply {
             arguments = Bundle().apply {

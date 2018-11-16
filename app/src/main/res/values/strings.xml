@@ -1,11 +1,10 @@
 <resources>
     <!-- title -->
-    <string name="title_search">検索</string>
-    <string name="title_search_result">検索結果</string>
-    <string name="title_my_page">マイページ</string>
     <string name="title_note">ノート</string>
+    <string name="title_history">よりみち履歴</string>
     <string name="title_shop">ショップ</string>
     <string name="title_setting">設定</string>
+    <string name="title_read_notes">ノートを見る</string>
 
     <!-- tab -->
     <string name="tab_map">地図</string>
@@ -16,14 +15,12 @@
     <string name="drawer_badge">称号：</string>
     <string name="drawer_point">ポイント：</string>
     <string name="drawer_point_value">%1$dp</string>
-    <string name="drawer_my_pate">マイページ</string>
-    <string name="drawer_note">ノートを見る</string>
-    <string name="drawer_shop">ショップ</string>
-    <string name="drawer_setting">設定</string>
 
     <!-- menu -->
     <string name="menu_sort_dist_asc">近い順</string>
     <string name="menu_sort_dist_desc">遠い順</string>
+    <string name="menu_sort_rate_asc">評価が低い順</string>
+    <string name="menu_sort_rate_desc">評価が高い順</string>
     <string name="menu_finish_guide">案内終了</string>
     <string name="menu_upload_note">アップロード</string>
 
@@ -31,10 +28,10 @@
     <string name="dialog_simple_positive">OK</string>
     <string name="dialog_simple_negative">Cancel</string>
     <string name="dialog_location_permission_denied_message">位置情報が取得できないため、アプリを終了します。</string>
-    <string name="dialog_initialize_user_error_message">アプリの初期設定が失敗しました。ネットワークの状態を確認してください。</string>
     <string name="dialog_upload_note_confirm_message">ノートを送信します</string>
     <string name="dialog_point_get_main_message">%1$dポイントGET！\nどんどん集めよう！</string>
     <string name="dialog_point_get_movie_message">動画を見て%1$dポイント追加！</string>
+    <string name="dialog_point_get_movie_done_message">動画視聴済み</string>
     <string name="dialog_point_get_watch_button">動画を見る</string>
 
     <!-- search -->
@@ -47,6 +44,23 @@
 
     <!-- map -->
     <string name="map_reached">ついた！</string>
+    <string name="map_chick_reached_message">ついた？</string>
+    <string-array name="map_chick_messages">
+        <item>ガチャピンとムックは師弟関係なんだって</item>
+        <item>天ぷらは実はポルトガル語なんだって</item>
+        <item>牛乳ときゅうりだときゅうりの方が水分量が多いんだって</item>
+        <item>ガリガリ君のあたりの割合は100本に2本なんだって</item>
+        <item>カピバラは時速50kmではしるんだって</item>
+        <item>1円を作るには3円かかるんだって</item>
+        <item>人間の体内時計は25時間なんだって</item>
+        <item>｢〆｣は漢字なんだって</item>
+        <item>品川駅は品川区じゃなくて港区にあるんだって</item>
+        <item>マク〇ナルドのカウンターは全店72cmの高さなんだって</item>
+    </string-array>
+    <string name="map_can_write_note_message">よりみちしたお店のノートを書いてくれたらポイントがもらえるよ♪</string>
+    <string name="map_can_not_write_note_message">他の人が書いたノートを見てみよう！</string>
+    <string name="map_write_note">ノートを書く</string>
+    <string name="map_read_note">ノートを見る</string>
 
     <!-- remind -->
     <string name="remind_reached_message">お疲れ様！\n帰りの案内は必要？\n\n時間の五分前になると、\n通知が来るよ！</string>
@@ -61,6 +75,12 @@
     <string name="remind_go_other">別の場所に戻る</string>
     <string name="remind_time_selected">決定！</string>
     <string name="remind_finish">案内を終了する</string>
+
+    <!-- notes -->
+    <string name="notes_no_content">この場所のノートはありません\n最初のノートを書きましょう！</string>
+
+    <!-- history -->
+    <string name="history_no_content">まだよりみちをしていません\nアプリを使ってよりみちをしよう！</string>
 
     <!-- setting -->
     <string name="setting_select_category">自動検索カテゴリ</string>

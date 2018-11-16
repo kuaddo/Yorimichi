@@ -2,19 +2,19 @@ package jp.shiita.yorimichi.live
 
 import android.arch.lifecycle.LiveData
 import android.content.Context
-import android.content.Context.SENSOR_SERVICE
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 
-
 class MagneticLiveData(context: Context) : LiveData<Float>() {
-    val manager = context.getSystemService(SENSOR_SERVICE) as SensorManager
-    var accelerometerValues = FloatArray(3)
-    var geomagneticMatrix = FloatArray(3)
-    var accelerometerReady: Boolean = false
-    var magneticReady: Boolean = false
+    private val manager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    private val accelerometerReading = FloatArray(16)
+    private val magnetometerReading = FloatArray(16)
+    private val rotationMatrix = FloatArray(9)
+    private val orientationAngles = FloatArray(3)
+    private var accelerometerReady: Boolean = false
+    private var magneticReady: Boolean = false
 
     private val listener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
@@ -24,13 +24,11 @@ class MagneticLiveData(context: Context) : LiveData<Float>() {
 
             when (event.sensor?.type) {
                 Sensor.TYPE_ACCELEROMETER -> {
-//                    lowPassFilter(accelerometerValues, event.values.clone())
-                    accelerometerValues = event.values.clone()
+                    lowPassFilter(accelerometerReading, event.values.clone())
                     accelerometerReady = true
                 }
                 Sensor.TYPE_MAGNETIC_FIELD -> {
-//                    lowPassFilter(geomagneticMatrix, event.values.clone())
-                    geomagneticMatrix = event.values.clone()
+                    lowPassFilter(magnetometerReading, event.values.clone())
                     magneticReady = true
                 }
                 else -> return
@@ -38,24 +36,22 @@ class MagneticLiveData(context: Context) : LiveData<Float>() {
 
             if (accelerometerReady && magneticReady) {
                 magneticReady = false
-
-                val r = FloatArray(16)
-                val i = FloatArray(16)
-                val rR = FloatArray(16)
-                val actualOrientation = FloatArray(3)
-
-                SensorManager.getRotationMatrix(r, i, accelerometerValues, geomagneticMatrix)
-                SensorManager.remapCoordinateSystem(r, SensorManager.AXIS_X, SensorManager.AXIS_Z, rR)
-                SensorManager.getOrientation(rR, actualOrientation)
-
-                value = Math.toDegrees(actualOrientation[0].toDouble()).toFloat()
+                SensorManager.getRotationMatrix(
+                        rotationMatrix,
+                        null,
+                        accelerometerReading,
+                        magnetometerReading
+                )
+                SensorManager.getOrientation(rotationMatrix, orientationAngles)
+                val angle = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+                value = angle + if (angle < 0) 360 else 0
             }
         }
     }
 
     override fun onActive() {
-        manager.registerListener(listener, manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_UI)
-        manager.registerListener(listener, manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),  SensorManager.SENSOR_DELAY_UI)
+        manager.registerListener(listener, manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),  SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI)
+        manager.registerListener(listener, manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI)
     }
 
     override fun onInactive() {

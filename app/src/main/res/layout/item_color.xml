@@ -7,8 +7,8 @@
 <data>
     <import type="android.view.View"/>
     <variable
-        name="penColor"
-        type="jp.shiita.yorimichi.data.PenColor"/>
+        name="color"
+        type="jp.shiita.yorimichi.data.GoodsResult.Color"/>
 </data>
 
 <android.support.constraint.ConstraintLayout
@@ -23,10 +23,10 @@
         android:layout_height="18dp"
         android:padding="1dp"
         android:src="@drawable/back_circle"
-        android:background="@{penColor.selected ? @drawable/back_selected : null}"
+        android:background="@{color.selected ? @drawable/back_selected : null}"
         tools:tint="@color/colorPrimary"
         tools:background="@drawable/back_selected"
-        app:tint="@{penColor.color}"
+        app:tint="@{color.color}"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -34,7 +34,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/ic_lock"
-        android:visibility="@{penColor.locked ? View.VISIBLE : View.GONE}"
+        android:visibility="@{color.isPurchased ? View.GONE : View.VISIBLE}"
         tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

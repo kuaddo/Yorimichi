@@ -1,6 +1,6 @@
 package jp.shiita.yorimichi.data
 
-data class GoodResult(
+data class GoodsResult(
         val colors: List<Color>,
         val icons: List<Icon>,
         val pens: List<Pen>
@@ -12,6 +12,7 @@ data class GoodResult(
             val isPurchased: Boolean
     ) {
         val color: Int get() = android.graphics.Color.parseColor(argbCode)
+        var selected: Boolean = false       // RecyclerViewで選択されているかどうか
     }
 
     data class Icon(

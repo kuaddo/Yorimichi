@@ -7,7 +7,9 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
+import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import dagger.android.support.DaggerAppCompatActivity
@@ -15,14 +17,13 @@ import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.databinding.ActMainBinding
 import jp.shiita.yorimichi.ui.dialog.SimpleDialogFragment
+import jp.shiita.yorimichi.ui.history.HistoryFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.OPEN_DRAWER
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.POP_BACK_STACK
-import jp.shiita.yorimichi.ui.mypage.MyPageFragment
-import jp.shiita.yorimichi.ui.note.NoteFragment
 import jp.shiita.yorimichi.ui.setting.SettingFragment
 import jp.shiita.yorimichi.ui.shop.ShopFragment
 import jp.shiita.yorimichi.util.addFragment
-import jp.shiita.yorimichi.util.bindImageCloudStrage
+import jp.shiita.yorimichi.util.bindImageCloudStorage
 import jp.shiita.yorimichi.util.observe
 import jp.shiita.yorimichi.util.replaceFragment
 import javax.inject.Inject
@@ -34,6 +35,7 @@ class MainActivity : DaggerAppCompatActivity() {
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java) }
     private val binding: ActMainBinding
             by lazy { DataBindingUtil.setContentView<ActMainBinding>(this, R.layout.act_main) }
+    private lateinit var adapter: IconAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,17 @@ class MainActivity : DaggerAppCompatActivity() {
         setupDrawer()
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
+
+        adapter = IconAdapter(this, mutableListOf(), viewModel::changeIcon)
+        binding.navView
+                .getHeaderView(0).also { header ->
+                    val recyclerView = header.findViewById<RecyclerView>(R.id.recyclerView)
+                    recyclerView.adapter = adapter
+                    header.findViewById<ImageView>(R.id.iconImage).setOnClickListener {
+                        if (recyclerView.visibility == View.VISIBLE) recyclerView.visibility = View.GONE
+                        else                                         recyclerView.visibility = View.VISIBLE
+                    }
+                }
 
         if (savedInstanceState == null) {
             supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
@@ -52,6 +65,8 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun observe() {
         viewModel.also { vm ->
+            vm.icons.observe(this) { adapter.reset(it) }
+
             // ToolBar
             vm.titleEvent.observe(this) {
                 supportActionBar?.let { bar ->
@@ -87,7 +102,7 @@ class MainActivity : DaggerAppCompatActivity() {
                 binding.navView
                         .getHeaderView(0)
                         .findViewById<ImageView>(R.id.iconImage)
-                        .bindImageCloudStrage(UserInfo.iconBucket, UserInfo.iconFileName)
+                        .bindImageCloudStorage(UserInfo.iconBucket, UserInfo.iconFileName)
             }
         }
     }
@@ -120,8 +135,7 @@ class MainActivity : DaggerAppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener { item ->
             lockDrawer()
             when (item.itemId) {
-                R.id.menu_drawer_my_page -> supportFragmentManager.replaceFragment(R.id.container, MyPageFragment.newInstance(), MyPageFragment.TAG)
-                R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, NoteFragment.newInstance(), NoteFragment.TAG)
+                R.id.menu_drawer_note    -> supportFragmentManager.replaceFragment(R.id.container, HistoryFragment.newInstance(), HistoryFragment.TAG)
                 R.id.menu_drawer_shop    -> supportFragmentManager.replaceFragment(R.id.container, ShopFragment.newInstance(), ShopFragment.TAG)
                 R.id.menu_drawer_setting -> supportFragmentManager.replaceFragment(R.id.container, SettingFragment.newInstance(), SettingFragment.TAG)
             }

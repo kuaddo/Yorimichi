@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<data>
+    <import type="android.view.View"/>
+    <variable
+        name="viewModel"
+        type="jp.shiita.yorimichi.ui.notes.NotesViewModel"/>
+</data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorDefaultBackground">
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:adSize="BANNER"
+            app:adUnitId="@string/admob_banner_ad_unit_id"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="@dimen/text_large"
+            android:text="@{viewModel.placeText}"
+            app:layout_constraintBottom_toTopOf="@+id/textView11"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/adView"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="ベックスコーヒーショップ横浜中央口店" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="@dimen/text_normal"
+            android:text="@{viewModel.dateTimeText}"
+            android:visibility="@{viewModel.noContent ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@+id/notesRecyclerView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10"
+            tools:text="2018/11/14" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/notesRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:orientation="horizontal"
+            android:background="@color/colorWhite"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/textView12"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11"
+            tools:listitem="@layout/item_note" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notes_no_content"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="@dimen/text_large"
+            android:visibility="@{viewModel.noContent ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/notesRecyclerView"
+            app:layout_constraintEnd_toEndOf="@id/notesRecyclerView"
+            app:layout_constraintStart_toStartOf="@id/notesRecyclerView"
+            app:layout_constraintTop_toTopOf="@id/notesRecyclerView"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="@dimen/text_large"
+            android:text="@{viewModel.pageText}"
+            android:visibility="@{viewModel.noContent ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notesRecyclerView"
+            tools:text="3/10" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_arrow_left"
+            android:onClick="@{() -> viewModel.scrollBack()}"
+            android:visibility="@{viewModel.noContent ? View.GONE : View.VISIBLE}"
+            android:enabled="@{viewModel.canBack}"
+            app:tint="@color/selector_arrow_button"
+            app:layout_constraintBottom_toBottomOf="@+id/textView12"
+            app:layout_constraintEnd_toStartOf="@+id/textView12"
+            app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:onClick="@{() -> viewModel.scrollForward()}"
+            android:visibility="@{viewModel.noContent ? View.GONE : View.VISIBLE}"
+            android:enabled="@{viewModel.canForward}"
+            app:tint="@color/selector_arrow_button"
+            app:layout_constraintBottom_toBottomOf="@+id/textView12"
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toTopOf="@+id/textView12" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

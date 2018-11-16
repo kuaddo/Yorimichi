@@ -141,7 +141,7 @@ class RemindViewModel @Inject constructor(
         val latLng = UserInfo.latLng ?: return
 
         // "+"がエンコードされないように自前でエンコード処理を行う
-        val keyword = keywords.map { URLEncoder.encode(it, "UTF-8") }.joinToString(separator = "+OR+")
+        val keyword = keywords.joinToString(separator = "+OR+") { URLEncoder.encode(it, "UTF-8") }
         // 50kmはNearby Searchの限界値
         repository.getPlacesWithKeyword(latLng.toSimpleString(), 50000, keyword)
                 .subscribeOn(scheduler.io())

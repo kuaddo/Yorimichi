@@ -12,7 +12,8 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
-import jp.shiita.yorimichi.ui.note.NoteViewModel.Companion.TEST_PLACE_UID
+import jp.shiita.yorimichi.util.toUploadDateString
+import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 class ShopViewModel @Inject constructor(
@@ -47,7 +48,7 @@ class ShopViewModel @Inject constructor(
     }
 
     fun getPlacePosts() {
-        repository.getPlacePosts(TEST_PLACE_UID)
+        repository.getPlacePosts("testPlaceId", LocalDateTime.now().toUploadDateString())
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
@@ -63,6 +64,29 @@ class ShopViewModel @Inject constructor(
                 .addTo(disposables)
     }
 
+    fun visitPlace() {
+        val placeId = "testPlaceId"
+        repository.visitPlace(UserInfo.userId, placeId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onComplete = { Log.d(TAG, "onComplete:visitPlace") },
+                        onError = { Log.e(TAG, "onError:visitPlace", it) }
+                )
+                .addTo(disposables)
+    }
+
+    fun getVisitHistory() {
+        repository.getVisitHistory(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = { Log.e(TAG, "onSuccess:getVisitHistory $it")},
+                        onError = { Log.e(TAG, "onError:getVisitHistory", it) }
+                )
+                .addTo(disposables)
+    }
+
     fun addTenPoints() {
         repository.addPoints(UserInfo.userId, 10)
                 .subscribeOn(scheduler.io())
@@ -72,6 +96,47 @@ class ShopViewModel @Inject constructor(
                             UserInfo.points = it.points
                             _pointsEvent.call()
                         },
+                        onError = {}
+                )
+                .addTo(disposables)
+    }
+
+    fun purchaseAllIcon() {
+        repository.getGoods(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            it.icons.forEach { icon ->
+                                if (!icon.isPurchased) purchaseGoods(icon.id)
+                            }
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+    }
+
+    fun purchaseAllPenColor() {
+        repository.getGoods(UserInfo.userId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = {
+                            it.colors.forEach { color ->
+                                if (!color.isPurchased) purchaseGoods(color.id)
+                            }
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+    }
+
+    private fun purchaseGoods(goodsId: Int) {
+        repository.purchaseGoods(UserInfo.userId, goodsId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onSuccess = { Log.d(TAG, "purchase $goodsId") },
                         onError = {}
                 )
                 .addTo(disposables)

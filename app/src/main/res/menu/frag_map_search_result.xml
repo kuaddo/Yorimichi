@@ -11,4 +11,12 @@
         android:id="@+id/menu_frag_map_search_result_sort_dist_desc"
         android:title="@string/menu_sort_dist_desc"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_frag_map_search_result_sort_rate_desc"
+        android:title="@string/menu_sort_rate_desc"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_frag_map_search_result_sort_rate_asc"
+        android:title="@string/menu_sort_rate_asc"
+        app:showAsAction="never"/>
 </menu>

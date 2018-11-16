@@ -3,6 +3,7 @@ package jp.shiita.yorimichi.util
 import android.databinding.BindingAdapter
 import android.databinding.InverseBindingAdapter
 import android.databinding.InverseBindingListener
+import android.support.annotation.ColorInt
 import android.widget.ImageView
 import com.google.firebase.storage.FirebaseStorage
 import jp.shiita.yorimichi.custom.WidthSelector
@@ -11,17 +12,29 @@ import jp.shiita.yorimichi.custom.WidthSelector
 fun ImageView.bindImageUrl(url: String) = GlideApp.with(context).load(url).into(this)
 
 @BindingAdapter("app:bucket", "app:image", requireAll = true)
-fun ImageView.bindImageCloudStrage(bucket: String, image: String) = FirebaseStorage
+fun ImageView.bindImageCloudStorage(bucket: String, image: String) = FirebaseStorage
         .getInstance(bucket)
         .getReference(image)
         .downloadUrl
-        .addOnSuccessListener { uri -> GlideApp.with(this.context).load(uri).into(this) }
+        .addOnSuccessListener { uri -> GlideApp.with(context).load(uri).into(this) }
+
+@BindingAdapter("app:bucket", "app:image", "app:tint", requireAll = true)
+fun ImageView.bindImageCloudStorageTint(bucket: String, image: String, @ColorInt tintColor: Int) = FirebaseStorage
+        .getInstance(bucket)
+        .getReference(image)
+        .downloadUrl
+        .addOnSuccessListener { uri ->
+            GlideApp.with(context)
+                    .load(uri)
+                    .transform(TintTransformation(tintColor))
+                    .into(this)
+        }
 
 @BindingAdapter("app:tint")
-fun ImageView.bindTint(color: Int) = setImageDrawable(drawable.setTintCompat(color))
+fun ImageView.bindTint(@ColorInt tintColor: Int) = setImageDrawable(drawable.setTintCompat(tintColor))
 
 @BindingAdapter("app:color")
-fun WidthSelector.bindColor(color: Int) = setColor(color)
+fun WidthSelector.bindColor(@ColorInt tintColor: Int) = setColor(tintColor)
 
 @BindingAdapter("app:penWidth")
 fun WidthSelector.bindPenWidth(width: Float) {

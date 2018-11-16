@@ -1,7 +1,9 @@
 package jp.shiita.yorimichi.ui.main
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -71,6 +73,17 @@ class MainFragment : DaggerFragment() {
         super.onDestroyView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) return
+
+        when (requestCode) {
+            REQUEST_WRITE_NOTE -> {
+                viewModel.setCanWriteNote(false)
+                viewModel.updatePoints()
+            }
+        }
+    }
+
     private fun observe() {
         viewModel.searchEvent.observe(this) { binding.viewPager.setCurrentItem(MAP_FRAGMENT, true) }
         viewModel.directionsEvent.observe(this) { binding.viewPager.setCurrentItem(MAP_FRAGMENT, true) }
@@ -89,6 +102,7 @@ class MainFragment : DaggerFragment() {
 
     companion object {
         val TAG: String = MainFragment::class.java.simpleName
+        const val REQUEST_WRITE_NOTE = 1000
         fun newInstance() = MainFragment()
     }
 }

@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import jp.shiita.yorimichi.util.distance
 
 data class PlaceResult(
-        val results: List<Place>,
+        val results: List<Place> = emptyList(),
         val nextPageToken: String,
         val status: String
 ) {
@@ -14,11 +14,11 @@ data class PlaceResult(
             val name: String,
             val geometry: Geometry,
             val icon: String,
-            val photos: List<Photo>,
+            val photos: List<Photo> = emptyList(),
             val placeId: String,
             val rating: Float,
             val reference: String,
-            val types: List<String>,
+            val types: List<String> = emptyList(),
             val vicinity: String
     ) {
         val lat get() = geometry.location.lat
@@ -35,21 +35,7 @@ data class PlaceResult(
         fun setDistance(targetLatLng: LatLng) {
             _distance = latLng.distance(targetLatLng)
         }
-
-        fun setDistance(targetLat: Double, targetLng: Double) =
-                setDistance(LatLng(targetLat, targetLng))
     }
-
-    data class Geometry(
-            val location: Location,
-            val viewport: Viewport
-    )
-
-    data class Photo(
-            val width: Int,
-            val height: Int,
-            val photoReference: String
-    )
 
     fun calcBounds(currentLat: Double, currentLng: Double): LatLngBounds {
         var minLat = currentLat

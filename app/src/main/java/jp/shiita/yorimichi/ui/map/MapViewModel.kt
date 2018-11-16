@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -12,10 +13,12 @@ import jp.shiita.yorimichi.data.PlaceResult
 import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleLiveEvent
+import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
 import jp.shiita.yorimichi.util.distance
 import jp.shiita.yorimichi.util.toSimpleString
 import java.net.URLEncoder
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MapViewModel @Inject constructor(
@@ -36,13 +39,21 @@ class MapViewModel @Inject constructor(
     val showsSearchResult: LiveData<Boolean> get() = _showsSearchResult
     val showsChick: LiveData<Boolean> get() = _showsChick
     val isNear: LiveData<Boolean> get() = _isNear
+    val isNearByLatestVisitLatLng: LiveData<Boolean> get() = _isNearByLatestVisitLatLng
+    val chickMessage: LiveData<String> get() = _chickMessage
 
     val moveCameraEvent: LiveData<LatLng> get() = _moveCameraEvent
     val moveCameraZoomEvent: LiveData<LatLng> get() = _moveCameraZoomEvent
     val pointsEvent: LiveData<Int> get() = _pointsEvent
     val reachedEvent: LiveData<LatLng> get() = _reachedEvent
+    val switchRotateEvent: LiveData<Boolean> get() = _switchRotateEvent
+    val chickMessageChangeEvent: LiveData<Unit> get() = _chickMessageChangeEvent
+    val showWriteNoteEvent: LiveData<Unit> get() = _showWriteNoteEvent
+    val showReadNoteEvent: LiveData<Unit> get() = _showReadNoteEvent
+    val canWriteNoteChangeEvent: LiveData<Boolean> get() = _canWriteNoteChangeEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
+    private val _latestVisitLatLng         = MutableLiveData<LatLng>().apply { value = UserInfo.latestVisitLatLng }
     private val _places                    = MutableLiveData<List<PlaceResult.Place>>()
     private val _routes                    = MutableLiveData<List<LatLng>>()
     private val _targetPlace               = MutableLiveData<PlaceResult.Place>()
@@ -56,11 +67,18 @@ class MapViewModel @Inject constructor(
     private val _showsSearchResult         = MutableLiveData<Boolean>()
     private val _showsChick                = MutableLiveData<Boolean>()
     private val _isNear                    = MutableLiveData<Boolean>()
+    private val _isNearByLatestVisitLatLng = MutableLiveData<Boolean>()
+    private val _chickMessage              = MutableLiveData<String>()
 
     private val _moveCameraEvent      = SingleLiveEvent<LatLng>()
     private val _moveCameraZoomEvent  = SingleLiveEvent<LatLng>()
     private val _pointsEvent          = SingleLiveEvent<Int>()
     private val _reachedEvent         = SingleLiveEvent<LatLng>()   // start地点のLatLng
+    private val _switchRotateEvent    = SingleLiveEvent<Boolean>()
+    private val _chickMessageChangeEvent = SingleUnitLiveEvent()
+    private val _showWriteNoteEvent = SingleUnitLiveEvent()
+    private val _showReadNoteEvent = SingleUnitLiveEvent()
+    private val _canWriteNoteChangeEvent = SingleLiveEvent<Boolean>()
 
     private var isLocationObserved = false
     private var placesSize = -1
@@ -70,17 +88,32 @@ class MapViewModel @Inject constructor(
     private var startLatLng: LatLng? = null
 
     private val disposables = CompositeDisposable()
+    var rotationEnabled = false
 
     override fun onCleared() = disposables.clear()
+
+    init {
+        Observable.interval(1, TimeUnit.MINUTES)
+                .subscribeBy { _chickMessageChangeEvent.call() }
+                .addTo(disposables)
+    }
 
     fun setLatLng(latLng: LatLng) {
         _latLng.value = latLng
         _targetPlace.value?.let { place ->
-            if (place.latLng.distance(latLng) < 50) {
+            if (place.latLng.distance(latLng) < NEAR_DISTANCE) {
                 _isNear.postValue(true)
             }
             else {
                 _isNear.postValue(false)
+            }
+        }
+        _latestVisitLatLng.value?.let { latestVisitLatLng ->
+            if (latestVisitLatLng.distance(latLng) < NEAR_DISTANCE) {
+                _isNearByLatestVisitLatLng.postValue(true)
+            }
+            else {
+                _isNearByLatestVisitLatLng.postValue(false)
             }
         }
         if (!isLocationObserved) {
@@ -99,6 +132,21 @@ class MapViewModel @Inject constructor(
         searchDirection("place_id:${place.placeId}")
     }
 
+    fun setChickMessage(message: String) = _chickMessage.postValue(message)
+
+    fun resetLatestVisitLatLng() {
+        UserInfo.latestVisitLatLng = null
+        UserInfo.latestPlaceId = ""
+        UserInfo.latestPlaceText = ""
+        _latestVisitLatLng.postValue(null)
+        _isNearByLatestVisitLatLng.postValue(false)
+        _canWriteNoteChangeEvent.postValue(false)
+    }
+
+    fun showReadNote() = _showReadNoteEvent.call()
+
+    fun showWriteNote() = _showWriteNoteEvent.call()
+
     fun searchPlacesDefault() {
         searchPlaces(UserInfo.autoSearchCategory.toList(), radius = 500)
     }
@@ -111,7 +159,7 @@ class MapViewModel @Inject constructor(
         val latLng = this.latLng.value ?: return
 
         // "+"がエンコードされないように自前でエンコード処理を行う
-        val keyword = keywords.map { URLEncoder.encode(it, "UTF-8") }.joinToString(separator = "+OR+")
+        val keyword = keywords.joinToString(separator = "+OR+") { URLEncoder.encode(it, "UTF-8") }
         repository.getPlacesWithKeyword(latLng.toSimpleString(), radius, keyword)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
@@ -151,6 +199,7 @@ class MapViewModel @Inject constructor(
                             _routes.postValue(routes)
                             _moveCameraZoomEvent.postValue(latLng)
                             _showsChick.postValue(true)
+                            rotationEnabled = true
                         },
                         onError = {}
                 )
@@ -163,6 +212,12 @@ class MapViewModel @Inject constructor(
         _routes.postValue(routes)
         _moveCameraZoomEvent.postValue(routes[0])
         _showsChick.postValue(true)
+        rotationEnabled = true
+    }
+
+    fun switchRotate() {
+        rotationEnabled = !rotationEnabled
+        _switchRotateEvent.postValue(rotationEnabled)
     }
 
     fun onScrolled(first: Int, last: Int) {
@@ -178,15 +233,34 @@ class MapViewModel @Inject constructor(
     }
 
     fun reached() {
+        val placeId = _targetPlace.value?.placeId ?: ""
+        val placeText = _targetPlace.value?.name ?: ""
         clearRoutes()
+
         repository.addPoints(UserInfo.userId, 20)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeBy(
                         onSuccess = {
                             UserInfo.points = it.points
-                            _reachedEvent.value = startLatLng
+                            UserInfo.canWriteNote = true
                             _pointsEvent.value = 20
+                        },
+                        onError = {}
+                )
+                .addTo(disposables)
+
+        repository.visitPlace(UserInfo.userId, placeId)
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+                .subscribeBy(
+                        onComplete = {
+                            UserInfo.latestVisitLatLng = UserInfo.latLng
+                            UserInfo.latestPlaceId = placeId
+                            UserInfo.latestPlaceText = placeText
+                            _latestVisitLatLng.value = UserInfo.latestVisitLatLng
+                            _reachedEvent.value = startLatLng
+                            _canWriteNoteChangeEvent.value = true
                         },
                         onError = {}
                 )
@@ -208,6 +282,7 @@ class MapViewModel @Inject constructor(
         _targetPlace.postValue(null)
         _showsChick.postValue(false)
         _isNear.postValue(false)
+        rotationEnabled = false
     }
 
     private fun updatePinPositions() {
@@ -219,5 +294,9 @@ class MapViewModel @Inject constructor(
         _largePinPositions.value = (first..last).toMutableList().apply { remove(selectedPosition) }
         if      (selectedPosition in first..last)        _selectedLargePinPositions.value = listOf(selectedPosition)
         else if (selectedPosition in 0 until placesSize) _selectedSmallPinPositions.value = listOf(selectedPosition)
+    }
+
+    companion object {
+        const val NEAR_DISTANCE = 50
     }
 }

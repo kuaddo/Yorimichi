@@ -68,8 +68,8 @@ data class DirectionResult(
                     result = result or (b and 0x1f shl shift)
                     shift += 5
                 } while (b >= 0x20)
-                val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-                lat += dlat
+                val dLat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+                lat += dLat
 
                 shift = 0
                 result = 0
@@ -78,8 +78,8 @@ data class DirectionResult(
                     result = result or (b and 0x1f shl shift)
                     shift += 5
                 } while (b >= 0x20)
-                val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-                lng += dlng
+                val dLng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+                lng += dLng
 
                 val p = LatLng(lat.toDouble() / 1E5,
                         lng.toDouble() / 1E5)

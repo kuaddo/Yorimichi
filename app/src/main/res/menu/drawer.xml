@@ -2,23 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/menu_drawer_my_page"
-            android:icon="@drawable/ic_my_page"
-            android:title="@string/drawer_my_pate"/>
-
-        <item
             android:id="@+id/menu_drawer_note"
             android:icon="@drawable/ic_note"
-            android:title="@string/drawer_note"/>
+            android:title="@string/title_history"/>
 
         <item
             android:id="@+id/menu_drawer_shop"
             android:icon="@drawable/ic_shop"
-            android:title="@string/drawer_shop"/>
+            android:title="@string/title_shop"/>
 
         <item
             android:id="@+id/menu_drawer_setting"
             android:icon="@drawable/ic_settings"
-            android:title="@string/drawer_setting"/>
+            android:title="@string/title_setting"/>
     </group>
 </menu>
