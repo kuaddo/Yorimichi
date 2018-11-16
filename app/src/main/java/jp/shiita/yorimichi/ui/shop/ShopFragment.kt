@@ -11,7 +11,6 @@ import dagger.android.support.DaggerFragment
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.databinding.FragShopBinding
 import jp.shiita.yorimichi.ui.main.MainViewModel
-import jp.shiita.yorimichi.ui.notes.NoteAdapter
 import jp.shiita.yorimichi.util.observe
 import javax.inject.Inject
 
@@ -22,7 +21,6 @@ class ShopFragment : DaggerFragment() {
     private val viewModel: ShopViewModel
             by lazy { ViewModelProviders.of(this, viewModelFactory).get(ShopViewModel::class.java) }
     private lateinit var binding: FragShopBinding
-    private lateinit var noteAdapter: NoteAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -36,14 +34,10 @@ class ShopFragment : DaggerFragment() {
         binding.viewModel = viewModel
         mainViewModel.setupActionBar(R.string.title_shop)
 
-        noteAdapter = NoteAdapter(context!!, mutableListOf())
-        binding.notesRecyclerView.adapter = noteAdapter
-
         observe()
     }
 
     private fun observe() {
-        viewModel.posts.observe(this) { noteAdapter.reset(it) }
         viewModel.pointsEvent.observe(this) { mainViewModel.updatePoints() }
     }
 

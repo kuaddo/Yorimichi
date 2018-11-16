@@ -12,15 +12,12 @@ import jp.shiita.yorimichi.data.UserInfo
 import jp.shiita.yorimichi.data.api.YorimichiRepository
 import jp.shiita.yorimichi.live.SingleUnitLiveEvent
 import jp.shiita.yorimichi.scheduler.BaseSchedulerProvider
-import jp.shiita.yorimichi.util.toUploadDateString
-import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 class ShopViewModel @Inject constructor(
         private val repository: YorimichiRepository,
         private val scheduler: BaseSchedulerProvider
 ) : ViewModel() {
-    val posts: LiveData<List<Post>> get() = _posts
     val pointsEvent: LiveData<Unit> get() = _pointsEvent
 
     private val _posts = MutableLiveData<List<Post>>()
@@ -29,40 +26,6 @@ class ShopViewModel @Inject constructor(
     private val disposables = CompositeDisposable()
 
     override fun onCleared() = disposables.clear()
-
-    fun getUserPosts() {
-        repository.getUserPosts(UserInfo.userId)
-                .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
-                .subscribeBy(
-                        onSuccess = { posts ->
-                            if (posts.isEmpty()) return@subscribeBy
-                            posts.forEach { Log.d(TAG, it.toString()) }
-                            _posts.postValue(posts)
-                        },
-                        onError = {
-                            Log.e(TAG, "onError:getUserPosts", it)
-                        }
-                )
-                .addTo(disposables)
-    }
-
-    fun getPlacePosts() {
-        repository.getPlacePosts("testPlaceId", LocalDateTime.now().toUploadDateString())
-                .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
-                .subscribeBy(
-                        onSuccess = { posts ->
-                            if (posts.isEmpty()) return@subscribeBy
-                            posts.forEach { Log.d(TAG, it.toString()) }
-                            _posts.postValue(posts)
-                        },
-                        onError = {
-                            Log.e(TAG, "onError:getPlacePosts", it)
-                        }
-                )
-                .addTo(disposables)
-    }
 
     fun visitPlace() {
         val placeId = "testPlaceId"
