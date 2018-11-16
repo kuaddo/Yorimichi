@@ -82,7 +82,7 @@ class MainViewModel @Inject constructor(
     fun setCanWriteNote(canWriteNote: Boolean) {
         if (canWriteNote != _canWriteNote.value) {
             UserInfo.canWriteNote = canWriteNote
-            _canWriteNote.postValue(canWriteNote)
+            _canWriteNote.value = canWriteNote      // 即反映しないとif文で弾かれる
         }
     }
 
