@@ -39,7 +39,7 @@ interface YorimichiService {
     fun postPost(@Body body: Map<String, String>): Completable
 
     @GET("places/{place_uid}/posts/")
-    fun getPlacePosts(@Path("place_uid") placeUid: String): Single<Response<JsonObject>>
+    fun getPlacePosts(@Path("place_uid") placeUid: String, @Query("before") before: String): Single<Response<JsonObject>>
 
     @GET("places/searchbytype/")
     fun getPlacesWithType(@Query("location") location: String,
