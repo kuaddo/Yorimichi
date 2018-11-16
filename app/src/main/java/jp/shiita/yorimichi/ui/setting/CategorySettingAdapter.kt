@@ -14,7 +14,7 @@ class CategorySettingAdapter(context: Context) : RecyclerView.Adapter<RecyclerVi
     private val inflater = LayoutInflater.from(context)
     private val categories = context.resources
             .getStringArray(R.array.place_types)
-            .map { Category(it, it in UserInfo.selected) }.toMutableList()
+            .map { Category(it, it in UserInfo.autoSearchCategory) }.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             CategorySettingViewHolder(DataBindingUtil.inflate(inflater, R.layout.item_category_setting, parent, false))
@@ -29,7 +29,8 @@ class CategorySettingAdapter(context: Context) : RecyclerView.Adapter<RecyclerVi
     }
 
     fun reflectCategories() {
-        UserInfo.selected.addAll(categories.filter(Category::selected).map { it.name })
+        UserInfo.autoSearchCategory.clear()
+        UserInfo.autoSearchCategory.addAll(categories.filter(Category::selected).map { it.name })
     }
 
     class CategorySettingViewHolder(private val binding: ItemCategorySettingBinding) : RecyclerView.ViewHolder(binding.root) {
