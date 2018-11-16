@@ -27,4 +27,8 @@ object UserInfo : KotprefModel() {
                 longitude = value.longitude.toString()
             }
         }
+
+    val originalCategories: List<String>
+        get() = listOf(originalCategory1, originalCategory2, originalCategory3)
+                .filter { it.isNotBlank() }
 }
