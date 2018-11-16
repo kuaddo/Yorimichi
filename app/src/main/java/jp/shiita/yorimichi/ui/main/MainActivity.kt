@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.RecyclerView
@@ -12,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.stephentuso.welcome.WelcomeHelper
 import dagger.android.support.DaggerAppCompatActivity
 import jp.shiita.yorimichi.R
 import jp.shiita.yorimichi.data.UserInfo
@@ -22,6 +24,7 @@ import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.OPEN_DRAWER
 import jp.shiita.yorimichi.ui.main.MainViewModel.HomeAsUpType.POP_BACK_STACK
 import jp.shiita.yorimichi.ui.setting.SettingFragment
 import jp.shiita.yorimichi.ui.shop.ShopFragment
+import jp.shiita.yorimichi.ui.tutorial.TutorialActivity
 import jp.shiita.yorimichi.util.addFragment
 import jp.shiita.yorimichi.util.bindImageCloudStorage
 import jp.shiita.yorimichi.util.observe
@@ -36,6 +39,7 @@ class MainActivity : DaggerAppCompatActivity() {
     private val binding: ActMainBinding
             by lazy { DataBindingUtil.setContentView<ActMainBinding>(this, R.layout.act_main) }
     private lateinit var adapter: IconAdapter
+    private lateinit var welcomeHelper: WelcomeHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,9 @@ class MainActivity : DaggerAppCompatActivity() {
         setupDrawer()
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
+
+        welcomeHelper = WelcomeHelper(this, TutorialActivity::class.java)
+        welcomeHelper.show(savedInstanceState)
 
         adapter = IconAdapter(this, mutableListOf(), viewModel::changeIcon)
         binding.navView
@@ -61,6 +68,31 @@ class MainActivity : DaggerAppCompatActivity() {
 
         viewModel.createOrUpdateUser()
         observe()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> when (viewModel.homeAsUpType) {
+                OPEN_DRAWER -> binding.drawerLayout.openDrawer(GravityCompat.START)
+                POP_BACK_STACK -> supportFragmentManager.popBackStack()
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_FINISH_DIALOG) return
+
+        when (resultCode) {
+            RESULT_OK, RESULT_CANCELED -> finish()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        welcomeHelper.onSaveInstanceState(outState)
     }
 
     private fun observe() {
@@ -104,26 +136,6 @@ class MainActivity : DaggerAppCompatActivity() {
                         .findViewById<ImageView>(R.id.iconImage)
                         .bindImageCloudStorage(UserInfo.iconBucket, UserInfo.iconFileName)
             }
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            android.R.id.home -> when (viewModel.homeAsUpType) {
-                OPEN_DRAWER -> binding.drawerLayout.openDrawer(GravityCompat.START)
-                POP_BACK_STACK -> supportFragmentManager.popBackStack()
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != REQUEST_FINISH_DIALOG) return
-
-        when (resultCode) {
-            RESULT_OK, RESULT_CANCELED -> finish()
         }
     }
 

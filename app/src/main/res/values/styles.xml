@@ -20,4 +20,10 @@
         <item name="android:paddingEnd">@dimen/icon_button_small_se_padding</item>
         <item name="android:background">@drawable/back_button</item>
     </style>
+
+    <style name="TutorialTheme" parent="WelcomeScreenTheme">
+        <item name="welcomeTitleTextStyle">@style/WelcomeScreenText.Title.Centered</item>
+        <item name="welcomeLargeTextStyle">@style/WelcomeScreenText.Large.Centered</item>
+        <item name="welcomeNormalTextStyle">@style/WelcomeScreenText.Centered</item>
+    </style>
 </resources>
