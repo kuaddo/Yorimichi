@@ -54,10 +54,10 @@ android {
         getByName("release") {
             manifestPlaceholders = mapOf(
                     "GOOGLE_MAPS" to ApiKeys.GOOGLE_MAPS,
-                    "ADMOB_APP_ID" to ApiKeys.ADMOB_APP_ID)
-            resValue("string", "admob_app_id", ApiKeys.ADMOB_APP_ID)
-            resValue("string", "admob_banner_ad_unit_id", ApiKeys.ADMOB_BANNER_AD_UNIT_ID)
-            resValue("string", "admob_reward_ad_unit_id", ApiKeys.ADMOB_REWARD_AD_UNIT_ID)
+                    "ADMOB_APP_ID" to ApiKeys.RELEASE_ADMOB_APP_ID)
+            resValue("string", "admob_app_id", ApiKeys.RELEASE_ADMOB_APP_ID)
+            resValue("string", "admob_banner_ad_unit_id", ApiKeys.RELEASE_ADMOB_BANNER_AD_UNIT_ID)
+            resValue("string", "admob_reward_ad_unit_id", ApiKeys.RELEASE_ADMOB_REWARD_AD_UNIT_ID)
             buildConfigField("String[]", "ADMOB_TEST_DEVICES", ApiKeys.ADMOB_TEST_DEVICES)
             buildConfigField("String", "GOOGLE_MAPS", "\"${ApiKeys.GOOGLE_MAPS}\"")
             buildConfigField("String", "X_API_TOKEN", "\"${ApiKeys.X_API_TOKEN}\"")

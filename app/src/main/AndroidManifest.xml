@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ui.main.MainActivity">
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,17 +26,20 @@
 
         <activity
             android:name=".ui.tutorial.TutorialActivity"
-            android:theme="@style/TutorialTheme"/>
+            android:theme="@style/TutorialTheme"
+            android:screenOrientation="portrait"/>
 
         <receiver android:name=".receiver.NotificationBroadcastReceiver"/>
 
         <!-- OSS licenses -->
         <activity
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"/>
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"/>
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:screenOrientation="portrait"/>
 
         <!-- Google maps -->
         <meta-data
