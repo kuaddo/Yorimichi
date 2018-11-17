@@ -43,7 +43,7 @@ android {
             resValue("string", "admob_app_id", ApiKeys.ADMOB_APP_ID)
             resValue("string", "admob_banner_ad_unit_id", ApiKeys.ADMOB_BANNER_AD_UNIT_ID)
             resValue("string", "admob_reward_ad_unit_id", "ca-app-pub-3940256099942544/5224354917")   // test ad unit ID
-            resValue("string", "app_name", "debug_Yorimichi")
+            resValue("string", "app_name", "debug_よりみち")
             buildConfigField("String[]", "ADMOB_TEST_DEVICES", ApiKeys.ADMOB_TEST_DEVICES)
             buildConfigField("String", "GOOGLE_MAPS", "\"${ApiKeys.GOOGLE_MAPS}\"")
             buildConfigField("String", "X_API_TOKEN", "\"${ApiKeys.X_API_TOKEN}\"")
@@ -52,7 +52,16 @@ android {
             versionNameSuffix = "-debug"
         }
         getByName("release") {
-            resValue("string", "app_name", "Yorimichi")
+            manifestPlaceholders = mapOf(
+                    "GOOGLE_MAPS" to ApiKeys.GOOGLE_MAPS,
+                    "ADMOB_APP_ID" to ApiKeys.ADMOB_APP_ID)
+            resValue("string", "admob_app_id", ApiKeys.ADMOB_APP_ID)
+            resValue("string", "admob_banner_ad_unit_id", ApiKeys.ADMOB_BANNER_AD_UNIT_ID)
+            resValue("string", "admob_reward_ad_unit_id", ApiKeys.ADMOB_REWARD_AD_UNIT_ID)
+            buildConfigField("String[]", "ADMOB_TEST_DEVICES", ApiKeys.ADMOB_TEST_DEVICES)
+            buildConfigField("String", "GOOGLE_MAPS", "\"${ApiKeys.GOOGLE_MAPS}\"")
+            buildConfigField("String", "X_API_TOKEN", "\"${ApiKeys.X_API_TOKEN}\"")
+            resValue("string", "app_name", "よりみち")
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
