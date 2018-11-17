@@ -228,7 +228,7 @@ class MapFragment : DaggerFragment() {
         viewModel.selectedSmallPinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(selectedSmallDescriptor) }}
         viewModel.selectedLargePinPositions.observe(this) { positions -> if (markers.isNotEmpty()) positions.forEach { markers[it].first?.setIcon(selectedLargeDescriptor) }}
         viewModel.moveCameraEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLng(it)) }
-        viewModel.moveCameraZoomEvent.observe(this) { map?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
+        viewModel.moveCameraZoomEvent.observe(this) { map?.moveCamera(CameraUpdateFactory.newLatLngZoom(it, INITIAL_ZOOM_LEVEL))}
         viewModel.pointsEvent.observe(this) {
             PointGetDialogFragment.newInstance(it, it).show(activity?.supportFragmentManager, PointGetDialogFragment.TAG)
             mainViewModel.updatePoints()
