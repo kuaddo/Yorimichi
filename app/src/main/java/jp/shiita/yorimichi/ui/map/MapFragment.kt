@@ -26,6 +26,7 @@ import jp.shiita.yorimichi.live.LocationLiveData
 import jp.shiita.yorimichi.live.MagneticLiveData
 import jp.shiita.yorimichi.receiver.NotificationBroadcastReceiver
 import jp.shiita.yorimichi.ui.dialog.PointGetDialogFragment
+import jp.shiita.yorimichi.ui.dialog.SimpleDialogFragment
 import jp.shiita.yorimichi.ui.main.MainFragment
 import jp.shiita.yorimichi.ui.main.MainViewModel
 import jp.shiita.yorimichi.ui.note.NoteFragment
@@ -257,6 +258,10 @@ class MapFragment : DaggerFragment() {
             }
         }
         viewModel.canWriteNoteChangeEvent.observe(this) { mainViewModel.setCanWriteNote(it) }
+        viewModel.emptyPlaceEvent.observe(this) {
+            SimpleDialogFragment.newInstance(getString(R.string.dialog_empty_place_message), false)
+                    .show(fragmentManager, SimpleDialogFragment.TAG)
+        }
     }
 
     private fun resetMap() {
@@ -266,8 +271,8 @@ class MapFragment : DaggerFragment() {
     }
 
     private fun addPlaces(places: List<PlaceResult.Place>) {
-        if (places.isEmpty()) return
         resetMap()
+        if (places.isEmpty()) return
         activity?.invalidateOptionsMenu()
         searchResultAdapter.reset(places)
         markers.addAll(places.map {

@@ -157,6 +157,6 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     companion object {
-        private const val REQUEST_FINISH_DIALOG = 0
+        private const val REQUEST_FINISH_DIALOG = 1
     }
 }

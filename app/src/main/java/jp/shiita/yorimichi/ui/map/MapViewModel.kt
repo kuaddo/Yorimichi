@@ -51,6 +51,7 @@ class MapViewModel @Inject constructor(
     val showWriteNoteEvent: LiveData<Unit> get() = _showWriteNoteEvent
     val showReadNoteEvent: LiveData<Unit> get() = _showReadNoteEvent
     val canWriteNoteChangeEvent: LiveData<Boolean> get() = _canWriteNoteChangeEvent
+    val emptyPlaceEvent: LiveData<Unit> get() = _emptyPlaceEvent
 
     private val _latLng                    = MutableLiveData<LatLng>()
     private val _latestVisitLatLng         = MutableLiveData<LatLng>().apply { value = UserInfo.latestVisitLatLng }
@@ -79,9 +80,10 @@ class MapViewModel @Inject constructor(
     private val _showWriteNoteEvent = SingleUnitLiveEvent()
     private val _showReadNoteEvent = SingleUnitLiveEvent()
     private val _canWriteNoteChangeEvent = SingleLiveEvent<Boolean>()
+    private val _emptyPlaceEvent = SingleUnitLiveEvent()
 
     private var isLocationObserved = false
-    private var placesSize = -1
+    private var placesSize = 0
     private var selectedPosition = -1
     private var first = -1
     private var last = -1
@@ -168,6 +170,7 @@ class MapViewModel @Inject constructor(
                             if (result.results.isEmpty()) {
                                 clearPlaces()
                                 _moveCameraZoomEvent.postValue(latLng)
+                                _emptyPlaceEvent.call()
                             }
                             else {
                                 placesSize = result.results.size
@@ -180,6 +183,7 @@ class MapViewModel @Inject constructor(
                         onError = {
                             clearPlaces()
                             _moveCameraZoomEvent.postValue(latLng)
+                            _emptyPlaceEvent.call()
                         }
                 )
                 .addTo(disposables)
@@ -268,7 +272,8 @@ class MapViewModel @Inject constructor(
     }
 
     private fun clearPlaces() {
-        _places.postValue(emptyList())
+        placesSize = 0
+        _places.value = emptyList()
         _zoomBounds.postValue(null)
         _showsSearchResult.postValue(false)
         _smallPinPositions.postValue(null)
