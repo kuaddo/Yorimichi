@@ -27,7 +27,7 @@
         <activity
             android:name=".ui.tutorial.TutorialActivity"
             android:theme="@style/TutorialTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="behind"/>
 
         <receiver android:name=".receiver.NotificationBroadcastReceiver"/>
 
@@ -35,11 +35,11 @@
         <activity
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="behind"/>
         <activity
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="behind"/>
 
         <!-- Google maps -->
         <meta-data

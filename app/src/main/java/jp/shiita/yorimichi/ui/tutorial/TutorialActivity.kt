@@ -19,5 +19,6 @@ class TutorialActivity : WelcomeActivity() {
                     .background(R.color.colorTutorial4))
             .swipeToDismiss(true)
             .exitAnimation(android.R.anim.fade_out)
+            .backButtonSkips(false)
             .build()
 }
