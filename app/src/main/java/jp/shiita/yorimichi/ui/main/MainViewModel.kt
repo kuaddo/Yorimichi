@@ -92,7 +92,7 @@ class MainViewModel @Inject constructor(
                     .subscribeOn(scheduler.io())
                     .subscribeBy(
                             onSuccess = { reflectUserInfo(it) },
-                            onError = { _finishAppMessage.postValue(R.string.dialog_location_permission_denied_message) }
+                            onError = { _finishAppMessage.postValue(R.string.dialog_create_user_failed_message) }
                     )
                     .addTo(disposables)
         }

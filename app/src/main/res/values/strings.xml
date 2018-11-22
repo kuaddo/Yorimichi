@@ -37,6 +37,7 @@
     <string name="dialog_simple_positive">OK</string>
     <string name="dialog_simple_negative">Cancel</string>
     <string name="dialog_location_permission_denied_message">位置情報が取得できないため、アプリを終了します。</string>
+    <string name="dialog_create_user_failed_message">データの初期化に失敗したため、アプリを終了します。</string>
     <string name="dialog_upload_note_confirm_message">ノートを送信します</string>
     <string name="dialog_empty_place_message">よりみちできる場所が見つかりませんでした</string>
     <string name="dialog_point_get_main_message">%1$dポイントGET！\nどんどん集めよう！</string>
