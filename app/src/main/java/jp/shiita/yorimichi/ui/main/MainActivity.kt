@@ -49,7 +49,7 @@ class MainActivity : DaggerAppCompatActivity() {
         binding.viewModel = viewModel
 
         welcomeHelper = WelcomeHelper(this, TutorialActivity::class.java)
-        welcomeHelper.show(savedInstanceState)
+        welcomeHelper.show(savedInstanceState, REQUEST_TUTORIAL)
 
         adapter = IconAdapter(this, mutableListOf(), viewModel::changeIcon)
         binding.navView
@@ -157,6 +157,7 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     companion object {
-        private const val REQUEST_FINISH_DIALOG = 1
+        private const val REQUEST_TUTORIAL = 1
+        private const val REQUEST_FINISH_DIALOG = 2
     }
 }
