@@ -87,11 +87,14 @@ class SearchFragment : DaggerFragment() {
             override fun onQueryTextChange(text: String?): Boolean = false
         })
 
-        initDescriptor()
         initMap()
         observe()
     }
 
+    /**
+     * BitmapDescriptorFactory.fromBitmap()の内部で用いられている
+     * IBitmapDescriptorFactoryはMapの準備が出来てから初期化されることに注意する
+     */
     private fun initDescriptor() {
         val pinDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_pin_large, null)!!
         val bitmap = pinDrawable.getBitmap(ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
@@ -107,6 +110,7 @@ class SearchFragment : DaggerFragment() {
         }
 
         (childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment).getMapAsync { googleMap ->
+            initDescriptor()
             map = googleMap
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(UserInfo.latLng, INITIAL_ZOOM_LEVEL))
             map?.isMyLocationEnabled = true

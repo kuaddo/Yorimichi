@@ -89,7 +89,6 @@ class MapFragment : DaggerFragment() {
                     REQUEST_LOCATION_PERMISSION)
         }
         else {
-            initDescriptor()
             initMap()
             observe()
         }
@@ -100,7 +99,6 @@ class MapFragment : DaggerFragment() {
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED ||
             grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            initDescriptor()
             initMap()
             observe()
         }
@@ -150,6 +148,10 @@ class MapFragment : DaggerFragment() {
         return true
     }
 
+    /**
+     * BitmapDescriptorFactory.fromBitmap()の内部で用いられている
+     * IBitmapDescriptorFactoryはMapの準備が出来てから初期化されることに注意する
+     */
     private fun initDescriptor() {
         val pinDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_pin_large, null)!!
         val largeBitmap = pinDrawable.getBitmap(ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
@@ -172,6 +174,7 @@ class MapFragment : DaggerFragment() {
         }
 
         (childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment).getMapAsync { googleMap ->
+            initDescriptor()
             map = googleMap
             map?.moveCamera(CameraUpdateFactory.newLatLng(UserInfo.latLng))
             map?.isMyLocationEnabled = true
