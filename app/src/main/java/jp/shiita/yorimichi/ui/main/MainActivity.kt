@@ -49,7 +49,7 @@ class MainActivity : DaggerAppCompatActivity() {
         binding.viewModel = viewModel
 
         welcomeHelper = WelcomeHelper(this, TutorialActivity::class.java)
-        welcomeHelper.show(savedInstanceState, REQUEST_TUTORIAL)
+        val isShownTutorial = welcomeHelper.show(savedInstanceState, REQUEST_TUTORIAL)
 
         adapter = IconAdapter(this, mutableListOf(), viewModel::changeIcon)
         binding.navView
@@ -62,7 +62,7 @@ class MainActivity : DaggerAppCompatActivity() {
                     }
                 }
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null && !isShownTutorial) {
             supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
         }
 
@@ -83,10 +83,17 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != REQUEST_FINISH_DIALOG) return
 
-        when (resultCode) {
-            RESULT_OK, RESULT_CANCELED -> finish()
+        when (requestCode) {
+            REQUEST_TUTORIAL -> when (resultCode) {
+                // tutorialを表示した場合には、後からfragmentをaddする
+                RESULT_OK -> supportFragmentManager.addFragment(R.id.container, MainFragment.newInstance())
+                // backボタンでチュートリアルを中断した場合には、アプリを終了する
+                RESULT_CANCELED -> finish()
+            }
+            REQUEST_FINISH_DIALOG -> when (resultCode) {
+                RESULT_OK, RESULT_CANCELED -> finish()
+            }
         }
     }
 
