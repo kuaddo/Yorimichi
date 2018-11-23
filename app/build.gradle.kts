@@ -45,7 +45,6 @@ android {
             resValue("string", "admob_app_id", ApiKeys.DEBUG_ADMOB_APP_ID)
             resValue("string", "admob_banner_ad_unit_id", ApiKeys.DEBUG_ADMOB_BANNER_AD_UNIT_ID)
             resValue("string", "admob_reward_ad_unit_id", ApiKeys.DEBUG_ADMOB_REWARD_AD_UNIT_ID)
-            buildConfigField("String[]", "ADMOB_TEST_DEVICES", ApiKeys.DEBUG_ADMOB_TEST_DEVICES)
             buildConfigField("String", "X_API_TOKEN", ApiKeys.X_API_TOKEN)
 
             signingConfig = signingConfigs.getByName("debug")
@@ -60,7 +59,6 @@ android {
             resValue("string", "admob_app_id", ApiKeys.RELEASE_ADMOB_APP_ID)
             resValue("string", "admob_banner_ad_unit_id", ApiKeys.RELEASE_ADMOB_BANNER_AD_UNIT_ID)
             resValue("string", "admob_reward_ad_unit_id", ApiKeys.RELEASE_ADMOB_REWARD_AD_UNIT_ID)
-            buildConfigField("String[]", "ADMOB_TEST_DEVICES", ApiKeys.RELEASE_ADMOB_TEST_DEVICES)
             buildConfigField("String", "X_API_TOKEN", ApiKeys.X_API_TOKEN)
 
             isMinifyEnabled = false

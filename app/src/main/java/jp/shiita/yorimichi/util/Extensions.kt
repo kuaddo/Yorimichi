@@ -14,7 +14,6 @@ import android.util.Base64
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.model.LatLng
-import jp.shiita.yorimichi.BuildConfig
 import jp.shiita.yorimichi.data.UserInfo
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -69,7 +68,6 @@ fun AdView.loadAd() {
     val latLng = UserInfo.latLng
     if (latLng != null)
         builder.setLocation(getLocation(latLng.latitude, latLng.longitude))
-    BuildConfig.ADMOB_TEST_DEVICES.forEach { builder.addTestDevice(it) }
     loadAd(builder.build())
 }
 
