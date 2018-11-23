@@ -6,6 +6,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.gms.oss.licenses.plugin")
     id("com.google.gms.google-services")
+    id("com.github.gfx.ribbonizer")
 }
 
 val versionMajor = 1

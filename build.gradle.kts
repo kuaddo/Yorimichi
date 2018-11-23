@@ -13,6 +13,7 @@ buildscript {
         classpath(kotlin("gradle-plugin", "1.2.70"))
         classpath("com.google.gms:google-services:4.0.1")
         classpath("com.google.gms:oss-licenses:0.9.2")
+        classpath("com.github.gfx.ribbonizer:ribbonizer-plugin:2.1.0")
     }
 }
 
