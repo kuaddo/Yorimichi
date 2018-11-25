@@ -7,6 +7,7 @@ plugins {
     id("com.google.gms.oss.licenses.plugin")
     id("com.google.gms.google-services")
     id("com.github.gfx.ribbonizer")
+    id("io.fabric")
 }
 
 val versionMajor = 1
@@ -101,6 +102,7 @@ dependencies {
     implementation("com.google.firebase:firebase-core:16.0.5")
     implementation("com.google.firebase:firebase-auth:16.0.5")
     implementation("com.google.firebase:firebase-storage:16.0.5")
+    implementation("com.crashlytics.sdk.android:crashlytics:2.9.6")
 
     // Dagger
     val daggerVersion = "2.17"
