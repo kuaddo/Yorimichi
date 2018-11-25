@@ -65,6 +65,7 @@ class MapFragment : DaggerFragment() {
         binding.viewModel = viewModel
         binding.mainViewModel = mainViewModel
 
+        binding.adView.loadAd()
         searchResultAdapter = PlaceAdapter(context!!, mutableListOf(), ::selectPlace, viewModel::setTarget)
         binding.recyclerView.also { rv ->
             val layoutManager = rv.layoutManager as LinearLayoutManager
